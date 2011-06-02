@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+Bundler.require
+require File.expand_path(File.join(File.dirname(__FILE__), "../lib/irc_machine"))
+
+IrcMachine::Session.new(
+  server: "irc.freenode.net",
+  port: 6667
+).start
