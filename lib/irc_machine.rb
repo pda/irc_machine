@@ -10,6 +10,8 @@ $LOAD_PATH << File.dirname(__FILE__)
   observer/ping
   observer/reloader
   observer/verbose
+  publisher/rest
+  publisher/rest/server
 }.each do |name|
   require "irc_machine/#{name}"
 end

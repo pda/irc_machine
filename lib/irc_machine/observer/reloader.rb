@@ -5,6 +5,10 @@ class IrcMachine::Observer::Reloader < IrcMachine::Observer::Base
         puts "reloading observer: #{name}"
         load "irc_machine/observer/#{name}.rb"
       end
+      %w{ rest rest/server }.each do |name|
+        puts "reloading publisher: #{name}"
+        load "irc_machine/publisher/#{name}.rb"
+      end
     end
   end
 end

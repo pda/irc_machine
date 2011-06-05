@@ -13,6 +13,9 @@ module IrcMachine
         Observer::Ping.new(self),
         Observer::Reloader.new(self)
       ]
+      @publishers = [
+        Publisher::Rest.new(self)
+      ]
     end
 
     def connection=(c)
@@ -26,6 +29,7 @@ module IrcMachine
           self.connection = c
           post_connect
         end
+        @publishers.each &:start
       end
     end
 
