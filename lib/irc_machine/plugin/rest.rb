@@ -5,6 +5,8 @@ module IrcMachine
   module Plugin
     class Rest < Base
 
+      CHANNEL_REGEXP = %r{^/channels/([\w-]+)$}
+
       def start
         EM.start_server "0.0.0.0", 8080, Rest::Server do |c|
           c.router = self
@@ -28,7 +30,7 @@ module IrcMachine
       def route_post(request)
         case request.path
 
-        when %r{/channels/([\w-]+)}
+        when CHANNEL_REGEXP
           channel = "#" << $1
           session.join channel unless session.channels.include? channel
           m = request.body.gets
@@ -39,9 +41,17 @@ module IrcMachine
         end
       end
 
+      def route_put(request)
+        case request.path
+        when CHANNEL_REGEXP
+          session.join "#" << $1
+          ok
+        end
+      end
+
       def route_delete(request)
         case request.path
-        when %r{/channels/([\w-]+)}
+        when CHANNEL_REGEXP
           session.part "#" << $1
           ok
         end
