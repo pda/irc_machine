@@ -27,10 +27,14 @@ module IrcMachine
 
       def route_post(request)
         case request.path
-        when "/channels/irc_machine"
+
+        when %r{/channels/([\w-]+)}
+          channel = "#" << $1
+          session.join channel unless session.channels.include? channel
           m = request.body.gets
-          session.msg "#irc_machine", m.chomp if m
+          session.msg "##{$1}", m.chomp if m
           ok "sent message"
+
         else not_found
         end
       end
