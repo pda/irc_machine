@@ -4,9 +4,11 @@ module IrcMachine
 
     attr_reader :options
     attr_reader :connection
+    attr_reader :nick
 
     def initialize(options)
       @options = defaults.merge(options)
+      @nick = nil
 
       IrcMachine::Plugin::Reloader.load_all
       @plugins = [
@@ -38,7 +40,7 @@ module IrcMachine
 
     def post_connect
       user options[:user], options[:realname]
-      nick options[:nick]
+      self.nick = options[:nick]
       options[:channels].each { |c| join c } if options[:channels]
     end
 
@@ -50,6 +52,11 @@ module IrcMachine
 
     def defaults
       { port: 6667 }
+    end
+
+    def nick=(nick)
+      super
+      @nick = nick
     end
 
   end
