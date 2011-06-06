@@ -32,6 +32,12 @@ module IrcMachine
       def route_post(request)
         case request.path
 
+        when %r{^/channels/([\w-]+)/github$}
+          channel = "#" << $1
+          session.join channel unless session.channels.include? channel
+          session.msg channel, GithubNotification.new(request.body.read).message
+          ok
+
         when CHANNEL_REGEXP
           channel = "#" << $1
           session.join channel unless session.channels.include? channel
