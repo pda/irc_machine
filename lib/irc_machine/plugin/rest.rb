@@ -41,16 +41,16 @@ module IrcMachine
 
       private
 
-      def error(code, content = nil)
+      def response(code, content = nil)
         [ code, {}, content ? [ content + "\n" ] : [] ]
       end
 
       def not_found
-        error 404
+        response 404
       end
 
-      def ok(content)
-        [ 200, {}, [ content + "\n" ] ]
+      def ok(content = nil)
+        response 200, content
       end
 
     end
