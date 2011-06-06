@@ -39,6 +39,14 @@ module IrcMachine
         end
       end
 
+      def route_delete(request)
+        case request.path
+        when %r{/channels/([\w-]+)}
+          session.part "#" << $1
+          ok
+        end
+      end
+
       private
 
       def response(code, content = nil)
