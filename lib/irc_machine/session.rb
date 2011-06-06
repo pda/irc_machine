@@ -66,5 +66,10 @@ module IrcMachine
       @channels << channel
     end
 
+    def part(channel)
+      super
+      @channels.delete channel
+    end
+
   end
 end
