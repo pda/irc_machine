@@ -15,6 +15,7 @@ module IrcMachine
 
       def route(env)
         request = Rack::Request.new(env)
+        puts "[#{self.class}] << #{request.request_method} #{request.path}"
         route_method = :"route_#{request.request_method.downcase}"
         respond_to?(route_method) ? send(route_method, request) : not_found
       end
