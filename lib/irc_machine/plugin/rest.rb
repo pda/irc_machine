@@ -21,8 +21,9 @@ module IrcMachine
 
       def route_get(request)
         case request.path
-        when "/" then ok("root")
-        when "/test" then ok("test")
+        when "/channels"
+          [ 200, { "Content-Type" => "application/json" },
+            [ session.channels.to_json, "\n" ] ]
         else not_found
         end
       end
@@ -60,7 +61,7 @@ module IrcMachine
       private
 
       def response(code, content = nil)
-        [ code, {}, content ? [ content + "\n" ] : [] ]
+        [ code, {}, content ? [ content, "\n" ] : [] ]
       end
 
       def not_found
