@@ -5,10 +5,12 @@ module IrcMachine
     attr_reader :options
     attr_reader :connection
     attr_reader :nick
+    attr_reader :channels
 
     def initialize(options)
       @options = defaults.merge(options)
       @nick = nil
+      @channels = []
 
       IrcMachine::Plugin::Reloader.load_all
       @plugins = [
@@ -57,6 +59,11 @@ module IrcMachine
     def nick=(nick)
       super
       @nick = nick
+    end
+
+    def join(channel)
+      super
+      @channels << channel
     end
 
   end
