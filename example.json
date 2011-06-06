@@ -1,0 +1,8 @@
+{
+  "server": "localhost",
+	"port": 6667,
+	"nick": "im",
+	"user": "irc_machine",
+	"realname": "IRC Machine",
+	"channels": [ "#irc_machine" ]
+}

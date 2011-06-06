@@ -2,10 +2,12 @@ module IrcMachine
   class Session
     include Commands
 
+    attr_reader :options
     attr_reader :connection
 
     def initialize(options)
-      @server, @port = defaults.merge(options).values_at(:server, :port)
+      @options = defaults.merge(options)
+
       IrcMachine::Plugin::Reloader.load_all
       @plugins = [
         Plugin::Verbose.new(self),
@@ -24,7 +26,7 @@ module IrcMachine
 
     def start
       EM.run do
-        EM.connect @server, @port, Connection do |c|
+        EM.connect options[:server], options[:port], Connection do |c|
           self.connection = c
           post_connect
         end
@@ -35,9 +37,9 @@ module IrcMachine
     end
 
     def post_connect
-      user "irc_machine", "irc machine"
-      nick "irc_machine"
-      join "#irc_machine"
+      user options[:user], options[:realname]
+      nick options[:nick]
+      options[:channels].each { |c| join c } if options[:channels]
     end
 
     def receive_line(line)

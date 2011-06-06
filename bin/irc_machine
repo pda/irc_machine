@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
+require "json"
+params = JSON.load(open("./irc_machine.json")).
+  inject({}) { |h, (k,v)| h[k.to_sym] = v; h }
+
 require File.join(File.dirname(__FILE__), "../lib/irc_machine")
-
-server = ARGV[0] || raise("Specify a server")
-port = 6667
-
-IrcMachine::Session.new(server: server, port: port).start
+IrcMachine::Session.new(params).start
