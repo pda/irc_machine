@@ -2,14 +2,8 @@ require "evma_httpserver/response"
 require "stringio"
 
 module IrcMachine
-  module Publisher
-    class Rest
-
-      def initialize(session)
-        @session = session
-      end
-
-      attr_accessor :session
+  module Plugin
+    class Rest < Base
 
       def start
         EM.start_server "0.0.0.0", 8080, Rest::Server do |c|

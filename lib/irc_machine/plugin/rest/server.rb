@@ -1,5 +1,5 @@
 module IrcMachine
-  module Publisher
+  module Plugin
     class Rest
 
       class Server < EM::Connection

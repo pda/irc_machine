@@ -6,15 +6,14 @@ module IrcMachine
 
     def initialize(options)
       @server, @port = defaults.merge(options).values_at(:server, :port)
-      @observers = [
-        Observer::Verbose.new(self),
-        Observer::Die.new(self),
-        Observer::Hello.new(self),
-        Observer::Ping.new(self),
-        Observer::Reloader.new(self)
-      ]
-      @publishers = [
-        Publisher::Rest.new(self)
+      IrcMachine::Plugin::Reloader.load_all
+      @plugins = [
+        Plugin::Verbose.new(self),
+        Plugin::Die.new(self),
+        Plugin::Hello.new(self),
+        Plugin::Ping.new(self),
+        Plugin::Reloader.new(self),
+        Plugin::Rest.new(self)
       ]
     end
 
@@ -29,7 +28,9 @@ module IrcMachine
           self.connection = c
           post_connect
         end
-        @publishers.each &:start
+        @plugins.each do |plugin|
+          plugin.start if plugin.respond_to?(:start)
+        end
       end
     end
 
@@ -40,8 +41,8 @@ module IrcMachine
     end
 
     def receive_line(line)
-      @observers.each do |o|
-        o.receive_line(line) if o.respond_to?(:receive_line)
+      @plugins.each do |plugin|
+        plugin.receive_line(line) if plugin.respond_to?(:receive_line)
       end
     end
 

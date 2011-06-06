@@ -1,17 +1,19 @@
-$LOAD_PATH << File.dirname(__FILE__)
+%w{
+  eventmachine
+  evma_httpserver
+  evma_httpserver/response
+  rack
+}.each do |name|
+  require name
+end
 
 %w{
   commands
   connection
   session
-  observer/base
-  observer/die
-  observer/hello
-  observer/ping
-  observer/reloader
-  observer/verbose
-  publisher/rest
-  publisher/rest/server
+  plugin
+  plugin/base
+  plugin/reloader
 }.each do |name|
   require "irc_machine/#{name}"
 end

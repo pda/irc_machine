@@ -1,5 +1,5 @@
 module IrcMachine
-  module Observer
+  module Plugin
     class Base
       def initialize(session)
         @session = session
