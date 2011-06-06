@@ -1,6 +1,6 @@
 class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
   def receive_line(line)
-    if line =~ /^:\S+ PRIVMSG #irc_machine :reload$/
+    if line =~ /^:\S+ PRIVMSG #{session.nick} :reload$/
       self.class.load_all
     end
   end
