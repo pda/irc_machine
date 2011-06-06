@@ -2,7 +2,7 @@
 
 require File.join(File.dirname(__FILE__), "../lib/irc_machine")
 
-IrcMachine::Session.new(
-  server: "localhost",
-  port: 6667
-).start
+server = ARGV[0] || raise("Specify a server")
+port = 6667
+
+IrcMachine::Session.new(server: server, port: port).start
