@@ -8,7 +8,7 @@ module IrcMachine
       CHANNEL_REGEXP = %r{^/channels/([\w-]+)$}
 
       def start
-        EM.start_server "0.0.0.0", 8080, Rest::Server do |c|
+        EM.start_server "0.0.0.0", 8421, Rest::Server do |c|
           c.router = self
         end
       end

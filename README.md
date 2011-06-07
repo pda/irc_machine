@@ -19,7 +19,7 @@ Design philosophy: simple to the point of under-engineered, make it work for the
 HTTP interface
 --------------
 
-The RESTful HTTP API is provided by `IrcMachine::Plugin::Rest`. It listens on port 8080 by default. And you can't change the default.
+The RESTful HTTP API is provided by `IrcMachine::Plugin::Rest`. It listens on port 8421 by default. And you can't change the default.
 
 * `GET /channels` returns a JSON list of channels the bot is probably in.
 * `PUT /channels/{name}` joins a channel.
