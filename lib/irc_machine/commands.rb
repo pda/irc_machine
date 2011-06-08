@@ -7,7 +7,7 @@ module IrcMachine
     end
 
     def user(user, name); raw "USER #{user} 8 * :#{name}"; end
-    def nick=(nick); raw "NICK #{nick}"; end
+    def nick(nick); raw "NICK #{nick}"; end
     def join(channel); raw "JOIN #{channel}"; end
     def part(channel); raw "PART #{channel}"; end
     def quit(reason); raw "QUIT :#{reason}"; end

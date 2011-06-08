@@ -29,7 +29,7 @@ module IrcMachine
       case request.path
       when "/channels"
         [ 200, { "Content-Type" => "application/json" },
-          [ session.channels.to_json, "\n" ] ]
+          [ session.state.channels.to_json, "\n" ] ]
       else not_found
       end
     end
@@ -39,15 +39,15 @@ module IrcMachine
 
       when %r{^/channels/([\w-]+)/github$}
         channel = "#" << $1
-        session.join channel unless session.channels.include? channel
+        session.join channel unless session.state.channel? channel
         session.msg channel, GithubNotification.new(request.body.read).message
         ok
 
       when CHANNEL_REGEXP
         channel = "#" << $1
-        session.join channel unless session.channels.include? channel
+        session.join channel unless session.state.channel? channel
         m = request.body.gets
-        session.msg "##{$1}", m.chomp if m
+        session.msg channel, m.chomp if m
         ok "sent message"
 
       else not_found

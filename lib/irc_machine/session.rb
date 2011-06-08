@@ -3,69 +3,43 @@ module IrcMachine
     include Commands
 
     attr_reader :options
-    attr_reader :connection
-    attr_reader :nick
-    attr_reader :channels
+    attr_reader :state
+    attr_accessor :connection
 
     def initialize(options)
       @options = OpenStruct.new(options)
-      @nick = nil
-      @channels = []
+      @state = State.new
 
       IrcMachine::Plugin::Reloader.load_all
 
       @plugins = [
+        Core.new(self),
+        Rest.new(self),
         Plugin::Verbose.new(self),
         Plugin::Die.new(self),
         Plugin::Hello.new(self),
-        Plugin::Ping.new(self),
-        Plugin::Reloader.new(self),
-        Rest.new(self)
+        Plugin::Reloader.new(self)
       ]
-    end
-
-    def connection=(c)
-      c.session = self
-      @connection = c
     end
 
     def start
       EM.run do
         EM.connect options.server, options.port, Connection do |c|
           self.connection = c
-          post_connect
+          c.session = self
         end
-        @plugins.each do |plugin|
-          plugin.start if plugin.respond_to?(:start)
-        end
+        dispatch :start
       end
-    end
-
-    def post_connect
-      user options.user, options.realname
-      self.nick = options.nick
-      options.channels.each { |c| join c } if options.channels
     end
 
     def receive_line(line)
-      @plugins.each do |plugin|
-        plugin.receive_line(line) if plugin.respond_to?(:receive_line)
-      end
+      dispatch :receive_line, line
     end
 
-    def nick=(nick)
-      super
-      @nick = nick
-    end
+    private
 
-    def join(channel)
-      super
-      @channels << channel
-    end
-
-    def part(channel)
-      super
-      @channels.delete channel
+    def dispatch(method, *params)
+      @plugins.each { |p| p.send(method, *params) if p.respond_to? method }
     end
 
   end

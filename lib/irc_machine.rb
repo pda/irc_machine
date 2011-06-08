@@ -14,6 +14,7 @@ end
   commands
   connection
   session
+  state
   plugin
   plugin/base
   plugin/reloader
