@@ -1,6 +1,7 @@
 $LOAD_PATH << File.dirname(__FILE__)
 
 %w{
+  ostruct
   eventmachine
   evma_httpserver
   evma_httpserver/response

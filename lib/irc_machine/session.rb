@@ -8,11 +8,12 @@ module IrcMachine
     attr_reader :channels
 
     def initialize(options)
-      @options = options
+      @options = OpenStruct.new(options)
       @nick = nil
       @channels = []
 
       IrcMachine::Plugin::Reloader.load_all
+
       @plugins = [
         Plugin::Verbose.new(self),
         Plugin::Die.new(self),
@@ -30,7 +31,7 @@ module IrcMachine
 
     def start
       EM.run do
-        EM.connect options[:server], options[:port], Connection do |c|
+        EM.connect options.server, options.port, Connection do |c|
           self.connection = c
           post_connect
         end
@@ -41,9 +42,9 @@ module IrcMachine
     end
 
     def post_connect
-      user options[:user], options[:realname]
-      self.nick = options[:nick]
-      options[:channels].each { |c| join c } if options[:channels]
+      user options.user, options.realname
+      self.nick = options.nick
+      options.channels.each { |c| join c } if options.channels
     end
 
     def receive_line(line)
