@@ -8,7 +8,7 @@ module IrcMachine
     attr_reader :channels
 
     def initialize(options)
-      @options = defaults.merge(options)
+      @options = options
       @nick = nil
       @channels = []
 
@@ -50,10 +50,6 @@ module IrcMachine
       @plugins.each do |plugin|
         plugin.receive_line(line) if plugin.respond_to?(:receive_line)
       end
-    end
-
-    def defaults
-      { port: 6667 }
     end
 
     def nick=(nick)
