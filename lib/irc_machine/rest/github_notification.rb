@@ -39,12 +39,12 @@ module IrcMachine
       end
 
       def message
-        "%d commit%s pushed to %s %s by %s: %s" % [
+        "%d commit%s by %s pushed to %s/%s: %s" % [
           commit_count,
           commit_count == 1 ? "" : "s",
+          author_usernames.join(", "),
           repo_name,
           branch,
-          author_usernames.join(", "),
           compare_url
         ]
       end
