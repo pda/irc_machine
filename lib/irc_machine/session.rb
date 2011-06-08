@@ -19,7 +19,7 @@ module IrcMachine
         Plugin::Hello.new(self),
         Plugin::Ping.new(self),
         Plugin::Reloader.new(self),
-        Plugin::Rest.new(self)
+        Rest.new(self)
       ]
     end
 
