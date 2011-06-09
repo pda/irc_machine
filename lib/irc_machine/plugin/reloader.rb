@@ -10,6 +10,7 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
     files = %w{
       core_routes
       core
+      http_dispatcher
       http_router
       http_server
       plugin/github_notification
