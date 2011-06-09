@@ -4,5 +4,6 @@
 	"nick": "im",
 	"user": "irc_machine",
 	"realname": "IRC Machine",
-	"channels": [ "#irc_machine" ]
+	"channels": [ "#irc_machine" ],
+	"verbose": true
 }

@@ -16,7 +16,6 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
       plugin/die
       plugin/hello
       plugin/reloader
-      plugin/verbose
     }.each do |name|
       puts "loading: #{name}"
       load "irc_machine/#{name}.rb"

@@ -9,6 +9,9 @@ module IrcMachine
     end
 
     def receive_line(line)
+
+      puts "[core] << #{line}" if options.verbose
+
       case line
 
       when /^PING (.*)/
