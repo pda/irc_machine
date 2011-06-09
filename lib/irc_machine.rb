@@ -12,7 +12,7 @@ end
 
 %w{
   commands
-  connection
+  irc_connection
   session
   state
   plugin

@@ -3,7 +3,7 @@ module IrcMachine
 
     def raw(raw)
       puts ">> #{raw}"
-      connection.send_data "#{raw}\r\n"
+      irc_connection.send_data "#{raw}\r\n"
     end
 
     def user(user, name); raw "USER #{user} 8 * :#{name}"; end

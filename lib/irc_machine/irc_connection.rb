@@ -1,5 +1,5 @@
 module IrcMachine
-  class Connection < EM::Connection
+  class IrcConnection < EM::Connection
     include EM::Protocols::LineText2
 
     attr_writer :session

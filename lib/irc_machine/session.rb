@@ -4,7 +4,7 @@ module IrcMachine
 
     attr_reader :options
     attr_reader :state
-    attr_accessor :connection
+    attr_accessor :irc_connection
 
     def initialize(options)
       @options = OpenStruct.new(options)
@@ -24,8 +24,8 @@ module IrcMachine
 
     def start
       EM.run do
-        EM.connect options.server, options.port, Connection do |c|
-          self.connection = c
+        EM.connect options.server, options.port, IrcConnection do |c|
+          self.irc_connection = c
           c.session = self
         end
         dispatch :start
