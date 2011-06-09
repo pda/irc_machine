@@ -51,7 +51,7 @@ module IrcMachine
     def route_put(request)
       case request.path
       when CHANNEL_REGEXP
-        session.join "#" << $1
+        session.join "#" << $1, request.GET["key"]
         ok
       end
     end

@@ -14,8 +14,8 @@ module IrcMachine
       raw "NICK #{nick}"
     end
 
-    def join(channel)
-      raw "JOIN #{channel}"
+    def join(channel, key = nil)
+      raw "JOIN #{channel}".tap { |c| c << " #{key}" if key }
     end
 
     def part(channel)

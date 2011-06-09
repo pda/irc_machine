@@ -5,7 +5,7 @@ module IrcMachine
       session.user options.user, options.realname
       session.nick options.nick
       session.state.nick = options.nick
-      options.channels.each { |c| session.join c } if options.channels
+      options.channels.each { |c| session.join *c.split } if options.channels
     end
 
     def receive_line(line)
@@ -22,6 +22,10 @@ module IrcMachine
 
       when /^:#{self_pattern} PART (\S+)/
         channels.delete $1
+
+      when /^:\S+ 475 \S+ (\S+) :(.*)$/
+        puts "[core] #{$1}: #{$2}"
+
       end
     end
 
