@@ -16,11 +16,9 @@ module IrcMachine
 
       when /^:#{self_pattern} JOIN (\S+)/
         channels << $1
-        puts "[core] channels: #{channels.join(", ")}"
 
       when /^:#{self_pattern} PART (\S+)/
         channels.delete $1
-        puts "[core] channels: #{channels.join(", ")}"
       end
     end
 
