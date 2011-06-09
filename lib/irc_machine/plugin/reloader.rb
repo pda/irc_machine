@@ -8,6 +8,7 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
 
   def self.load_all
     files = %w{
+      core_routes
       core
       http_router
       http_server

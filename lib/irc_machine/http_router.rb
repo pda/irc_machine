@@ -4,78 +4,70 @@ require "stringio"
 module IrcMachine
   class HttpRouter
 
-    CHANNEL_REGEXP = %r{^/channels/([\w-]+)$}
-
     def initialize(session)
       @session = session
+      @routes = { get: [], put: [], delete: [], post: [] }
     end
 
     attr_reader :session
+    attr_reader :request
 
     def route(env)
-      request = Rack::Request.new(env)
-      puts "[#{self.class}] << #{request.request_method} #{request.path}"
-      route_method = :"route_#{request.request_method.downcase}"
-      respond_to?(route_method) ? send(route_method, request) : not_found
+      @request = Rack::Request.new(env)
+      @response = Rack::Response.new
+      method = request.request_method.downcase.to_sym
+      path = request.path
+      match = nil
+
+      _, block = @routes[method].detect do |(pattern,block)|
+        if pattern.is_a? Regexp
+          match = pattern.match(path)
+        else
+          match = nil
+          pattern == path
+        end
+      end
+
+      if block
+        block.call(match)
+      else
+        not_found
+      end
+
+      @response.finish
     end
 
-    def route_get(request)
-      case request.path
-      when "/channels"
-        [ 200, { "Content-Type" => "application/json" },
-          [ session.state.channels.to_json, "\n" ] ]
-      else not_found
-      end
+    def get(route, &block); connect :get, route, &block; end
+    def put(route, &block); connect :put, route, &block; end
+    def delete(route, &block); connect :delete, route, &block; end
+    def post(route, &block); connect :post, route, &block; end
+
+    def connect(method, pattern, &block)
+      puts "#{method.upcase} #{pattern}"
+      @routes[method] << [ pattern, block ]
     end
 
-    def route_post(request)
-      case request.path
-
-      when %r{^/channels/([\w-]+)/github$}
-        channel = "#" << $1
-        session.join channel unless session.state.channel? channel
-        session.msg channel, Plugin::GithubNotification.new(request.body.read).message
-        ok
-
-      when CHANNEL_REGEXP
-        channel = "#" << $1
-        session.join channel unless session.state.channel? channel
-        m = request.body.gets
-        session.msg channel, m.chomp if m
-        ok "sent message"
-
-      else not_found
-      end
+    def draw(&block)
+      instance_eval &block
     end
 
-    def route_put(request)
-      case request.path
-      when CHANNEL_REGEXP
-        session.join "#" << $1, request.GET["key"]
-        ok
-      end
-    end
-
-    def route_delete(request)
-      case request.path
-      when CHANNEL_REGEXP
-        session.part "#" << $1
-        ok
-      end
+    def helpers(&block)
+      instance_eval &block
     end
 
     private
 
-    def response(code, content = nil)
-      [ code, {}, content ? [ content, "\n" ] : [] ]
-    end
-
     def not_found
-      response 404
+      @response.status = 404
     end
 
-    def ok(content = nil)
-      response 200, content
+    def ok(content)
+      @response.status = 200
+      @response.write content
+    end
+
+    def content_type(type)
+      @response["Content-Type"] = type
     end
 
   end
