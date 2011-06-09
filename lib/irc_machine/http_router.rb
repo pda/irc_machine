@@ -2,7 +2,7 @@ require "evma_httpserver/response"
 require "stringio"
 
 module IrcMachine
-  class Rest
+  class HttpRouter
 
     CHANNEL_REGEXP = %r{^/channels/([\w-]+)$}
 
@@ -11,12 +11,6 @@ module IrcMachine
     end
 
     attr_reader :session
-
-    def start
-      EM.start_server "0.0.0.0", 8421, Rest::Server do |c|
-        c.router = self
-      end
-    end
 
     def route(env)
       request = Rack::Request.new(env)
@@ -40,7 +34,7 @@ module IrcMachine
       when %r{^/channels/([\w-]+)/github$}
         channel = "#" << $1
         session.join channel unless session.state.channel? channel
-        session.msg channel, GithubNotification.new(request.body.read).message
+        session.msg channel, Plugin::GithubNotification.new(request.body.read).message
         ok
 
       when CHANNEL_REGEXP

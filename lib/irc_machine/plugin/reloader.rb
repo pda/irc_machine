@@ -9,9 +9,9 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
   def self.load_all
     files = %w{
       core
-      rest
-      rest/server
-      rest/github_notification
+      http_router
+      http_server
+      plugin/github_notification
       plugin/base
       plugin/die
       plugin/hello

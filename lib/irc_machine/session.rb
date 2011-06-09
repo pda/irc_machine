@@ -7,14 +7,13 @@ module IrcMachine
     attr_accessor :irc_connection
 
     def initialize(options)
-      @options = OpenStruct.new(options)
-      @state = State.new
-
       IrcMachine::Plugin::Reloader.load_all
 
+      @options = OpenStruct.new(options)
+      @state = State.new
+      @router = HttpRouter.new(self)
       @plugins = [
         Core.new(self),
-        Rest.new(self),
         Plugin::Verbose.new(self),
         Plugin::Die.new(self),
         Plugin::Hello.new(self),
@@ -24,10 +23,16 @@ module IrcMachine
 
     def start
       EM.run do
+
         EM.connect options.server, options.port, IrcConnection do |c|
           self.irc_connection = c
           c.session = self
         end
+
+        EM.start_server "0.0.0.0", 8421, HttpServer do |c|
+          c.router = @router
+        end
+
         dispatch :start
       end
     end
