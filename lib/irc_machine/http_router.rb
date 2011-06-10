@@ -20,9 +20,10 @@ module IrcMachine
       response = case match.destination
       when String
         name, method = match.destination.split("#")
-        IrcMachine::Controller.const_get(name).dispatch(@session, request, method, match.match)
+        klass = IrcMachine::Controller.const_get(name)
+        klass.dispatch(@session, request, method, match.match)
       else
-        puts "Unhandled route destination type: #{match.destination.class}"
+        Rack::Response.new "Unhandled destination: #{match.destination.class}", 500
       end
 
       response.finish
