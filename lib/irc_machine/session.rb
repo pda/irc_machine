@@ -16,7 +16,8 @@ module IrcMachine
         Core.new(self),
         Plugin::Die.new(self),
         Plugin::Hello.new(self),
-        Plugin::Reloader.new(self)
+        Plugin::Reloader.new(self),
+        Plugin::GithubNotifier.new(self)
       ]
     end
 

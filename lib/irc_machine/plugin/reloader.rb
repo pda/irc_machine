@@ -13,7 +13,7 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
       http_dispatcher
       http_router
       http_server
-      plugin/github_notification
+      plugin/github_notifier
       plugin/base
       plugin/die
       plugin/hello

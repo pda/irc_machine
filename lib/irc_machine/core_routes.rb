@@ -22,11 +22,6 @@ module IrcMachine
           m = request.body.gets
           session.msg channel(match), m.chomp if m
         end
-
-        post %r{^/channels/([\w-]+)/github$} do |match|
-          session.msg channel(match),
-            Plugin::GithubNotification.new(request.body.read).message
-        end
       end
 
       router.helpers do
