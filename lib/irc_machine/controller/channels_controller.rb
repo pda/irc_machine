@@ -16,8 +16,9 @@ module IrcMachine
       end
 
       def message
-        m = request.body.gets
-        session.msg channel(match), m.chomp if m
+        input = request.body.gets
+        ip = request.ip || "unknown"
+        session.msg channel(match), "[#{ip}] #{input.chomp}" if input
       end
 
       private

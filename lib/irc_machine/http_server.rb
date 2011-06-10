@@ -1,3 +1,5 @@
+require "socket"
+
 module IrcMachine
 
   class HttpServer < EM::Connection
@@ -37,11 +39,17 @@ module IrcMachine
         "QUERY_STRING" => @http_query_string,
         "SERVER_NAME" => nil, # illegally nil
         "SERVER_PORT" => nil, # illegally nil
+        "REMOTE_ADDR" => remote_ip, # not in spec
 
         "HTTP_COOKIE" => @http_cookie,
         "HTTP_IF_NONE_MATCH" => @http_if_none_match,
         "HTTP_CONTENT_TYPE" => @http_content_type,
       }
+    end
+
+    def remote_ip
+      port, ip = Socket.unpack_sockaddr_in(get_peername)
+      ip
     end
 
   end
