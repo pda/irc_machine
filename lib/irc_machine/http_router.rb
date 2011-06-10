@@ -22,7 +22,7 @@ module IrcMachine
         name, method = match.destination.split("#")
         IrcMachine::Controller.const_get(name).dispatch(@session, request, method, match.match)
       else
-        raise "Unhandled route destination type: #{match.destination.class}"
+        puts "Unhandled route destination type: #{match.destination.class}"
       end
 
       response.finish
