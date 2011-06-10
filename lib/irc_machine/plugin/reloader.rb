@@ -8,11 +8,16 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
 
   def self.load_all
     files = %w{
-      core_routes
       core
-      http_dispatcher
+      core_routes
+
+      http_controller
       http_router
       http_server
+
+      controller/channels_controller
+      controller/github_notifications_controller
+
       plugin/github_notifier
       plugin/base
       plugin/die

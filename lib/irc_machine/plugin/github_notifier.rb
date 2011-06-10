@@ -6,16 +6,6 @@ module IrcMachine
   module Plugin
 
     class GithubNotifier < Plugin::Base
-      def draw_routes(router)
-        router.draw do
-
-          post %r{^/channels/([\w-]+)/github$} do |match|
-            session.msg "##{match[1]}",
-              GithubNotification.new(request.body.read).message
-          end
-
-        end
-      end
     end
 
     class GithubNotification

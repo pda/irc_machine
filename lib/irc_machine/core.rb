@@ -1,8 +1,6 @@
 module IrcMachine
   class Core < Plugin::Base
 
-    include CoreRoutes
-
     def start
       session.user options.user, options.realname
       session.nick options.nick

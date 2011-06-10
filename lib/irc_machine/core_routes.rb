@@ -3,33 +3,13 @@ module IrcMachine
 
     CHANNEL_REGEXP ||= %r{^/channels/([\w-]+)$}
 
-    def draw_routes(router)
-      router.draw do
-        get "/channels" do
-          content_type "application/json"
-          ok session.state.channels.to_json << "\n"
-        end
+    def draw_routes
+      get "/channels", "ChannelsController#list"
+      put CHANNEL_REGEXP, "ChannelsController#join"
+      delete CHANNEL_REGEXP, "ChannelsController#part"
+      post CHANNEL_REGEXP, "ChannelsController#message"
 
-        put CHANNEL_REGEXP do |match|
-          session.join channel(match), request.GET["key"]
-        end
-
-        delete CHANNEL_REGEXP do |match|
-          session.part channel(match)
-        end
-
-        post CHANNEL_REGEXP do |match|
-          m = request.body.gets
-          session.msg channel(match), m.chomp if m
-        end
-      end
-
-      router.helpers do
-        def channel(match)
-          "#" + match[1]
-        end
-      end
-
+      post %r{^/channels/([\w-]+)/github$}, "GithubNotificationsController#notify"
     end
 
   end

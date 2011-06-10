@@ -33,7 +33,6 @@ module IrcMachine
           c.router = @router
         end
 
-        dispatch :draw_routes, @router
         dispatch :start
       end
     end
