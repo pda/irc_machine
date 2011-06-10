@@ -5,5 +5,6 @@
 	"user": "irc_machine",
 	"realname": "IRC Machine",
 	"channels": [ "#irc_machine", "#secret the_key" ],
-	"verbose": true
+	"verbose": true,
+	"http_port": 8421
 }

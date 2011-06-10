@@ -29,7 +29,7 @@ module IrcMachine
           c.session = self
         end
 
-        EM.start_server "0.0.0.0", 8421, HttpServer do |c|
+        EM.start_server "0.0.0.0", options.http_port, HttpServer do |c|
           c.router = @router
         end
 
