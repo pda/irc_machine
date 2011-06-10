@@ -6,5 +6,6 @@
 	"realname": "IRC Machine",
 	"channels": [ "#irc_machine", "#secret the_key" ],
 	"verbose": true,
-	"http_port": 8421
+	"http_port": 8421,
+	"bind_address": "127.0.0.1"
 }

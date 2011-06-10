@@ -24,7 +24,13 @@ module IrcMachine
     def start
       EM.run do
 
-        EM.connect options.server, options.port, IrcConnection do |c|
+        EM.bind_connect(
+          options.bind_address,
+          nil,
+          options.server,
+          options.port,
+          IrcConnection
+        ) do |c|
           self.irc_connection = c
           c.session = self
         end
