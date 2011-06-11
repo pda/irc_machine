@@ -17,7 +17,7 @@ module IrcMachine
 
       def message
         input = request.body.gets
-        source = request.headers['X-Auth'] || request.ip || "unknown"
+        source = request.env["HTTP_X_AUTH"] || request.ip || "unknown"
         session.msg channel(match), "[#{source}] #{input.chomp}" if input
       end
 
