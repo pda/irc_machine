@@ -24,6 +24,8 @@ module IrcMachine
     def start
       EM.run do
 
+        signal_traps
+
         EM.bind_connect(
           options.bind_address,
           nil,
@@ -51,6 +53,20 @@ module IrcMachine
 
     def dispatch(method, *params)
       @plugins.each { |p| p.send(method, *params) if p.respond_to? method }
+    end
+
+    def signal_traps
+      Signal.trap("INT") { shutdown }
+    end
+
+    def shutdown
+      Signal.trap("INT") do
+        Signal.trap("INT", "DEFAULT")
+        puts "\nStopping EventMachine, interrupt again to force exit"
+        EM.stop
+      end
+      puts "\nQuitting IRC, interrupt again to stop EventMachine"
+      dispatch :terminate
     end
 
   end

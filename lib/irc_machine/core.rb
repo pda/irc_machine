@@ -8,6 +8,10 @@ module IrcMachine
       options.channels.each { |c| session.join *c.split } if options.channels
     end
 
+    def terminate
+      session.quit "shutting down"
+    end
+
     def receive_line(line)
 
       puts "[core] << #{line}" if options.verbose
