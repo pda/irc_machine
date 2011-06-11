@@ -17,8 +17,8 @@ module IrcMachine
 
       def message
         input = request.body.gets
-        ip = request.ip || "unknown"
-        session.msg channel(match), "[#{ip}] #{input.chomp}" if input
+        source = request.headers['X-Auth'] || request.ip || "unknown"
+        session.msg channel(match), "[#{source}] #{input.chomp}" if input
       end
 
       private
