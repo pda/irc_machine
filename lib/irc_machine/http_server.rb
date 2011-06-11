@@ -23,7 +23,7 @@ module IrcMachine
     end
 
     def rack_env
-      # TODO: map @http_headers to HTTP_... keys.
+      # TODO: map headers to HTTP_... keys.
       {
         "rack.version" => [1, 1],
         "rack.url_scheme" => @http_protocol,
@@ -44,12 +44,25 @@ module IrcMachine
         "HTTP_COOKIE" => @http_cookie,
         "HTTP_IF_NONE_MATCH" => @http_if_none_match,
         "HTTP_CONTENT_TYPE" => @http_content_type,
+        "HTTP_X_AUTH" => headers["X-Auth"],
       }
     end
 
     def remote_ip
       port, ip = Socket.unpack_sockaddr_in(get_peername)
       ip
+    end
+
+    def headers
+      @headers ||= parse_headers(@http_headers)
+    end
+
+    # ghetto
+    def parse_headers(header)
+      header.split("\x00").inject({}) do |headers, line|
+        headers[$1] = $2 if line =~ /^([^:]+):\s*(.*)$/
+        headers
+      end
     end
 
   end
