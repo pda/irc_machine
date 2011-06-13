@@ -21,10 +21,10 @@ module IrcMachine
       when /^PING (.*)/
         session.raw "PONG #{$1}"
 
-      when /^:#{self_pattern} JOIN (\S+)/
+      when /^:#{self_pattern} JOIN :(\S+)/
         channels << $1
 
-      when /^:#{self_pattern} PART (\S+)/
+      when /^:#{self_pattern} PART :(\S+)/
         channels.delete $1
 
       when /^:\S+ 475 \S+ (\S+) :(.*)$/
