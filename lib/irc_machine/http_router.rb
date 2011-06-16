@@ -17,6 +17,13 @@ module IrcMachine
 
       match = lookup_route_match(request.request_method, request.path)
 
+      puts "%s %s %s => %s" % [
+        self.class,
+        request.request_method,
+        request.path,
+        match.destination.inspect
+      ]
+
       response = case match.destination
       when String
         name, method = match.destination.split("#")
