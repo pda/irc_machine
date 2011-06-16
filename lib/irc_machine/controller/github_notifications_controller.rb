@@ -1,10 +1,10 @@
 module IrcMachine
   module Controller
-    class GithubNotificationsController
+    class GithubNotificationsController < HttpController
 
       def notify
         session.msg "##{match[1]}",
-          GithubNotification.new(request.body.read).message
+          Plugin::GithubNotification.new(request.body.read).message
       end
 
     end
