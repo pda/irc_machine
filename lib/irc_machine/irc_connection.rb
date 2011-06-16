@@ -6,6 +6,9 @@ module IrcMachine
 
     def receive_line(line)
       @session.receive_line(line)
+    rescue => e
+      puts "!! #{self.class} rescued #{e.inspect}"
+      puts "    " + e.backtrace.join("\n    ")
     end
 
     def unbind

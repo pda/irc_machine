@@ -10,6 +10,10 @@ module IrcMachine
 
     def process_http_request
       send_response(*router.route(rack_env))
+    rescue => e
+      puts "!! #{self.class} rescued #{e.inspect}"
+      puts "    " + e.backtrace.join("\n    ")
+      send_response 500, {}, [ e.inspect, "\n" ]
     end
 
     def send_response(status, headers, body)
