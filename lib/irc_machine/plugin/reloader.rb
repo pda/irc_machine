@@ -11,6 +11,8 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
       core
       core_routes
 
+      udp_server
+
       http_controller
       http_router
       http_server

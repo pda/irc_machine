@@ -41,6 +41,10 @@ module IrcMachine
           c.router = @router
         end
 
+        EM.open_datagram_socket "0.0.0.0", options.udp_port, UdpServer do |c|
+          c.session = self
+        end
+
         dispatch :start
       end
     end
