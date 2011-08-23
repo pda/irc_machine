@@ -12,7 +12,7 @@ module IrcMachine
     end
 
     def unbind
-      EM.stop
+      @session.disconnected
     end
 
   end

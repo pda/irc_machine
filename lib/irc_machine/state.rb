@@ -5,6 +5,11 @@ module IrcMachine
     attr_accessor :channels
 
     def initialize
+      reset
+    end
+
+    def reset
+      @nick = nil
       @channels = []
     end
 

@@ -51,6 +51,21 @@ module IrcMachine
       end
     end
 
+    def disconnected
+      if @shutdown
+        log "Stopping EventMachine"
+        EM.stop
+      else
+        log "Waiting to reconnect"
+        EM.add_timer(2) do
+          log "Reconnecting to #{options.server}:#{options.port}"
+          irc_connection.reconnect options.server, options.port
+          @state.reset
+          dispatch :connected
+        end
+      end
+    end
+
     def receive_line(line)
       dispatch :receive_line, line
     end
@@ -66,6 +81,7 @@ module IrcMachine
     end
 
     def shutdown
+      @shutdown = true
       Signal.trap("INT") do
         Signal.trap("INT", "DEFAULT")
         puts "\nStopping EventMachine, interrupt again to force exit"
