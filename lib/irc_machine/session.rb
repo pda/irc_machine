@@ -44,7 +44,7 @@ module IrcMachine
           c.session = self
         end
 
-        dispatch :start
+        dispatch :connected
       end
     end
 

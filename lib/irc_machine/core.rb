@@ -1,7 +1,7 @@
 module IrcMachine
   class Core < Plugin::Base
 
-    def start
+    def connected
       session.user options.user, options.realname
       session.nick options.nick
       session.state.nick = options.nick
