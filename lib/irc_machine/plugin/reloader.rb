@@ -22,7 +22,6 @@ class IrcMachine::Plugin::Reloader < IrcMachine::Plugin::Base
 
       plugin/github_notifier
       plugin/base
-      plugin/die
       plugin/hello
       plugin/reloader
     }.each do |name|

@@ -14,7 +14,6 @@ module IrcMachine
       @router = HttpRouter.new(self)
       @plugins = [
         Core.new(self),
-        Plugin::Die.new(self),
         Plugin::Hello.new(self),
         Plugin::Reloader.new(self),
         Plugin::GithubNotifier.new(self)
