@@ -26,15 +26,13 @@ module IrcMachine
         signal_traps
 
         log "Connecting to #{options.server}:#{options.port}"
-        EM.bind_connect(
-          options.bind_address,
-          nil,
+        EM.connect(
           options.server,
           options.port,
-          IrcConnection
+          IrcConnection,
+          {:ssl => @options.ssl, :session => self}
         ) do |c|
           self.irc_connection = c
-          c.session = self
         end
 
         log "Starting HTTP API on port #{options.http_port}"
