@@ -11,7 +11,7 @@ module IrcMachine
 
     def post_init
       if @ssl
-        puts "! Initializing SSL connection"
+        @session.log "Initializing SSL connection"
         @ssl_buffer = ""
         start_tls
       else
@@ -20,7 +20,7 @@ module IrcMachine
     end
 
     def ssl_handshake_completed
-      puts "! SSL handshake complete"
+      @session.log "SSL handshake complete"
       orig_post_init
       buffer = @ssl_buffer
       @ssl_buffer = nil
@@ -38,12 +38,12 @@ module IrcMachine
     def receive_line(line)
       @session.receive_line(line)
     rescue => e
-      puts "!! #{self.class} rescued #{e.inspect}"
-      puts "    " + e.backtrace.join("\n    ")
+      @session.log "!! #{self.class} rescued #{e.inspect}"
+      @session.log("    " + e.backtrace.join("\n    "))
     end
 
     def unbind
-      puts "! Disconnected"
+      @session.log "Disconnected"
       @session.disconnected
     end
   end

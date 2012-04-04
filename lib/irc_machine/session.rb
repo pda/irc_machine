@@ -68,6 +68,10 @@ module IrcMachine
       dispatch :receive_line, line
     end
 
+    def log message
+      puts "! " << message if options.verbose
+    end
+
     private
 
     def dispatch(method, *params)
@@ -87,10 +91,6 @@ module IrcMachine
       end
       puts "\nQuitting IRC, interrupt again to stop EventMachine"
       dispatch :terminate
-    end
-
-    def log message
-      puts "! " << message if options.verbose
     end
 
   end
