@@ -33,7 +33,12 @@ Plugins
 
 Plugins are objects which might respond to `#start` or `#receive_line`, and might use a reference to the `IrcMachine::Session` instance to send IRC commands.
 
-In the future they might also be [ØMQ](http://www.zeromq.org/) endpoints, either in-process or over network. But not yet.
+
+Contributors
+------------
+
+* [Paul Annesley](https://github.com/pda)
+* [Eric Anderson](https://github.com/ericanderson)
 
 
 Meh.
