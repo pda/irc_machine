@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
+$: << File.expand_path("../../lib", __FILE__)
 
-require "json"
-params = JSON.load(open("./irc_machine.json")).
-  inject({}) { |h, (k,v)| h[k.to_sym] = v; h }
+require 'irc_machine/cli_shared'
 
-require File.join(File.dirname(__FILE__), "../lib/irc_machine")
-IrcMachine::Session.new(params).start
+IrcMachine::Session.new(IRC_MACHINE).start

@@ -9,11 +9,19 @@ Design philosophy: simple to the point of under-engineered, make it work for the
     git clone git://github.com/pda/irc_machine
     cd irc_machine
     cp example.json irc_machine.json
-    ./bin/irc_machine
+
+    # run it
+    ./bin/irc_machined run
+    # ctrl+c
+
+    # daemonize it
+    ./bin/irc_machined start
+    # stop the daemon
+    ./bin/irc_machined stop
 
     # or maybe even this (chances aren't good, though)
     gem install irc_machine
-    irc_machine
+    irc_machined run
 
 
 HTTP interface
