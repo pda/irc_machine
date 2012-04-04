@@ -5,7 +5,9 @@ module IrcMachine
       session.user options.user, options.realname
       session.nick options.nick
       session.state.nick = options.nick
-      options.channels.each { |c| session.join *c.split } if options.channels
+      EM::add_timer(5) do
+        options.channels.each { |c| session.join *c.split } if options.channels
+      end
     end
 
     def terminate
