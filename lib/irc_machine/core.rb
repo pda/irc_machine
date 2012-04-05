@@ -2,6 +2,7 @@ module IrcMachine
   class Core < Plugin::Base
 
     def connected
+      session.password options.password unless options.password.nil?
       session.user options.user, options.realname
       session.nick options.nick
       session.state.nick = options.nick
