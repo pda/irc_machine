@@ -10,6 +10,10 @@ module IrcMachine
       raw "USER #{user} 8 * :#{name}"
     end
 
+    def password(password)
+      raw "PASS #{password}"
+    end
+
     def nick(nick)
       raw "NICK #{nick}"
     end
