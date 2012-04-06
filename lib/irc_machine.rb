@@ -1,5 +1,3 @@
-$LOAD_PATH << File.dirname(__FILE__)
-
 %w{
   ostruct
   eventmachine

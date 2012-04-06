@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+$: << File.expand_path("../../lib", __FILE__)
+
+require 'rubygems'
+require 'daemons'
+
+require 'irc_machine/cli_shared'
+
+daemon_defaults = {
+  :app_name => 'irc_machine',
+  :dir_mode => :normal,
+  :dir => ".",
+  :multiple => false,
+  :backtrace => true,
+  :monitor => false,
+  :log_dir => File.expand_path("../../log", __FILE__),
+  :log_output => true
+}
+
+IRC_MACHINE[:daemon] ||= {}
+
+daemon_params = daemon_defaults.merge(IRC_MACHINE[:daemon])
+
+FileUtils.mkdir_p(daemon_params[:log_dir])
+
+Daemons.run(File.expand_path("../irc_machine", __FILE__), daemon_params)
