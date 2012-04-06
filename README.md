@@ -39,6 +39,7 @@ Contributors
 
 * [Paul Annesley](https://github.com/pda)
 * [Eric Anderson](https://github.com/ericanderson)
+* [Anton Lindström](https://github.com/antonlindstrom)
 
 
 Meh.
