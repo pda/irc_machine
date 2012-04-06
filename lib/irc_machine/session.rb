@@ -26,15 +26,13 @@ module IrcMachine
         signal_traps
 
         log "Connecting to #{options.server}:#{options.port}"
-        EM.bind_connect(
-          options.bind_address,
-          nil,
+        EM.connect(
           options.server,
           options.port,
-          IrcConnection
+          IrcConnection,
+          {:ssl => @options.ssl, :session => self}
         ) do |c|
           self.irc_connection = c
-          c.session = self
         end
 
         log "Starting HTTP API on port #{options.http_port}"
@@ -70,6 +68,10 @@ module IrcMachine
       dispatch :receive_line, line
     end
 
+    def log message
+      puts "! " << message if options.verbose
+    end
+
     private
 
     def dispatch(method, *params)
@@ -89,10 +91,6 @@ module IrcMachine
       end
       puts "\nQuitting IRC, interrupt again to stop EventMachine"
       dispatch :terminate
-    end
-
-    def log message
-      puts "! " << message if options.verbose
     end
 
   end
