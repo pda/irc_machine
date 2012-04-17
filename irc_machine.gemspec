@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "eventmachine_httpserver"
   s.add_dependency "rack"
   s.add_dependency "daemons"
+  s.add_dependency "json"
 
   s.add_development_dependency "bundler"
   s.add_development_dependency "rake"
