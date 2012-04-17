@@ -21,6 +21,12 @@ IRC_MACHINE[:daemon] ||= {}
 
 daemon_params = daemon_defaults.merge(IRC_MACHINE[:daemon])
 
-FileUtils.mkdir_p(daemon_params[:log_dir])
+unless File.directory?(daemon_params[:log_dir])
+  begin
+    Dir::mkdir(daemon_params[:log_dir])
+  rescue
+    raise "Log directory #{daemon_params[:log_dir]} does not exist!"
+  end
+end
 
 Daemons.run(File.expand_path("../irc_machine", __FILE__), daemon_params)
