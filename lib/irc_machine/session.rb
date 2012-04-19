@@ -10,12 +10,31 @@ module IrcMachine
       @options = OpenStruct.new(options)
       @state = State.new
       @router = HttpRouter.new(self)
-      @plugins = [
-        Core.new(self),
-        Plugin::Hello.new(self),
-        Plugin::GithubNotifier.new(self)
-      ]
+      load_plugins!
     end
+
+    def load_plugins!
+      # if @plugins.nil? # TODO
+        @plugins = [
+          # FIXME Statics .. ew
+          Core.new(self),
+          Plugin::Hello.new(self),
+          Plugin::RestChannels.new(self),
+          Plugin::RestGithubNotification.new(self)
+        ]
+      # else
+      #   @router.flush_routes!
+      #   @plugins = [
+      #     # FIXME Statics .. ew
+      #     Core.new(self),
+      #     Plugin::Hello.new(self),
+      #     Plugin::GithubNotifier.new(self),
+      #     Plugin::RestChannels.new(self),
+      #     Plugin::RestGithubNotification.new(self)
+      #   ]
+      # end
+    end
+
 
     def start
       EM.run do

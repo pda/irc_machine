@@ -4,13 +4,20 @@ require "stringio"
 module IrcMachine
   class HttpRouter
 
-    include CoreRoutes
+    @@routes = { get: [], put: [], delete:[], post: [] }
+
+    class << self
+
+      def connect(method, pattern, destination)
+        @@routes[method] << [ pattern, destination ]
+      end
+
+    end
 
     def initialize(session)
       @session = session
-      @routes = { get: [], put: [], delete:[], post: [] }
-      draw_routes
     end
+    attr_reader :session
 
     def route(env)
       request = Rack::Request.new(env)
@@ -21,29 +28,19 @@ module IrcMachine
         self.class,
         request.request_method,
         request.path,
+        # TODO Lambda's don't inspect tremendously well
         match.destination.inspect
       ]
 
       response = case match.destination
-      when String
-        name, method = match.destination.split("#")
-        klass = IrcMachine::Controller.const_get(name)
-        klass.dispatch(@session, request, method, match.match)
-      else
+      when nil
         Rack::Response.new "Unhandled destination: #{match.destination.class}", 500
+      else
+        match.destination.call(request, match.match)
       end
-
       response.finish
     end
 
-    def get(route, destination); connect :get, route, destination; end
-    def put(route, destination); connect :put, route, destination; end
-    def delete(route, destination); connect :delete, route, destination; end
-    def post(route, destination); connect :post, route, destination; end
-
-    def connect(method, pattern, destination)
-      @routes[method] << [ pattern, destination ]
-    end
 
     private
 
@@ -51,7 +48,7 @@ module IrcMachine
       # this is pretty bad..
       request_method = request_method.downcase.to_sym
       route_match = OpenStruct.new
-      _, route_match.destination = @routes[request_method].detect do |(pattern,destination)|
+      _, route_match.destination = @@routes[request_method].detect do |(pattern,destination)|
         if pattern.is_a? Regexp
           route_match.match = pattern.match(path)
         else

@@ -15,6 +15,16 @@ end
   state
   plugin
   plugin/base
+
+  core
+
+  udp_server
+
+  http_router
+  http_server
 }.each do |name|
   require "irc_machine/#{name}"
 end
+
+Dir[File.dirname(__FILE__) + '/irc_machine/models/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/irc_machine/plugin/*.rb'].each {|file| require file }

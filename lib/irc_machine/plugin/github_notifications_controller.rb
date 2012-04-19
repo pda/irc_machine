@@ -1,12 +1,13 @@
-module IrcMachine
-  module Controller
-    class GithubNotificationsController < HttpController
+class IrcMachine::Plugin::RestGithubNotification < IrcMachine::Plugin::Base
 
-      def notify
-        session.msg "##{match[1]}",
-          Plugin::GithubNotification.new(request.body.read).message
-      end
-
-    end
+  def initialize(*args)
+    route(:post, %r{^/channels/([\w-]+)/github$}, :notify)
+    super(*args)
   end
+
+  def notify
+    session.msg "##{match[1]}",
+      Models::GithubNotification.new(request.body.read).message
+  end
+
 end
