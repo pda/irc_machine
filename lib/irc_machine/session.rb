@@ -7,15 +7,12 @@ module IrcMachine
     attr_accessor :irc_connection
 
     def initialize(options)
-      IrcMachine::Plugin::Reloader.load_all
-
       @options = OpenStruct.new(options)
       @state = State.new
       @router = HttpRouter.new(self)
       @plugins = [
         Core.new(self),
         Plugin::Hello.new(self),
-        Plugin::Reloader.new(self),
         Plugin::GithubNotifier.new(self)
       ]
     end

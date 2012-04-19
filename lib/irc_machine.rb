@@ -15,7 +15,6 @@ end
   state
   plugin
   plugin/base
-  plugin/reloader
 }.each do |name|
   require "irc_machine/#{name}"
 end
