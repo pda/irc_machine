@@ -41,6 +41,11 @@ module IrcMachine
       response.finish
     end
 
+    def flush_routes!
+      @@routes.each do |k, v|
+        @@routes[k] = []
+      end
+    end
 
     private
 

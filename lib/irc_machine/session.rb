@@ -14,27 +14,12 @@ module IrcMachine
     end
 
     def load_plugins!
-      # if @plugins.nil? # TODO
-        @plugins = [
-          # FIXME Statics .. ew
-          Core.new(self),
-          Plugin::Hello.new(self),
-          Plugin::RestChannels.new(self),
-          Plugin::RestGithubNotification.new(self)
-        ]
-      # else
-      #   @router.flush_routes!
-      #   @plugins = [
-      #     # FIXME Statics .. ew
-      #     Core.new(self),
-      #     Plugin::Hello.new(self),
-      #     Plugin::GithubNotifier.new(self),
-      #     Plugin::RestChannels.new(self),
-      #     Plugin::RestGithubNotification.new(self)
-      #   ]
-      # end
+      @router.flush_routes!
+      @plugins = [Core.new(self)]
+      options.plugins.each do |plugin|
+        @plugins << Plugin.const_get(plugin).new(self)
+      end
     end
-
 
     def start
       EM.run do
