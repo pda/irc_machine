@@ -5,9 +5,6 @@ require "ostruct"
 module IrcMachine
   module Plugin
 
-    class GithubNotifier < Plugin::Base
-    end
-
     class GithubNotification
 
       attr_reader :data
