@@ -1,10 +1,14 @@
 class IrcMachine::Plugin::RestChannels < IrcMachine::Plugin::Base
 
   CHANNEL_REGEXP ||= %r{^/channels/([\w-]+)$}
+  # Ditch the constant for reloadable code or bear the
+  # consequences
 
-  # Can ditch dependence on instance if we load data from the FS on each request?
+  # Can ditch dependence on instance if we load data
+  # from the FS on each request?
 
-  # Looping args through is ugly, but it needs to be instance specific
+  # Looping args through is ugly, but it needs to be
+  # instance specific
   def initialize(*args)
     route(:get, "/channels", :list)
     route(:put, CHANNEL_REGEXP, :join)
