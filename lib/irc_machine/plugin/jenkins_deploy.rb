@@ -1,22 +1,12 @@
-class Apps
-  CONFIG_FILE = "jenkins_notify.json"
-
-  def initialize(appname)
-    conf = JSON.load(open(File.expand_path(CONFIG_FILE)))
-  end
-
-end
-
-
-
-
-
 class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
+  CONFIG_FILE = "jenkins_notify.json"
+
   def initialize(*args)
-    @apps = []
+    @apps = load_config
     super(*args)
   end
+  attr_reader :apps
 
   def receive_line(line)
     # TODO Regex
@@ -27,6 +17,12 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
       session.msg channel, "Deploying \\o/"
     end
+  end
+
+  private
+
+  def load_config
+    OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
   end
 
 end
