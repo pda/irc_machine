@@ -38,6 +38,10 @@ module IrcMachine
       else
         match.destination.call(request, match.match)
       end
+
+      unless response.is_a? Rack::Response
+        response = Rack::Response.new "", 204
+      end
       response.finish
     end
 
