@@ -16,6 +16,12 @@ module IrcMachine
     def load_plugins!
       @router.flush_routes!
       @plugins = [Core.new(self)]
+
+      if options.plugins.nil?
+        warn "Plugins are now loaded in config, not specified statically"
+        return
+      end
+
       options.plugins.each do |plugin|
         @plugins << Plugin.const_get(plugin).new(self)
       end
