@@ -1,3 +1,4 @@
+require 'net/http'
 class MutexApp
   attr_reader :name, :last_user
   attr_accessor :deploy_url
@@ -23,6 +24,10 @@ class MutexApp
     @last_state = :deploying
     @last_user = user
     @cache[:channel] = channel
+
+    uri = URI(deploy_url)
+    Net::HTTP.get(uri)
+
     return "Deploy started for #{name}"
   end
 
