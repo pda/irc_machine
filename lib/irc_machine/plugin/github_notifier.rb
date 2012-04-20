@@ -26,7 +26,7 @@ module IrcMachine
       end
 
       def branch
-        data.ref.split("/").last
+        data.ref.gsub(%r{refs/heads/}, "")
       end
 
       def authors
