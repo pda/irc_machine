@@ -7,17 +7,18 @@ module IrcMachine
     attr_accessor :irc_connection
 
     def initialize(options)
-      IrcMachine::Plugin::Reloader.load_all
-
       @options = OpenStruct.new(options)
       @state = State.new
       @router = HttpRouter.new(self)
-      @plugins = [
-        Core.new(self),
-        Plugin::Hello.new(self),
-        Plugin::Reloader.new(self),
-        Plugin::GithubNotifier.new(self)
-      ]
+      load_plugins!
+    end
+
+    def load_plugins!
+      @router.flush_routes!
+      @plugins = [Core.new(self)]
+      options.plugins.each do |plugin|
+        @plugins << Plugin.const_get(plugin).new(self)
+      end
     end
 
     def start

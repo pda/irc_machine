@@ -3,10 +3,7 @@ require "cgi"
 require "ostruct"
 
 module IrcMachine
-  module Plugin
-
-    class GithubNotifier < Plugin::Base
-    end
+  module Models
 
     class GithubNotification
 
