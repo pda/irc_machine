@@ -1,4 +1,4 @@
-class IrcMachine::Plugin::RestGithubNotification < IrcMachine::Plugin::Base
+class IrcMachine::Plugin::GithubNotification < IrcMachine::Plugin::Base
 
   def initialize(*args)
     route(:post, %r{^/channels/([\w-]+)/github$}, :notify)

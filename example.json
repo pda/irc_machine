@@ -11,5 +11,5 @@
 	"bind_address": "127.0.0.1",
 	"ssl": false,
   "plugins":
-    [ "Hello", "RestChannels", "RestGithubNotification" ]
+    [ "Hello", "RestChannels", "GithubNotification" ]
 }
