@@ -23,11 +23,36 @@ Design philosophy: simple to the point of under-engineered, make it work for the
     gem install irc_machine
     irc_machined run
 
+Plugins
+-------
 
-HTTP interface
+Plugins are objects which respond to `#receive_line`, and would will receive a reference to the `IrcMachine::Session` when instantiated. It should use that reference to send IRC commands.
+
+Plugins may also implement the RESTful HTTP API by creating routes. The pattern for this would look something like:
+
+```ruby
+
+def initialize(*args)
+  route(:get, "/endpoint", :endpoint)
+  super(*args)
+end
+
+def endpoint(request, match)
+  ok request.body.read
+end
+```
+
+Configuration
+-------------
+
+You should copy `example.json` to `irc_machine.json`, or set `IRC_MACHINE_CONF` to the name of the config file.
+
+Plugins are enabled by their class name specified in the `plugins` array, everything under `irc_machine/plugin` will be loaded at boot time, however.
+
+Default Plugin
 --------------
 
-The RESTful HTTP API is provided by `IrcMachine::Plugin::Rest`. It listens on port 8421 by default. And you can't change the default.
+IrcMachine ships with a plugin to demonstrate the REST API. It listens on port 8421 by default. And you can't change the default.
 
 * `GET /channels` returns a JSON list of channels the bot is probably in.
 * `PUT /channels/{name}` joins a channel.
@@ -36,18 +61,13 @@ The RESTful HTTP API is provided by `IrcMachine::Plugin::Rest`. It listens on po
 * `POST /channels/{name}/github` accepts GitHub post-receive hook notifications, notifies channel.
 
 
-Plugins
--------
-
-Plugins are objects which might respond to `#start` or `#receive_line`, and might use a reference to the `IrcMachine::Session` instance to send IRC commands.
-
-
 Contributors
 ------------
 
 * [Paul Annesley](https://github.com/pda)
 * [Eric Anderson](https://github.com/ericanderson)
 * [Anton Lindström](https://github.com/antonlindstrom)
+* [Richo Healey](https://github.com/richoH)
 
 
 Meh.
