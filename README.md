@@ -23,6 +23,7 @@ Design philosophy: simple to the point of under-engineered, make it work for the
     gem install irc_machine
     irc_machined run
 
+For password protected IRC servers, add `"password": "secret"` in the `irc_machine.json` configuration file.
 
 HTTP interface
 --------------
