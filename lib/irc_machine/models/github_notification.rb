@@ -26,6 +26,22 @@ module IrcMachine
         data.ref.gsub(%r{refs/heads/}, "")
       end
 
+      def after
+        data.after
+      end
+
+      def before
+        data.before
+      end
+
+      def owner
+        OpenStruct.new(data.owner)
+      end
+
+      def repository
+        OpenStruct.new(data.repository)
+      end
+
       def authors
         data.commits.map{ |c| OpenStruct.new c["author"] }
       end
