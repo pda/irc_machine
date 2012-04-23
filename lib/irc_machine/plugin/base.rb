@@ -24,6 +24,7 @@ module IrcMachine
       def route(method, path, destination)
         # Close over the instance method and bind to a route.
         if destination.is_a? Symbol
+          sym = destination
           destination = lambda { |request, match| send(sym, request, match) }
         end
 
