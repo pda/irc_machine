@@ -21,10 +21,13 @@ module IrcMachine
         end
       end
 
-      def route(method, path, sym)
+      def route(method, path, destination)
         # Close over the instance method and bind to a route.
-        meta = lambda { |request, match| send(sym, request, match) }
-        IrcMachine::HttpRouter.send(:connect, method, path, meta)
+        if destination.is_a? Symbol
+          destination = lambda { |request, match| send(sym, request, match) }
+        end
+
+        IrcMachine::HttpRouter.send(:connect, method, path, destination)
       end
     end
   end
