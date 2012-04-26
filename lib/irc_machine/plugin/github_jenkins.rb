@@ -115,10 +115,15 @@ private
     { token: repo.token }
   end
 
+  def bold(txt)
+    "#{0x02.chr}#{txt}#{0x0F.chr}"
+  end
+
+
   def format_msg(commit, build)
      build_time = Time.now.to_i - commit.start_time
      commit = commit.commit
      authors = commit.author_usernames.map { |a| get_nick(a) }
-    "Build of #{commit.repo_name}/#{commit.branch} was a #{build.status} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time}s PING #{authors.join(" ")}"
+    "Build of #{bold(commit.repo_name)}/#{bold(commit.branch)} was a #{bold(build.status)} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{bold(build_time)}s PING #{authors.join(" ")}"
   end
 end
