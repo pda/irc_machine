@@ -58,7 +58,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
         notify format_msg(commit, build)
-        notify "Jenkins output available at #{build.full_url}"
+        notify "Jenkins output available at #{build.full_url}console"
       end #}}}
 
       endpoint.on :completed, :aborted do |commit, build| #{{{ Aborted
@@ -67,7 +67,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
       endpoint.on :unknown do |build| #{{{ Unknown
         notify "Unknown build of #{build.parameters.SHA1} completed with status #{build.status}"
-        notify "Jenkins output available at #{build.full_url}/console"
+        notify "Jenkins output available at #{build.full_url}console"
       end #}}}
     end
     route(:post, %r{^/github/jenkins_status$}, @notifier.endpoint)
