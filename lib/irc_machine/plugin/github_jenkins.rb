@@ -23,6 +23,7 @@ require 'net/http'
 #
 # usernames is an optional hash of github -> irc nickname mappings so that users can be usefully notified
 #
+# TODO Cleanup this commit.commit bollox
 class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_jenkins.json"
@@ -50,15 +51,19 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@builds) do |endpoint|
       endpoint.on :started do |commit, build|#{{{ Started
         commit.start_time = Time.now.to_i
+        # TODO
+        notify_privmsg(commit, build, "STARTED")
       end #}}}
 
       endpoint.on :completed, :success do |commit, build|#{{{ Success
         notify format_msg(commit, build)
+        notify_privmsg(commit, build, "SUCCEEDED")
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
         notify format_msg(commit, build)
         notify "Jenkins output available at #{build.full_url}console"
+        notify_privmsg(commit, build, "FAILED")
       end #}}}
 
       endpoint.on :completed, :aborted do |commit, build| #{{{ Aborted
@@ -129,6 +134,12 @@ private
 
   def red(txt)
     color(txt, 4)
+  end
+
+  def notify_privmsg(commit, build, status)
+    commit = commit.commit
+    pusher = get_nick(commit.commits.last["author"]["username"])
+    session.msg pusher, "Jenkins build of #{bold(commit.repo_name)}/#{bold(commit.branch)} has #{bold(status)}: #{build.full_url}console"
   end
 
   def format_msg(commit, build)

@@ -34,6 +34,10 @@ module IrcMachine
         data.before
       end
 
+      def commits
+        data.commits
+      end
+
       def owner
         OpenStruct.new(data.owner)
       end
