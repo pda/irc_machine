@@ -119,11 +119,31 @@ private
     "#{0x02.chr}#{txt}#{0x0F.chr}"
   end
 
+  def color(txt, colorcode)
+    "#{0x03.chr}#{colorcode}#{txt}#{0x03.chr}"
+  end
+
+  def green(txt)
+    color(txt, 3)
+  end
+
+  def red(txt)
+    color(txt, 4)
+  end
 
   def format_msg(commit, build)
      build_time = Time.now.to_i - commit.start_time
      commit = commit.commit
      authors = commit.author_usernames.map { |a| get_nick(a) }
-    "Build of #{bold(commit.repo_name)}/#{bold(commit.branch)} was a #{bold(build.status)} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{bold(build_time)}s PING #{authors.join(" ")}"
+     status = case build.status
+              when "SUCCESS"
+                bold(green(build.status))
+              when "FAILURE"
+                bold(red(build.status))
+              else
+                build.status
+              end
+
+    "Build of #{bold(commit.repo_name)}/#{bold(commit.branch)} was a #{status} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{bold(build_time)}s PING #{authors.join(" ")}"
   end
 end
