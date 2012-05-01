@@ -47,6 +47,23 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     super(*args)
   end
 
+  def recieve_line(line)
+    if line =~ build_pattern("rebuild ([^ /])/(\S+)")
+      nick, chan, repo, branch = $1, $2, $3, $4
+
+      # Find the most recent build that matches repo and branch
+      build_id = @builds.keys.sort{ |a, b| b <=> a }.each do |k|
+        build = @builds[k]
+        if build.repo_name == repo and build.branch_name == branch
+          return trigger_build(build.repo, build.commit)
+        end
+      end
+
+      session.msg chan, "#{nick}: No builds matching #{bold(repo)}/#{bold(branch)}"
+
+    end
+  end
+
   def initialize_jenkins_notifier
     @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@builds) do |endpoint|
       endpoint.on :started do |commit, build|#{{{ Started
@@ -101,7 +118,7 @@ private
   def trigger_build(repo, commit)
     uri = URI(repo.builder_url)
     id = next_id
-    @builds[id.to_s] = OpenStruct.new({ repo: repo, commit: commit, start_time: 0})
+    @builds[id.to_s] = OpenStruct.new({ repo: repo, commit: commit, start_time: 0, repo_name: commit.repository.name, branch_name: commit.branch })
     params = defaultParams(repo).merge ({SHA1: commit.after, ID: id})
 
     uri.query = URI.encode_www_form(params)
@@ -156,5 +173,9 @@ private
               end
 
     "Build of #{bold(commit.repo_name)}/#{bold(commit.branch)} was a #{status} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{bold(build_time)}s PING #{authors.join(" ")}"
+  end
+
+  def build_pattern(text)
+    /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? #{text}$/
   end
 end
