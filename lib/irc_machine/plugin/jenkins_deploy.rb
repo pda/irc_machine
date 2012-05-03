@@ -126,7 +126,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     if app = apps[match[1]]
       if app.succeed
         session.msg app.last_channel, "Deploy of #{app.name} succeeded \\o/ | PING #{app.last_user}"
-	`ssh saunamacmini ./deploy_succeed.sh &`
+        `ssh saunamacmini ./deploy_succeed.sh &`
       end
     else
       not_found
@@ -137,7 +137,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     if app = apps[match[1]]
       if app.fail
         session.msg app.last_channel, "Deploy of #{app.name} FAILED | PING #{app.last_user}"
-	`ssh saunamacmini ./deploy_fail.sh &`
+        `ssh saunamacmini ./deploy_fail.sh &`
       end
     else
       not_found
@@ -147,11 +147,12 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   private
 
   def deploy(app, user, channel)
-    session.msg channel,
-      (app.deploy!(user, channel).tap do |msg|
-	session.msg channel, SQUIRRELS.sample if msg =~ /Deploy started/
-	`ssh saunamacmini ./pre_deploy.sh &`
-)
+    status = app.deploy!(user, channel)
+    if status =~ /Deploy started/
+      session.msg channel, SQUIRRELS.sample
+      `ssh saunamacmini ./pre_deploy.sh &`
+    end
+    session.msg channel, status
   end
 
   def load_config
