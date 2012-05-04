@@ -47,7 +47,7 @@ module IrcMachine
       end
 
       def authors
-        data.commits.map{ |c| OpenStruct.new c["author"] }
+        data.commits.map{ |c| ::IrcMachine::Models::GithubUser.new c["author"] }
       end
 
       def author_usernames

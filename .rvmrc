@@ -1,1 +1,1 @@
-rvm @irc_machine --create
+rvm 1.9.3
