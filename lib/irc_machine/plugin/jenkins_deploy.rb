@@ -69,8 +69,10 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "jenkins_notify.json"
   SQUIRRELS = %w[
-    http://shipitsquirrel.github.com/images/ship%20it%20squirrel.png
-    http://shipitsquirrel.github.com/images/squirrel.png
+    http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/ship%20it%20squirrel.png
+    http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/squirrel.png
+    http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/Ship%20it1.jpg
+    http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/Ship%20it2.jpg
   ]
 
 
