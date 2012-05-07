@@ -1,33 +1,33 @@
-require 'meme'
+require 'meminator'
 
 class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
-  def initialize
-    super
-    @meminator = Meme.new
+  def initialize(*args)
+    super(*args)
+    @meminator = ::Meminator::Meminator.new
   end
 
   def receive_line(line)
-    if line =~ /^:\S+ PRIVMSG (#+\S+) :meminate$/
-      session.msg $1, list_memes.join(" ")
-    elsif line =~ /^:\S+ PRIVMSG (#+\S+) :meminate (\S+) (.*)$/
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate$/
+      list_memes.each do |meme|
+        session.msg $1, meme
+      end
+    elsif line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate (\S+) (.*)$/
       session.msg $1, fetch_meme($2, $3)
     end
   end
 
   def list_memes
-    @memes ||= GENERATORS.sort.map do |command, (id, name, _)|
-      name
+    all_memes.keys.sample(10).map do |key|
+      "#{all_memes[key][2]} => #{key}"
     end
   end
 
-  def fetch_meme(name, text)
-    return "Unknown meme #{name}" unless list_memes.include?(name)
+  def all_memes
+    @all_memes ||= ::Meminator::List.memes
+  end
 
-    begin
-      MEME.run "--text", name, text
-    rescue Exception => e
-      e.message
-    end
+  def fetch_meme(name, text)
+    @meminator.get_url(name, *text.split("|"))
   end
 
 end
