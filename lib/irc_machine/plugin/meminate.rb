@@ -9,6 +9,7 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
 
     ::Meminator.username = @config.username
     ::Meminator.password = @config.password
+    route(:get, "/meminate/list", :display_meme_list)
   end
 
   def receive_line(line)
@@ -18,6 +19,7 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
       end
     elsif line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate (\S+) (.*)$/
       session.msg $1, fetch_meme($2, $3)
+      session.msg $1, "Or get the full list at [ThisMachine]:#{session.options.http_port}/meminate/list"
     end
   end
 
@@ -37,6 +39,14 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
 
   def load_config
     OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
+  end
+
+  def display_meme_list(request, match)
+    memes = all_memes.map do |k, v|
+      "#{v[2]}\t\t=>\t#{k}"
+    end.join("\r")
+
+    ok memes
   end
 
 end
