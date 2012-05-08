@@ -1,9 +1,14 @@
 require 'meminator'
 
 class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
+  CONFIG_FILE = "meminate.json"
   def initialize(*args)
     super(*args)
     @meminator = ::Meminator::Meminator.new
+    @config = load_config
+
+    ::Meminator.username = @config.username
+    ::Meminator.password = @config.password
   end
 
   def receive_line(line)
@@ -28,6 +33,10 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
 
   def fetch_meme(name, text)
     @meminator.get_url(name, *text.split("|"))
+  end
+
+  def load_config
+    OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
   end
 
 end
