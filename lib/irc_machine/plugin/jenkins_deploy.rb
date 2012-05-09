@@ -73,6 +73,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/squirrel.png
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/Ship%20it1.jpg
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/Ship%20it2.jpg
+    http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/squirrels.jpg
   ]
 
 
