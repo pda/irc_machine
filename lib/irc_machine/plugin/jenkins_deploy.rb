@@ -31,6 +31,16 @@ class MutexApp
     return "Deploy started for #{name}"
   end
 
+  def disable!
+    @deploying = true
+    @last_state = :disabled
+  end
+
+  def reset!
+    @deploying = false
+    @last_state = :initial
+  end
+
   def succeed
     last_deploying = @deploying
     @last_state = :successful
@@ -111,6 +121,28 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
         deploy(app, user, channel)
       end
 
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? disable (\S+)$/
+      user = $1.chomp
+      channel = $2.chomp
+      repo = $3.chomp
+      app = apps[repo.to_sym]
+      if app.nil?
+        session.msg channel, "Unknown repo: #{repo}"
+      else
+        app.disable!
+        session.msg channel, "#{repo} has been disabled"
+      end
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? reset (\S+)$/
+      user = $1.chomp
+      channel = $2.chomp
+      repo = $3.chomp
+      app = apps[repo.to_sym]
+      if app.nil?
+        session.msg channel, "Unknown repo: #{repo}"
+      else
+        app.reset!
+        session.msg channel, "#{repo} has been reset"
+      end
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? status (\S+)$/
       user = $1.chomp
       channel = $2.chomp
