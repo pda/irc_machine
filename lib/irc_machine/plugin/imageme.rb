@@ -9,7 +9,6 @@ class IrcMachine::Plugin::ImageMe < IrcMachine::Plugin::Base
   end
 
   def image_me(query)
-    sess = Patron::Session.new
     uri = URI("http://ajax.googleapis.com/ajax/services/search/images")
     uri.query = URI.encode_www_form({ 'v' => 1.0, 'rsz' => 8, 'safe' => 'active', 'q' => query })
     response = Net::HTTP.get(uri)
