@@ -4,7 +4,7 @@ require 'net/http'
 class IrcMachine::Plugin::ImageMe < IrcMachine::Plugin::Base
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? (image|img)( me)? (.*)$/
-      session.msg $1, image_me($2)
+      session.msg $1, image_me($4)
     end
   end
 
