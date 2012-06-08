@@ -17,9 +17,10 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
       list_memes.each do |meme|
         session.msg $1, meme
       end
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate help$/
+      session.msg $1, "Or get the full list at http://#{hostname}:#{session.options.http_port}/meminate/list"
     elsif line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate (\S+) (.*)$/
       session.msg $1, fetch_meme($2, $3)
-      session.msg $1, "Or get the full list at [ThisMachine]:#{session.options.http_port}/meminate/list"
     end
   end
 
@@ -47,6 +48,14 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
     end.join("\r")
 
     ok memes
+  end
+
+  def hostname
+    if @config.respond_to? :hostname
+      @config.hostname
+    else
+      "[ThisMachine]"
+    end
   end
 
 end
