@@ -30,6 +30,13 @@ module IrcMachine
 
         IrcMachine::HttpRouter.send(:connect, method, path, destination)
       end
+
+      def plugin_send(plugin, sym, *args)
+        if (p = self.class.const_get(plugin))
+          p.send(sym, args)
+        end
+      end
+
     end
   end
 end
