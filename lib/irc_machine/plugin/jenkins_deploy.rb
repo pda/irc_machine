@@ -1,7 +1,7 @@
 require 'net/http'
 class MutexApp
   attr_reader :name, :last_user
-  attr_accessor :deploy_url
+  attr_accessor :deploy_url, :auto_deploy
 
   def initialize(name)
     @name = name
@@ -96,6 +96,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     load_config.each do |k, v|
       @apps[k] = MutexApp.new(k) do |app|
         app.deploy_url = v[:deploy_url]
+        app.auto_deploy = !!v[:auto_deploy]
       end
 
       route(:get, %r{/deploy/(#{k})/success}, :rest_success)
@@ -180,6 +181,16 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       end
     else
       not_found
+    end
+  end
+
+  # Callback that github_jenkins uses
+  def build_success(repo, branch, callback)
+    return unless branch == "master"
+    return unless (app = @apps[repo])
+
+    if app.auto_deploy
+      callback.call(app.deploy!)
     end
   end
 
