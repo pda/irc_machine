@@ -29,7 +29,7 @@ module IrcMachine
 
     def get_plugin(p)
       @plugins.select do |v|
-        v.class.to_sym == p
+        v.class.name.to_sym == p
       end.tap do |ary|
         return nil if ary.empty?
       end.first

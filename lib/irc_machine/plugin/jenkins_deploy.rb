@@ -190,6 +190,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     return unless (app = @apps[repo])
 
     if app.auto_deploy
+      callback.call("Attempting automatic deploy of #{app.name}")
       callback.call(app.deploy!)
     end
   end
