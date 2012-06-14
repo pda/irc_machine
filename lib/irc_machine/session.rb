@@ -57,16 +57,13 @@ module IrcMachine
     end
 
     def disconnected
+      EM.stop
       if @shutdown
         log "Stopping EventMachine"
-        EM.stop
       else
         log "Waiting to reconnect"
         EM.add_timer(2) do
-          log "Reconnecting to #{options.server}:#{options.port}"
-          irc_connection.reconnect options.server, options.port
-          @state.reset
-          dispatch :connected
+          start
         end
       end
     end
