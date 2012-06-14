@@ -32,7 +32,7 @@ module IrcMachine
       end
 
       def plugin_send(plugin, sym, *args)
-        if (p = ::IrcMachine::Plugin.const_get(plugin))
+        if (p = session.get_plugin plugin)
           p.send(sym, args)
         end
       end
