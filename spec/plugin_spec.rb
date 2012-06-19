@@ -26,9 +26,9 @@ describe "Agent99::Plugin" do
     session = IrcMachine::Session.new(options)
     session.plugins.length.should == 3
     # Test we can get plugins
-    session.plugin_by_name(:Plugin1).class.should == IrcMachine::Plugin::Plugin1
-    session.plugin_by_name(:Plugin1).expects(:test_method).with("rawp")
-    session.plugin_by_name(:Plugin2).send_to_1
+    session.get_plugin(:Plugin1).class.should == IrcMachine::Plugin::Plugin1
+    session.get_plugin(:Plugin1).expects(:test_method).with("rawp")
+    session.get_plugin(:Plugin2).send_to_1
   end
 end
 
