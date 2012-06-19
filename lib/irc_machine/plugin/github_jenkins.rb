@@ -82,14 +82,14 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       endpoint.on :completed, :success do |commit, build|#{{{ Success
         notify format_msg(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
-        plugin_send(:JenkinsNotify, :build_success, commit.repo_name, commit.branch,  create_callback)
+        plugin_send(:JenkinsNotify, :build_success, commit, build, create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
         notify format_msg(commit, build)
         notify "Jenkins output available at #{build.full_url}console"
         notify_privmsg(commit, build, "FAILED")
-        plugin_send(:JenkinsNotify, :build_fail, commit.repo_name, commit.branch,  create_callback)
+        plugin_send(:JenkinsNotify, :build_fail, commit, build,  create_callback)
       end #}}}
 
       endpoint.on :completed, :aborted do |commit, build| #{{{ Aborted

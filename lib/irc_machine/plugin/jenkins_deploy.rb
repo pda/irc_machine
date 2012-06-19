@@ -23,7 +23,7 @@ class MutexApp
     @deploying = true
     @last_state = :deploying
     @last_user = user
-    @cache[:channel] = channel
+    @cache[:channel] = channel if channel
 
     uri = URI(deploy_url)
     Net::HTTP.get(uri)
@@ -185,17 +185,23 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   end
 
   # Callback that github_jenkins uses
-  def build_success(repo, branch, callback)
+  def build_success(commit, build, callback)
+    repo = commit.repo_name
+    branch = commit.branch
+
     return unless branch == "master"
     return unless (app = @apps[repo])
 
     if app.auto_deploy
       callback.call("Attempting automatic deploy of #{app.name}")
-      callback.call(app.deploy!)
+      callback.call(app.deploy!(commit.pusher, nil))
     end
   end
 
-  def build_fail(repo, branch, callback)
+  def build_fail(commit, build, callback)
+    repo = commit.repo_name
+    branch = commit.branch
+
     return unless branch == "master"
     return unless (app = @apps[repo])
 
