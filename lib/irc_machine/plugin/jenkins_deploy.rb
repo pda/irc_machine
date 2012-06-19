@@ -23,7 +23,7 @@ class MutexApp
     @deploying = true
     @last_state = :deploying
     @last_user = user
-    @cache[:channel] = channel if channel
+    @cache[:channel] = channel
 
     uri = URI(deploy_url)
     Net::HTTP.get(uri)
@@ -65,6 +65,15 @@ class MutexApp
 
   def deploying?
     @deploying
+  end
+
+  def notify(session, msg)
+    case last_channel
+    when String
+      session.notify last_channel, msg
+    when Proc
+      last_channel.call(msg)
+    end
   end
 
 end
@@ -165,7 +174,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_success(request, match)
     if app = apps[match[1]]
       if app.succeed
-        session.msg app.last_channel, "Deploy of #{app.name} succeeded \\o/ | PING #{app.last_user}"
+        app.notify("Deploy of #{app.name} succeeded \\o/ | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_succeed.sh &`
       end
     else
@@ -176,7 +185,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_fail(request, match)
     if app = apps[match[1]]
       if app.fail
-        session.msg app.last_channel, "Deploy of #{app.name} FAILED | PING #{app.last_user}"
+         app.notify("Deploy of #{app.name} FAILED | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_fail.sh &`
       end
     else
@@ -194,7 +203,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
     if app.auto_deploy
       callback.call("Attempting automatic deploy of #{app.name}")
-      callback.call(app.deploy!(commit.pusher, nil))
+      callback.call(app.deploy!(commit.pusher, callback))
     end
   end
 
