@@ -80,9 +80,9 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       end #}}}
 
       endpoint.on :completed, :success do |commit, build|#{{{ Success
-        plugin_send(:JenkinsNotify, :build_success, commit.repo_name, commit.branch,  create_callback)
         notify format_msg(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
+        plugin_send(:JenkinsNotify, :build_success, commit.repo_name, commit.branch,  create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure

@@ -195,6 +195,16 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     end
   end
 
+  def build_fail(repo, branch, callback)
+    return unless branch == "master"
+    return unless (app = @apps[repo])
+
+    callback.call("Disabling deploys due to failed build of #{app.name}")
+    app.disable!
+    callback.call("#{app.name} has been disabled")
+  end
+
+
   private
 
   def deploy(app, user, channel)
