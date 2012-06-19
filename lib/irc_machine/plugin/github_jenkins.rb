@@ -67,6 +67,10 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
   end
 
+  def create_callback
+    lambda { |d| notify d }
+  end
+
   def initialize_jenkins_notifier
     @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@builds) do |endpoint|
       endpoint.on :started do |commit, build|#{{{ Started
@@ -78,6 +82,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       endpoint.on :completed, :success do |commit, build|#{{{ Success
         notify format_msg(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
+        plugin_send(:JenkinsNotify, :build_success, commit.repo_name, commit.branch,  create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure

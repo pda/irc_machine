@@ -27,6 +27,14 @@ module IrcMachine
       end
     end
 
+    def get_plugin(p)
+      @plugins.select do |v|
+        v.class.name.to_sym == :"IrcMachine::Plugin::#{p}"
+      end.tap do |ary|
+        return nil if ary.empty?
+      end.first
+    end
+
     def start
       EM.run do
 
