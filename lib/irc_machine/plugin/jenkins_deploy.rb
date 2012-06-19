@@ -18,7 +18,13 @@ class MutexApp
 
   def deploy!(user, channel)
     # Reactor model, this is safe
-    return "Deploy for #{name} in progress by #{last_user}" if @deploying
+    if @deploying
+      if @last_state == :disabled
+        return "Deploy for #{name} is currently disabled"
+      else
+        return "Deploy for #{name} in progress by #{last_user}" if @deploying
+      end
+    end
 
     @deploying = true
     @last_state = :deploying
