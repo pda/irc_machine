@@ -4,7 +4,8 @@ gemspec
 gem "meminator"
 gem "json"
 
-group :test do
+group :development do
   gem "rspec"
   gem "mocha"
+  gem "rake"
 end
