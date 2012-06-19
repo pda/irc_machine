@@ -8,6 +8,10 @@ class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
     @tasks = {}
   end
 
+  def join!
+    session.join config.channel
+  end
+
   def receive_line(line)
     if line =~ /^:(\S+)!\S+ PRIVMSG #{config.channel} :(.*)$/
       tasks[$1] = $2
