@@ -89,6 +89,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify format_msg(commit, build)
         notify "Jenkins output available at #{build.full_url}console"
         notify_privmsg(commit, build, "FAILED")
+        plugin_send(:JenkinsNotify, :build_fail, commit.repo_name, commit.branch,  create_callback)
       end #}}}
 
       endpoint.on :completed, :aborted do |commit, build| #{{{ Aborted
