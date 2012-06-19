@@ -28,12 +28,16 @@ class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
       end
     elsif line =~ /^:(\S+)!\S+ PRIVMSG #{config.channel} :(.*)$/
       puts "tasks[#{$1}] = #{$2}"
-      tasks[$1] = $2
+      tasks[$1] = "#{$2}, at #{now}"
     end
   end
 
   # TODO move to base?
   def load_config
     OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
+  end
+
+  def now
+    Time.now.strftime("%H:%M %d/%m")
   end
 end
