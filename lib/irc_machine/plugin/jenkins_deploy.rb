@@ -169,7 +169,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
         session.msg channel, "Unknown repo: #{repo}"
       else
         if app.deploying?
-          session.msg channel, "#{user}: #{repo} is currently being deployed by #{app.last_user}"
+          session.msg channel, "#{user}: #{repo} is currently #{app.last_state}; caused by #{app.last_user}"
         else
           session.msg channel, "#{user}: #{repo} is not currently being deployed"
         end
