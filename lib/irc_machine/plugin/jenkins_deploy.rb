@@ -76,7 +76,7 @@ class MutexApp
   def notify(session, msg)
     case last_channel
     when String
-      session.notify last_channel, msg
+      session.msg last_channel, msg
     when Proc
       last_channel.call(msg)
     end
