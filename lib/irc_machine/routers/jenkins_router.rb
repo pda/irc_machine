@@ -33,8 +33,12 @@ class IrcMachine::Routers::JenkinsRouter
     triggers[phase][status] = block
   end
 
-  def process(message)
+  def process(message, &block)
     build = ::IrcMachine::Models::JenkinsNotification.new(message)
+
+    if block_given?
+      yield build
+    end
 
     if match = triggers[build.phase.downcase.to_sym]
       if commit = @builds[build.parameters.ID.to_s]

@@ -31,6 +31,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   def initialize(*args)
     @projects = Hash.new
     @builds = Hash.new
+    @status = Hash.new
     conf = load_config
 
     conf["builds"].each do |k, v|
@@ -45,6 +46,8 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
+    route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
+    route(:post, %r{^/status/([a-f0-9]+)$}, :build_status)
 
     initialize_jenkins_notifier
     super(*args)
@@ -65,6 +68,17 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       session.msg chan, "#{nick}: No builds matching #{bold(repo)}/#{bold(branch)}"
 
     end
+  end
+
+  def jenkins_status(request, match)
+    @notifier.process(request.body.read) do |build|
+      p = build.parameters
+      @status[p.ID.to_s] = p.SHA1
+    end
+  end
+
+  def build_status(request, match)
+    @status[match[1]] || "UNKNOWN"
   end
 
   def create_callback
@@ -101,7 +115,6 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify "Jenkins output available at #{build.full_url}console"
       end #}}}
     end
-    route(:post, %r{^/github/jenkins_status$}, @notifier.endpoint)
   end
 
   def build_branch(request, match)
