@@ -1,3 +1,4 @@
 #!/bin/sh
 
-rake spec
+bundle install --path .bundle
+bundle exec rake spec
