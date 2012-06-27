@@ -116,6 +116,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
       route(:get, %r{/deploy/(#{k})/success}, :rest_success)
       route(:get, %r{/deploy/(#{k})/fail}, :rest_fail)
+      route(:post, %r{/deploy/(#{k})/notice}, :rest_notice)
 
     end
 
@@ -196,6 +197,12 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       end
     else
       not_found
+    end
+  end
+
+  def rest_notice(request, match)
+    if app = apps[match[1]]
+      app.notify(session, request.body.read)
     end
   end
 
