@@ -31,7 +31,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   def initialize(*args)
     @projects = Hash.new
     @commits = Hash.new
-    @status = Hash.new
+    @builds = Hash.new
     conf = load_config
 
     conf["builds"].each do |k, v|
@@ -73,12 +73,17 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   def jenkins_status(request, match)
     @notifier.process(request.body.read) do |build|
       p = build.parameters
-      @status[p.ID.to_s] = p.SHA1
+      @builds[p.SHA1] = build
     end
   end
 
   def build_status(request, match)
-    ok (@status[match[1]] || "UNKNOWN")
+    ok (if @builds[match[1]]
+          @builds[match[1]].status
+        else
+          "UNKNOWN"
+        end
+       )
   end
 
   def create_callback
