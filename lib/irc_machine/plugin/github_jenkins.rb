@@ -30,7 +30,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   attr_reader :settings
   def initialize(*args)
     @projects = Hash.new
-    @builds = Hash.new
+    @commits = Hash.new
     @status = Hash.new
     conf = load_config
 
@@ -58,8 +58,8 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       nick, chan, repo, branch = $1, $2, $3, $4
 
       # Find the most recent build that matches repo and branch
-      build_id = @builds.keys.sort{ |a, b| b <=> a }.each do |k|
-        build = @builds[k]
+      build_id = @commits.keys.sort{ |a, b| b <=> a }.each do |k|
+        build = @commits[k]
         if build.repo_name == repo and build.branch_name == branch
           return trigger_build(build.repo, build.commit)
         end
@@ -86,7 +86,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def initialize_jenkins_notifier
-    @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@builds) do |endpoint|
+    @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@commits) do |endpoint|
       endpoint.on :started do |commit, build|#{{{ Started
         commit.start_time = Time.now.to_i
         # TODO
@@ -136,7 +136,7 @@ private
   def trigger_build(project, commit)
     uri = URI(project.builder_url)
     id = next_id
-    @builds[id.to_s] = ::IrcMachine::Models::GithubCommit.new({ repo: project, commit: commit, start_time: 0, repo_name: commit.repository.name, branch_name: commit.branch })
+    @commits[id.to_s] = ::IrcMachine::Models::GithubCommit.new({ repo: project, commit: commit, start_time: 0, repo_name: commit.repository.name, branch_name: commit.branch })
     params = defaultParams(project).merge ({SHA1: commit.after, ID: id})
 
     uri.query = URI.encode_www_form(params)

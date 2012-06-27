@@ -4,7 +4,7 @@
 #
 # Usage:
 #  def initialize_jenkins_notifier
-#    @notifier = JenkinsNotifier.new(@builds) do |endpoint|
+#    @notifier = JenkinsNotifier.new(@commits) do |endpoint|
 #      endpoint.on :success do |commit, build|#{{{ Success
 #        notify format_msg(commit, build)
 #      end #}}}
@@ -19,9 +19,9 @@
 #  With subsequent calls to
 #  @notifier.process([body of jenkins notification])
 class IrcMachine::Routers::JenkinsRouter
-  attr_reader :builds, :triggers
-  def initialize(builds)
-    @builds = builds
+  attr_reader :commits, :triggers
+  def initialize(commits)
+    @commits = commits
     @triggers = {}
     if block_given?
       yield self
@@ -41,7 +41,7 @@ class IrcMachine::Routers::JenkinsRouter
     end
 
     if match = triggers[build.phase.downcase.to_sym]
-      if commit = @builds[build.parameters.ID.to_s]
+      if commit = @commits[build.parameters.ID.to_s]
         if block = match[build.status.downcase.to_sym] rescue nil
           block.call(commit, build)
         elsif block = match[:any]
