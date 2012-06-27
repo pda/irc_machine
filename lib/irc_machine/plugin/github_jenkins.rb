@@ -47,7 +47,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
     route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
-    route(:post, %r{^/status/([a-f0-9]+)$}, :build_status)
+    route(:get, %r{^/status/([a-f0-9]+)$}, :build_status)
 
     initialize_jenkins_notifier
     super(*args)
@@ -78,7 +78,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def build_status(request, match)
-    @status[match[1]] || "UNKNOWN"
+    ok (@status[match[1]] || "UNKNOWN")
   end
 
   def create_callback
