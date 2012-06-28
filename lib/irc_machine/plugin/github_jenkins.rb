@@ -79,9 +79,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def all_builds_status(request, match)
-    ok @builds.map do |k, v|
-      "#{k} => #{v}"
-    end.join("\r\n")
+    ok (@builds.map {|k, v| "#{k} => #{v}" }.join("\r\n"))
   end
 
   def build_status(request, match)
