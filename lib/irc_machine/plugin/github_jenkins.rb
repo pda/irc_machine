@@ -78,12 +78,17 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def build_status(request, match)
-    ok (if @builds[match[1]]
-          @builds[match[1]].status
-        else
-          "UNKNOWN"
-        end
-       )
+    case match[1]
+    when "all"
+      ok @builds.map do |k, v|
+        "#{k} => #{v}"
+      end.join("\r\n")
+    # when [::hex::]{40}
+    when @builds.include?(match[1])
+      ok @builds[match[1]].status
+    else
+      ok "UNKNOWN"
+    end
   end
 
   def create_callback
