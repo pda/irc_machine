@@ -47,6 +47,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
     route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
+    route(:get, %r{^/status/all$}, :all_builds_status)
     route(:get, %r{^/status/([a-f0-9]+)$}, :build_status)
 
     initialize_jenkins_notifier
@@ -77,14 +78,14 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
   end
 
+  def all_builds_status(request, match)
+    ok @builds.map do |k, v|
+      "#{k} => #{v}"
+    end.join("\r\n")
+  end
+
   def build_status(request, match)
-    case match[1]
-    when "all"
-      ok @builds.map do |k, v|
-        "#{k} => #{v}"
-      end.join("\r\n")
-    # when [::hex::]{40}
-    when @builds.include?(match[1])
+    if @builds.include?(match[1])
       ok @builds[match[1]].status
     else
       ok "UNKNOWN"
