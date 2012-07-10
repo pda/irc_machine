@@ -54,8 +54,16 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     super(*args)
   end
 
-  def recieve_line(line)
-    if line =~ build_pattern("rebuild ([^ /])/(\S+)")
+  def receive_line(line)
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? build (\S+)$/
+      nick, chan, buildspec = $1, $2, $3
+      repo, ref = buildspec.split(?/, 2)
+      if project = @projects[repo]
+        trigger_adhoc_build(project, ref, :nick => nick, :repo => repo)
+      else
+        session.msg chan, "#{nick}: No projects matching #{repo}"
+      end
+    elsif line =~ build_pattern("rebuild ([^ /])/(\S+)")
       nick, chan, repo, branch = $1, $2, $3, $4
 
       # Find the most recent build that matches repo and branch
@@ -145,6 +153,16 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
 private
+
+  def trigger_adhoc_build(project, ref, opts={})
+    commit = OpenStruct.new({
+      :repository => OpenStruct.new({ :name => opts[:repo] }),
+      :branch => ref,
+      :after  => ref,
+      :commits => [{"author" => OpenStruct.new({ :nick => opts[:nick] })}]
+    })
+    trigger_build(project, commit)
+  end
 
   def trigger_build(project, commit)
     uri = URI(project.builder_url)
