@@ -25,7 +25,12 @@ module IrcMachine
       end
 
       def notification_format(build_status)
-        "Build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} was a #{build_status} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time.irc_bold}s PING #{users_to_notify.join(" ")}"
+        compare_prefix = if commit.repository_url
+                            commit.repository_url + "/compare/"
+                         else
+                           ""
+                         end
+        "Build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} was a #{build_status} #{compare_prefix}#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time.irc_bold}s PING #{users_to_notify.join(" ")}"
       end
 
     end
