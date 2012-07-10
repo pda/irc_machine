@@ -161,11 +161,17 @@ private
   def trigger_adhoc_build(project, ref, opts={})
     commit = OpenStruct.new({
       :repository => OpenStruct.new({ :name => opts[:repo] }),
+      :repo_name => opts[:repo],
       :branch => ref,
+      :before => "[adhoc]",
       :after  => ref,
-      :commits => [{"author" => OpenStruct.new({ :nick => opts[:nick] })}]
+      :commits => [{"author" => OpenStruct.new({ :nick => opts[:nick] })}],
+      # Hax to ensure the requester is notified
+      :authors => [OpenStruct.new({ :nick => opts[:nick] })],
     })
-    trigger_build(project, commit)
+    if trigger_build(project, commit) && opts[:chan]
+      session.msg opts[:chan], "Build of #{opts[:repo]}/#{ref} successfully queued"
+    end
   end
 
   def trigger_build(project, commit)
