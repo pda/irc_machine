@@ -15,6 +15,7 @@ module IrcMachine
       def pusher
         # The last commit is probably the person who pushed the branch
         push_commit = commit.commits.last
+        return nil if push_commit.nil?
         push_user = ::IrcMachine::Models::GithubUser.new push_commit["author"]
         push_user.nick
       end

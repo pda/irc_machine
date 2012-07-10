@@ -169,7 +169,10 @@ private
   end
 
   def notify_privmsg(commit, build, status)
-    session.msg commit.pusher, "Jenkins build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} has #{colorise(status)}: #{build.full_url}console"
+    pusher = commit.pusher
+    unless pusher.nil?
+      session.msg commit.pusher, "Jenkins build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} has #{colorise(status)}: #{build.full_url}console"
+    end
   end
 
   # TODO build model
