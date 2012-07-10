@@ -130,7 +130,11 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
 
     if project = @projects[commit.repo_name]
-      trigger_build(project, commit)
+      if commit.after == "0000000000000000000000000000000000000000"
+        notify "Not building deleted branch #{commit.repo_name}/#{commit.branch}"
+      else
+        trigger_build(project, commit)
+      end
     else
       not_found
     end
