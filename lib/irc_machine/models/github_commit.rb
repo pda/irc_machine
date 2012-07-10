@@ -25,8 +25,8 @@ module IrcMachine
       end
 
       def notification_format(build_status)
-        compare_prefix = if commit.repository_url
-                            commit.repository_url + "/compare/"
+        compare_prefix = if commit.repository.url
+                            commit.repository.url + "/compare/"
                          else
                            ""
                          end
