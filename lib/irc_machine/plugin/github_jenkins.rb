@@ -210,6 +210,8 @@ private
       status.irc_green.irc_bold
     when /^FAIL/
       status.irc_red.irc_bold
+    when /^STAR/
+      status.irc_yellow.irc_bold
     else
       status
     end
