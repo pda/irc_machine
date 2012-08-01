@@ -126,7 +126,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
   def receive_line(line)
     # TODO Regex
-    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? deploy (\S+)$/
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? (?:deploy|ship) (\S+)$/
       user = $1.chomp
       channel = $2.chomp
       repo = $3.chomp
