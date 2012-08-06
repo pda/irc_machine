@@ -68,6 +68,7 @@ Contributors
 * [Eric Anderson](https://github.com/ericanderson)
 * [Anton Lindström](https://github.com/antonlindstrom)
 * [Richo Healey](https://github.com/richo)
+* [Michael Mifsud](https://github.com/xzyfer)
 
 
 Meh.
