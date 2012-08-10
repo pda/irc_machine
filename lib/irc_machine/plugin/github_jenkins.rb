@@ -47,6 +47,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
     route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
+    route(:post, %r{^/github/notice$}, :rest_notice)
     route(:get, %r{^/status/all$}, :all_builds_status)
     route(:get, %r{^/status/([a-f0-9]+)$}, :build_status)
 
@@ -81,6 +82,10 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       session.msg chan, "#{nick}: No builds matching #{bold(repo)}/#{bold(branch)}"
 
     end
+  end
+
+  def rest_notice(request, match)
+    notify request.body.read
   end
 
   def jenkins_status(request, match)
