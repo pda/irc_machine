@@ -186,7 +186,14 @@ private
     params = defaultParams(project).merge ({SHA1: commit.after, ID: id})
 
     uri.query = URI.encode_www_form(params)
-    return Net::HTTP.get_response(uri).is_a? Net::HTTPSuccess
+    case Net::HTTP.get_response(uri)
+    when Net::HTTPSuccess
+      return true
+    when Net::HTTPFound
+      return true
+    else
+      return false
+    end
   end
 
   def load_config
