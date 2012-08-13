@@ -63,7 +63,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         if ref.length < 7
           session.msg chan, "#{nick}: at least 7 chars of the ref are required"
         else
-          trigger_adhoc_build(project, ref, :nick => nick, :repo => repo)
+          trigger_adhoc_build(project, ref, :nick => nick, :repo => repo, :chan => chan)
         end
       else
         session.msg chan, "#{nick}: No projects matching #{repo}"
