@@ -25,5 +25,14 @@ describe "Agent99::Plugin::JenkinsNotify" do
       app.expects(:deploy!)
       @plugin.build_success(commit, nil, callback)
     end
+
+    it "Should disable deploys when the integration branch fails" do
+      app = @plugin.apps["Fixture"]
+      callback = mock
+      commit = Fixtures::GithubCommit.new
+      callback.expects(:call).at_least(2)
+      app.expects(:disable!)
+      @plugin.build_fail(commit, nil, callback)
+    end
   end
 end
