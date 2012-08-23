@@ -112,7 +112,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     load_config.each do |k, v|
       @apps[k] = MutexApp.new(k) do |app|
         app.deploy_url = v[:deploy_url]
-        app.auto_deploy = !!v[:auto_deploy]
+        app.auto_deploy = v[:auto_deploy] || false
       end
 
       route(:get, %r{/deploy/(#{k})/success}, :rest_success)
@@ -212,13 +212,11 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     repo = commit.repo_name
     branch = commit.branch
 
-    return unless branch == "master"
     return unless (app = @apps[repo])
+    return unless branch == app.auto_deploy
 
-    if app.auto_deploy
-      callback.call("Attempting automatic deploy of #{app.name}")
-      callback.call(app.deploy!(commit.pusher, callback))
-    end
+    callback.call("Attempting automatic deploy of #{app.name}")
+    callback.call(app.deploy!(commit.pusher, callback))
   end
 
   def build_fail(commit, build, callback)
