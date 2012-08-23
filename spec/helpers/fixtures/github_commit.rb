@@ -51,7 +51,8 @@ module Fixtures
         repository: OpenStruct.new({
           name: "Fixture"
         }),
-        branch: "FixtureBranch"
+        branch: "FixtureBranch",
+        commits: [{ author: "richo" }]
       })
     end
   end; end
