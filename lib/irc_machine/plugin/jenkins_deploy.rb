@@ -1,6 +1,6 @@
 require 'net/http'
 class MutexApp
-  attr_reader :name, :last_user
+  attr_reader :name, :last_user, :reason
   attr_accessor :deploy_url, :auto_deploy
 
   def initialize(name)
@@ -37,9 +37,10 @@ class MutexApp
     return "Deploy started for #{name}"
   end
 
-  def disable!
+  def disable!(opts = {})
     @deploying = true
     @last_state = :disabled
+    @reason = opts[:reason]
   end
 
   def reset!
@@ -139,15 +140,16 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
         deploy(app, user, channel)
       end
 
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? disable (\S+)$/
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? disable (\S+)( .*)?$/
       user = $1.chomp
       channel = $2.chomp
       repo = $3.chomp
+      reason = $4.chomp
       app = apps[repo.to_sym]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
       else
-        app.disable!
+        app.disable!(:reason => reason)
         session.msg channel, "#{repo} has been disabled"
       end
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? reset (\S+)$/
@@ -171,7 +173,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
         session.msg channel, "Unknown repo: #{repo}"
       else
         if app.deploying?
-          session.msg channel, "#{user}: #{repo} is currently #{app.last_state}; caused by #{app.last_user}"
+          session.msg channel, "#{user}: #{repo} is currently #{app.last_state}; caused by #{app.last_user} because #{app.reason || "of reasons"}"
         else
           session.msg channel, "#{user}: #{repo} is not currently being deployed"
         end
