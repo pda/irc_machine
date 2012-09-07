@@ -143,20 +143,12 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def build_complete_message(commit, build)
-    github_prefix = commit.repository.url || "";
-
-    if commit.tag?
-      github = "#{github_prefix}/tree/#{commit.branch}"
-    else
-      github = "#{github_prefix}/compare/#{commit.before[0..6]}...#{commit.after[0..6]}"
-    end
-
     # SUCCESS - contests/master built in 133s :: PHP 1234 :: JS 5678 :: diff http://git.io/abc123 :: PING bradfeehan
     # FAILURE - contests/master built in 432s :: PHP 2345 :: JS 6789 :: diff http://git.io/def456 :: Jenkins http://jenkins.99cluster.com/job/contests/6543/console :: PING bradfeehan
     if build.status =~ /^SUCC/
-      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{github} :: PING #{commit.users_to_notify.join(" ")}"
+      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{commit.github_url} :: PING #{commit.users_to_notify.join(" ")}"
     else
-      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{github} :: Jenkins #{build.full_url} :: PING #{commit.users_to_notify.join(" ")}"
+      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{commit.github_url} :: Jenkins #{build.full_url} :: PING #{commit.users_to_notify.join(" ")}"
     end
   end
 
