@@ -23,17 +23,6 @@ module IrcMachine
       def users_to_notify
         authors.map(&:nick).flatten.uniq
       end
-
-      def notification_format(build_status)
-        compare_prefix = if commit.repository.url
-                            commit.repository.url + "/compare/"
-                         else
-                           ""
-                         end
-        "Build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} was a #{build_status} #{compare_prefix}#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time.irc_bold}s PING #{users_to_notify.join(" ")}"
-      end
-
     end
-
   end
 end

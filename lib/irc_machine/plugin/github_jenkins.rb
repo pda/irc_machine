@@ -119,15 +119,14 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify_privmsg(commit, build, "STARTED")
       end #}}}
 
+      endpoint.on :completed, &:notify_complete
+
       endpoint.on :completed, :success do |commit, build|#{{{ Success
-        notify format_msg(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
         plugin_send(:JenkinsNotify, :build_success, commit, build, create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
-        notify format_msg(commit, build)
-        notify "Jenkins output available at #{build.full_url}console"
         notify_privmsg(commit, build, "FAILED")
         plugin_send(:JenkinsNotify, :build_fail, commit, build,  create_callback)
       end #}}}
@@ -140,6 +139,24 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify "Unknown build of #{build.parameters.SHA1} completed with status #{build.status}"
         notify "Jenkins output available at #{build.full_url}console"
       end #}}}
+    end
+  end
+
+  def build_complete_message(commit, build)
+    github_prefix = commit.repository.url || "";
+
+    if commit.tag?
+      github = "#{github_prefix}/tree/#{commit.branch}"
+    else
+      github = "#{github_prefix}/compare/#{commit.before[0..6]}...#{commit.after[0..6]}"
+    end
+
+    # SUCCESS - contests/master built in 133s :: PHP 1234 :: JS 5678 :: diff http://git.io/abc123 :: PING bradfeehan
+    # FAILURE - contests/master built in 432s :: PHP 2345 :: JS 6789 :: diff http://git.io/def456 :: Jenkins http://jenkins.99cluster.com/job/contests/6543/console :: PING bradfeehan
+    if build.status =~ /^SUCC/
+      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{github} :: PING #{commit.users_to_notify.join(" ")}"
+    else
+      "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{github} :: Jenkins #{build.full_url} :: PING #{commit.users_to_notify.join(" ")}"
     end
   end
 
@@ -227,12 +244,6 @@ private
     else
       status
     end
-  end
-
-
-  def format_msg(commit, build)
-    status = colorise(build.status)
-    commit.notification_format(status)
   end
 
   def build_pattern(text)
