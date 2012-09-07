@@ -119,14 +119,14 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify_privmsg(commit, build, "STARTED")
       end #}}}
 
-      endpoint.on :completed, &:notify_complete
-
       endpoint.on :completed, :success do |commit, build|#{{{ Success
+        notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
         plugin_send(:JenkinsNotify, :build_success, commit, build, create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
+        notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "FAILED")
         plugin_send(:JenkinsNotify, :build_fail, commit, build,  create_callback)
       end #}}}
