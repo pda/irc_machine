@@ -17,7 +17,6 @@ class MutexApp
   end
 
   def deploy!(user, channel)
-    # Reactor model, this is safe
     if @deploying
       if @last_state == :disabled
         return "Deploy for #{name} is currently disabled because #{reason}"
