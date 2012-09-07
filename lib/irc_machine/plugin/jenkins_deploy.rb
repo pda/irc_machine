@@ -144,7 +144,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       user = $1.chomp
       channel = $2.chomp
       repo = $3.chomp
-      reason = $4.chomp
+      reason = $4.chomp rescue nil
       app = apps[repo.to_sym]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
