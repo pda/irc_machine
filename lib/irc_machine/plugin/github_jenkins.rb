@@ -136,8 +136,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       end #}}}
 
       endpoint.on :unknown do |build| #{{{ Unknown
-        notify "Unknown build of #{build.parameters.SHA1} completed with status #{build.status}"
-        notify "Jenkins output available at #{build.full_url}console"
+        notify build_unknown_message(build)
       end #}}}
     end
   end
@@ -150,6 +149,10 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     else
       "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{commit.github_url} :: Jenkins #{build.full_url} :: PING #{commit.users_to_notify.join(" ")}"
     end
+  end
+
+  def build_unknown_message(build)
+    "#{colorise(build.status)} - #{build.parameters.SHA1} :: Jenkins #{build.full_url}"
   end
 
   def build_branch(request, match)
