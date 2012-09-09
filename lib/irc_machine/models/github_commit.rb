@@ -1,3 +1,5 @@
+require 'net/http'
+
 module IrcMachine
   module Models
 
@@ -24,16 +26,21 @@ module IrcMachine
         authors.map(&:nick).flatten.uniq
       end
 
-      def notification_format(build_status)
-        compare_prefix = if commit.repository.url
-                            commit.repository.url + "/compare/"
-                         else
-                           ""
-                         end
-        "Build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} was a #{build_status} #{compare_prefix}#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time.irc_bold}s PING #{users_to_notify.join(" ")}"
+      def prefix
+        @prefix ||= repository.url || "";
+      end
+
+      def github_url
+        if tag?
+          url = "#{prefix}/tree/#{branch}"
+        else
+          url = "#{prefix}/compare/#{before[0..6]}...#{after[0..6]}"
+        end
+
+        # Shorten if possible using git.io (Github's URL shortener)
+        Net::HTTP.post_form(URI.parse('http://git.io'), {'url' => url})['Location'] rescue url
       end
 
     end
-
   end
 end

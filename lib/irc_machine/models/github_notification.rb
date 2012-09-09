@@ -23,7 +23,11 @@ module IrcMachine
       end
 
       def branch
-        data.ref.gsub(%r{refs/heads/}, "")
+        data.ref.gsub(%r{refs/(heads|tags)/}, "")
+      end
+
+      def tag?
+        data.ref.start_with? "refs/tags/"
       end
 
       def after
