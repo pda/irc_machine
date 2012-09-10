@@ -187,7 +187,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_success(request, match)
     if app = apps[match[1]]
       if app.succeed
-        app.notify(session, "Deploy of #{app.name} succeeded \\o/ | PING #{app.last_user}")
+        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name} succeeded \\o/ | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_succeed.sh &`
       end
     else
@@ -198,7 +198,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_fail(request, match)
     if app = apps[match[1]]
       if app.fail
-         app.notify(session, "Deploy of #{app.name} FAILED | PING #{app.last_user}")
+         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name} FAILED | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_fail.sh &`
       end
     else
