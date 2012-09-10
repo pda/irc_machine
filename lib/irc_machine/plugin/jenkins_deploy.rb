@@ -19,9 +19,9 @@ class MutexApp
   def deploy!(user, channel)
     if @deploying
       if @last_state == :disabled
-        return "Deploy for #{name} is currently disabled because #{reason}"
+        return "#{"DEPLOY".irc_cyan.irc_bold} - #{name} is currently disabled because #{reason}"
       else
-        return "Deploy for #{name} in progress by #{last_user}" if @deploying
+        return "#{"DEPLOY".irc_cyan.irc_bold} - #{name} in progress by #{last_user}" if @deploying
       end
     end
 
@@ -33,7 +33,7 @@ class MutexApp
     uri = URI(deploy_url)
     Net::HTTP.get(uri)
 
-    return "Deploy started for #{name}"
+    return "#{"DEPLOY".irc_cyan.irc_bold} - started for #{name}"
   end
 
   def disable!(opts = {})
@@ -220,7 +220,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     return unless (app = @apps[repo])
     return unless branch == app.auto_deploy
 
-    callback.call("Attempting automatic deploy of #{app.name}")
+    callback.call("#{"DEPLOY".irc_cyan.irc_bold} - Attempting automatic deploy of #{app.name}")
     callback.call(app.deploy!(commit.pusher, callback))
   end
 
@@ -231,7 +231,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     return unless (app = @apps[repo])
     return unless branch == app.auto_deploy || "master"
 
-    callback.call("Disabling deploys due to failed build of #{app.name}")
+    callback.call("#{"DEPLOY".irc_cyan.irc_bold} - Disabling deploys due to failed build of #{app.name}")
     app.disable!
     callback.call("#{app.name} has been disabled")
   end

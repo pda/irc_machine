@@ -28,4 +28,8 @@ class String
   def irc_yellow
     "#{0x03.chr}8#{self}#{0x03.chr}"
   end
+
+  def irc_cyan
+    "#{0x03.chr}10#{self}#{0x03.chr}"
+  end
 end
