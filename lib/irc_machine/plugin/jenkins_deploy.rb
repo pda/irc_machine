@@ -176,9 +176,9 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
         session.msg channel, "Unknown repo: #{repo}"
       else
         if app.deploying?
-          session.msg channel, "#{user}: #{repo} is currently #{app.last_state}; caused by #{app.last_user} because #{app.reason}"
+          session.msg channel, "#{user}: #{repo.irc_bold} is currently #{app.last_state}; caused by #{app.last_user} because #{app.reason}"
         else
-          session.msg channel, "#{user}: #{repo} is not currently being deployed"
+          session.msg channel, "#{user}: #{repo.irc_bold} is not currently being deployed"
         end
       end
     end
@@ -187,7 +187,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_success(request, match)
     if app = apps[match[1]]
       if app.succeed
-        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name} succeeded \\o/ | PING #{app.last_user}")
+        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.irc_bold} succeeded \\o/ | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_succeed.sh &`
       end
     else
@@ -198,7 +198,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_fail(request, match)
     if app = apps[match[1]]
       if app.fail
-         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name} FAILED | PING #{app.last_user}")
+         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.irc_bold} FAILED | PING #{app.last_user}")
         `ssh saunamacmini ./deploy_fail.sh &`
       end
     else
