@@ -222,7 +222,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
     callback.call("#{"DEPLOY".irc_cyan.irc_bold} - Attempting automatic deploy of #{app.name}")
     callback.call(app.deploy!(commit.pusher, callback).tap do |status|
-      if status =~ /Deploy started/
+      if status =~ /started for/
         callback.call(SQUIRRELS.sample)
         `ssh saunamacmini ./pre_deploy.sh &`
       end
@@ -246,7 +246,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
   def deploy(app, user, channel)
     status = app.deploy!(user, channel)
-    if status =~ /Deploy started/
+    if status =~ /started for/
       session.msg channel, SQUIRRELS.sample
       `ssh saunamacmini ./pre_deploy.sh &`
     end
