@@ -21,6 +21,12 @@ module IrcMachine
         end
       end
 
+      def redirect(to)
+        Rack::Response.new.tap do |response|
+          response.redirect(to)
+        end
+      end
+
       def route(method, path, destination)
         # Close over the instance method and bind to a route.
         if destination.is_a? Symbol
