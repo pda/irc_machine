@@ -27,6 +27,14 @@ module IrcMachine
       end
     end
 
+    def get_plugin(p)
+      @plugins.select do |v|
+        v.class.name.to_sym == :"IrcMachine::Plugin::#{p}"
+      end.tap do |ary|
+        return nil if ary.empty?
+      end.first
+    end
+
     def start
       EM.run do
 
@@ -57,16 +65,13 @@ module IrcMachine
     end
 
     def disconnected
+      EM.stop
       if @shutdown
         log "Stopping EventMachine"
-        EM.stop
       else
         log "Waiting to reconnect"
         EM.add_timer(2) do
-          log "Reconnecting to #{options.server}:#{options.port}"
-          irc_connection.reconnect options.server, options.port
-          @state.reset
-          dispatch :connected
+          start
         end
       end
     end

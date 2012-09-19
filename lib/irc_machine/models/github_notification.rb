@@ -23,11 +23,35 @@ module IrcMachine
       end
 
       def branch
-        data.ref.gsub(%r{refs/heads/}, "")
+        data.ref.gsub(%r{refs/(heads|tags)/}, "")
+      end
+
+      def tag?
+        data.ref.start_with? "refs/tags/"
+      end
+
+      def after
+        data.after
+      end
+
+      def before
+        data.before
+      end
+
+      def commits
+        data.commits
+      end
+
+      def owner
+        OpenStruct.new(data.owner)
+      end
+
+      def repository
+        OpenStruct.new(data.repository)
       end
 
       def authors
-        data.commits.map{ |c| OpenStruct.new c["author"] }
+        data.commits.map{ |c| ::IrcMachine::Models::GithubUser.new c["author"] }
       end
 
       def author_usernames
