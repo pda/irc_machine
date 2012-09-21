@@ -11,8 +11,12 @@ module IrcMachine
           options.prelude.each do |line|
             session.raw line
           end
+          EM::add_timer(10) do
+            join_channels
+          end
+        else
+          join_channels
         end
-        options.channels.each { |c| session.join *c.split } if options.channels
       end
     end
 
@@ -55,5 +59,8 @@ module IrcMachine
       session.state.channels
     end
 
+    def join_channels
+      options.channels.each { |c| session.join *c.split } if options.channels
+    end
   end
 end
