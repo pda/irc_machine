@@ -7,7 +7,11 @@ module IrcMachine
       session.nick options.nick
       session.state.nick = options.nick
       EM::add_timer(5) do
-        session.raw options.identify_command if options.identify_command
+        if options.prelude
+          options.prelude.each do |line|
+            session.raw line
+          end
+        end
         options.channels.each { |c| session.join *c.split } if options.channels
       end
     end
