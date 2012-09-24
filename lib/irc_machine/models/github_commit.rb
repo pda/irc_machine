@@ -1,3 +1,5 @@
+require 'net/http'
+
 module IrcMachine
   module Models
 
@@ -15,6 +17,7 @@ module IrcMachine
       def pusher
         # The last commit is probably the person who pushed the branch
         push_commit = commit.commits.last
+        return nil if push_commit.nil?
         push_user = ::IrcMachine::Models::GithubUser.new push_commit["author"]
         push_user.nick
       end
@@ -23,11 +26,21 @@ module IrcMachine
         authors.map(&:nick).flatten.uniq
       end
 
-      def notification_format(build_status)
-        "Build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} was a #{build_status} #{commit.repository.url}/compare/#{commit.before[0..6]}...#{commit.after[0..6]} in #{build_time.irc_bold}s PING #{users_to_notify.join(" ")}"
+      def prefix
+        @prefix ||= repository.url || "";
+      end
+
+      def github_url
+        if tag?
+          url = "#{prefix}/tree/#{branch}"
+        else
+          url = "#{prefix}/compare/#{before[0..6]}...#{after[0..6]}"
+        end
+
+        # Shorten if possible using git.io (Github's URL shortener)
+        Net::HTTP.post_form(URI.parse('http://git.io'), {'url' => url})['Location'] rescue url
       end
 
     end
-
   end
 end

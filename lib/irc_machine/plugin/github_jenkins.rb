@@ -30,6 +30,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   attr_reader :settings
   def initialize(*args)
     @projects = Hash.new
+    @commits = Hash.new
     @builds = Hash.new
     conf = load_config
 
@@ -45,18 +46,34 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
+    route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
+    route(:post, %r{^/github/notice$}, :rest_notice)
+    route(:get, %r{^/status/all$}, :all_builds_status)
+    route(:get, %r{^/status/([a-f0-9]+)$}, :build_status)
 
     initialize_jenkins_notifier
     super(*args)
   end
 
-  def recieve_line(line)
-    if line =~ build_pattern("rebuild ([^ /])/(\S+)")
+  def receive_line(line)
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? build (\S+)$/
+      nick, chan, buildspec = $1, $2, $3
+      repo, ref = buildspec.split(?/, 2)
+      if project = @projects[repo]
+        if ref.length < 7
+          session.msg chan, "#{nick}: at least 7 chars of the ref are required"
+        else
+          trigger_adhoc_build(project, ref, :nick => nick, :repo => repo, :chan => chan)
+        end
+      else
+        session.msg chan, "#{nick}: No projects matching #{repo}"
+      end
+    elsif line =~ build_pattern("rebuild ([^ /])/(\S+)")
       nick, chan, repo, branch = $1, $2, $3, $4
 
       # Find the most recent build that matches repo and branch
-      build_id = @builds.keys.sort{ |a, b| b <=> a }.each do |k|
-        build = @builds[k]
+      build_id = @commits.keys.sort{ |a, b| b <=> a }.each do |k|
+        build = @commits[k]
         if build.repo_name == repo and build.branch_name == branch
           return trigger_build(build.repo, build.commit)
         end
@@ -67,12 +84,35 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
   end
 
+  def rest_notice(request, match)
+    notify request.body.read
+  end
+
+  def jenkins_status(request, match)
+    @notifier.process(request.body.read) do |build|
+      p = build.parameters
+      @builds[p.SHA1] = build
+    end
+  end
+
+  def all_builds_status(request, match)
+    ok (@builds.map {|k, v| "#{k} => #{v.status}" }.join("\r\n"))
+  end
+
+  def build_status(request, match)
+    if @builds.include?(match[1])
+      ok @builds[match[1]].status
+    else
+      ok "UNKNOWN"
+    end
+  end
+
   def create_callback
     lambda { |d| notify d }
   end
 
   def initialize_jenkins_notifier
-    @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@builds) do |endpoint|
+    @notifier = ::IrcMachine::Routers::JenkinsRouter.new(@commits) do |endpoint|
       endpoint.on :started do |commit, build|#{{{ Started
         commit.start_time = Time.now.to_i
         # TODO
@@ -80,15 +120,15 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       end #}}}
 
       endpoint.on :completed, :success do |commit, build|#{{{ Success
-        plugin_send(:JenkinsNotify, :build_success, commit.repo_name, commit.branch,  create_callback)
-        notify format_msg(commit, build)
+        notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
+        plugin_send(:JenkinsNotify, :build_success, commit, build, create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
-        notify format_msg(commit, build)
-        notify "Jenkins output available at #{build.full_url}console"
+        notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "FAILED")
+        plugin_send(:JenkinsNotify, :build_fail, commit, build,  create_callback)
       end #}}}
 
       endpoint.on :completed, :aborted do |commit, build| #{{{ Aborted
@@ -96,18 +136,33 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       end #}}}
 
       endpoint.on :unknown do |build| #{{{ Unknown
-        notify "Unknown build of #{build.parameters.SHA1} completed with status #{build.status}"
-        notify "Jenkins output available at #{build.full_url}console"
+        notify build_unknown_message(build)
       end #}}}
     end
-    route(:post, %r{^/github/jenkins_status$}, @notifier.endpoint)
+  end
+
+  def build_complete_message(commit, build)
+    # SUCCESS - contests/master built in 133s :: PHP 1234 :: JS 5678 :: diff http://git.io/abc123 :: PING bradfeehan
+    # FAILURE - contests/master built in 432s :: PHP 2345 :: JS 6789 :: diff http://git.io/def456 :: Jenkins http://jenkins.99cluster.com/job/contests/6543/console :: PING bradfeehan
+    "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{commit.github_url}".tap do |msg|
+      msg << " :: Jenkins #{build.full_url}" unless build.status =~ /^SUCC/
+      msg << " :: PING #{commit.users_to_notify.join(" ")}" unless commit.tag?
+    end
+  end
+
+  def build_unknown_message(build)
+    "#{colorise(build.status)} - #{build.parameters.SHA1} :: Jenkins #{build.full_url}"
   end
 
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
 
     if project = @projects[commit.repo_name]
-      trigger_build(project, commit)
+      if commit.after == "0000000000000000000000000000000000000000"
+        notify "Not building deleted branch #{commit.repo_name}/#{commit.branch}"
+      else
+        trigger_build(project, commit)
+      end
     else
       not_found
     end
@@ -119,14 +174,37 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
 private
 
+  def trigger_adhoc_build(project, ref, opts={})
+    commit = OpenStruct.new({
+      :repository => OpenStruct.new({ :name => opts[:repo] }),
+      :repo_name => opts[:repo],
+      :branch => ref,
+      :before => "[adhoc]",
+      :after  => ref,
+      :commits => [{"author" => OpenStruct.new({ :nick => opts[:nick] })}],
+      # Hax to ensure the requester is notified
+      :authors => [OpenStruct.new({ :nick => opts[:nick] })],
+    })
+    if trigger_build(project, commit) && opts[:chan]
+      session.msg opts[:chan], "Build of #{opts[:repo]}/#{ref} successfully queued"
+    end
+  end
+
   def trigger_build(project, commit)
     uri = URI(project.builder_url)
     id = next_id
-    @builds[id.to_s] = ::IrcMachine::Models::GithubCommit.new({ repo: project, commit: commit, start_time: 0, repo_name: commit.repository.name, branch_name: commit.branch })
+    @commits[id.to_s] = ::IrcMachine::Models::GithubCommit.new({ repo: project, commit: commit, start_time: 0, repo_name: commit.repository.name, branch_name: commit.branch })
     params = defaultParams(project).merge ({SHA1: commit.after, ID: id})
 
     uri.query = URI.encode_www_form(params)
-    return Net::HTTP.get(uri).is_a? Net::HTTPSuccess
+    case Net::HTTP.get_response(uri)
+    when Net::HTTPSuccess
+      return true
+    when Net::HTTPFound
+      return true
+    else
+      return false
+    end
   end
 
   def load_config
@@ -142,7 +220,10 @@ private
   end
 
   def notify_privmsg(commit, build, status)
-    session.msg commit.pusher, "Jenkins build of #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} has #{colorise(status)}: #{build.full_url}console"
+    pusher = commit.pusher
+    unless pusher.nil?
+      session.msg commit.pusher, "#{colorise(status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} :: Jenkins #{build.full_url}"
+    end
   end
 
   # TODO build model
@@ -152,15 +233,11 @@ private
       status.irc_green.irc_bold
     when /^FAIL/
       status.irc_red.irc_bold
+    when /^STAR/
+      status.irc_yellow.irc_bold
     else
       status
     end
-  end
-
-
-  def format_msg(commit, build)
-    status = colorise(build.status)
-    commit.notification_format(status)
   end
 
   def build_pattern(text)
