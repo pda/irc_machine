@@ -188,7 +188,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     if app = apps[match[1]]
       if app.succeed
         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} succeeded \\o/ | PING #{app.last_user}")
-        `ssh saunamacmini ./deploy_succeed.sh &`
+        plugin_send(:Notifier, :notify, "deploy_success")
       end
     else
       not_found
@@ -199,7 +199,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     if app = apps[match[1]]
       if app.fail
          app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} FAILED | PING #{app.last_user}")
-        `ssh saunamacmini ./deploy_fail.sh &`
+         plugin_send(:Notifier, :notify, "deploy_failure")
       end
     else
       not_found
@@ -224,7 +224,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     callback.call(app.deploy!(commit.pusher, callback).tap do |status|
       if status =~ /started for/
         callback.call(SQUIRRELS.sample)
-        `ssh saunamacmini ./pre_deploy.sh &`
+         plugin_send(:Notifier, :notify, "pre_deploy")
       end
     end)
   end
@@ -248,7 +248,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     status = app.deploy!(user, channel)
     if status =~ /started for/
       session.msg channel, SQUIRRELS.sample
-      `ssh saunamacmini ./pre_deploy.sh &`
+      plugin_send(:Notifier, :notify, "pre_deploy")
     end
     session.msg channel, status
   end
