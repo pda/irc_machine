@@ -35,6 +35,12 @@ describe "Agent99::Plugin::DecisionMaker" do
       )
     end
 
+    it "should cope with spaces in the options given" do
+      ["do this", "do that"].should include(
+        @plugin.generate_reply(":rawr:#{stub_nick}: do this or do that?")
+      )
+    end
+
     it "should throw :nomatch when nothing matches" do
       lambda {
         @plugin.generate_reply(":rawr:foobar")
