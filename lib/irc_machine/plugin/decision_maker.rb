@@ -13,7 +13,7 @@ class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
     case line
     when /:[^:]*:#{session.state.nick}:? (.* or .*)\?$/
       choice($1.split(" or "))
-    when /:[^:]*:#{session.state.nick}:? (?:is|can|do|should|could|would).*\?$/
+    when /:[^:]*:#{session.state.nick}:? (?:are|do|if|is|can|do|should|could|would).*\?$/
       choice(MAGIC_8_BALL)
     else
       throw(:nomatch)
