@@ -29,20 +29,19 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
   attr_reader :settings
   def initialize(*args)
+    super(*args)
     @projects = Hash.new
     @commits = Hash.new
     @builds = Hash.new
-    conf = load_config
-
-    conf["builds"].each do |k, v|
+    settings["builds"].each do |k, v|
       @projects[k] = OpenStruct.new(v)
     end
 
-    @settings = OpenStruct.new(conf["settings"])
+    @settings = OpenStruct.new(settings["settings"])
 
     # {}Seed the cache of usernames
-    if conf.include? "usernames"
-      ::IrcMachine::Models::GithubUser.nicks = conf["usernames"]
+    if settings.include? "usernames"
+      ::IrcMachine::Models::GithubUser.nicks = settings["usernames"]
     end
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
@@ -52,7 +51,6 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     route(:get, %r{^/status/([a-f0-9]+)$}, :build_status)
 
     initialize_jenkins_notifier
-    super(*args)
   end
 
   def receive_line(line)
@@ -205,10 +203,6 @@ private
     else
       return false
     end
-  end
-
-  def load_config
-    JSON.load(open(File.expand_path(CONFIG_FILE)))
   end
 
   def next_id

@@ -2,6 +2,10 @@ module IrcMachine
   module Plugin
     class Base
       def initialize(session)
+        if self.class.const_defined?(:CONFIG_FILE)
+          initialize_config
+        end
+
         @session = session
       end
       attr_reader :session
@@ -40,6 +44,20 @@ module IrcMachine
       def plugin_send(plugin, sym, *args)
         if (p = session.get_plugin plugin)
           p.send(sym, *args)
+        end
+      end
+
+    protected
+
+      def initialize_config
+        class << self
+          define_method(:settings) do
+            @settings ||= load_config
+          end
+
+          define_method(:load_config) do
+            JSON.load(open(File.expand_path(CONFIG_FILE)))
+          end
         end
       end
 

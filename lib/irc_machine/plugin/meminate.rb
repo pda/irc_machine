@@ -5,10 +5,9 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
   def initialize(*args)
     super(*args)
     @meminator = ::Meminator::Meminator.new
-    @config = load_config
 
-    ::Meminator.username = @config.username
-    ::Meminator.password = @config.password
+    ::Meminator.username = settings["username"]
+    ::Meminator.password = settings["password"]
     route(:get, "/meminate/list", :display_meme_list)
   end
 
@@ -38,10 +37,6 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
     @meminator.get_url(name, *text.split("|"))
   end
 
-  def load_config
-    OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
-  end
-
   def display_meme_list(request, match)
     memes = all_memes.map do |k, v|
       "#{v[2]}\t\t=>\t#{k}"
@@ -51,8 +46,8 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
   end
 
   def hostname
-    if @config.respond_to? :hostname
-      @config.hostname
+    if settings.include? "hostname"
+      settings["hostname"]
     else
       "[ThisMachine]"
     end

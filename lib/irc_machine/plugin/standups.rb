@@ -1,15 +1,14 @@
 class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
   CONFIG_FILE = "standups.json"
 
-  attr_reader :config, :tasks
+  attr_reader :tasks
   def initialize(*args)
     super(*args)
-    @config = load_config
     @tasks = {}
   end
 
   def join!
-    session.join config.channel
+    session.join config["channel"]
   end
 
   def receive_line(line)
@@ -26,15 +25,10 @@ class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
           session.msg channel, "#{nick}: I'm not sure what #{target} has planned"
         end
       end
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG #{config.channel} :(.*)$/
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG #{config["channel"]} :(.*)$/
       puts "tasks[#{$1}] = #{$2}"
       tasks[$1] = "#{$2}, at #{now}"
     end
-  end
-
-  # TODO move to base?
-  def load_config
-    OpenStruct.new(JSON.load(open(File.expand_path(CONFIG_FILE))))
   end
 
   def now

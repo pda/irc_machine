@@ -24,12 +24,4 @@ class IrcMachine::Plugin::Notifier < IrcMachine::Plugin::Base
     Kernel.system "#{command} &"
   end
 
-  def settings
-    @settings ||= load_config
-  end
-
-  def load_config
-    JSON.load(open(File.expand_path(CONFIG_FILE)))
-  end
-
 end

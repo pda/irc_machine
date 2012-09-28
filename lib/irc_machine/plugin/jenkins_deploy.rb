@@ -112,8 +112,9 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
 
   def initialize(*args)
+    super(*args)
     @apps = SymbolicHash.new
-    load_config.each do |k, v|
+    settings.each do |k, v|
       @apps[k] = MutexApp.new(k) do |app|
         app.deploy_url = v[:deploy_url]
         app.auto_deploy = v[:auto_deploy] || false
@@ -125,7 +126,6 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
     end
 
-    super(*args)
   end
   attr_reader :apps
 
@@ -251,10 +251,6 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       plugin_send(:Notifier, :notify, "pre_deploy")
     end
     session.msg channel, status
-  end
-
-  def load_config
-    JSON.load(open(File.expand_path(CONFIG_FILE))).symbolize_keys
   end
 
 end
