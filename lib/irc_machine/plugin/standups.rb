@@ -8,7 +8,7 @@ class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
   end
 
   def join!
-    session.join config["channel"]
+    session.join settings["channel"]
   end
 
   def receive_line(line)
@@ -25,7 +25,7 @@ class IrcMachine::Plugin::Standups < IrcMachine::Plugin::Base
           session.msg channel, "#{nick}: I'm not sure what #{target} has planned"
         end
       end
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG #{config["channel"]} :(.*)$/
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG #{settings["channel"]} :(.*)$/
       puts "tasks[#{$1}] = #{$2}"
       tasks[$1] = "#{$2}, at #{now}"
     end
