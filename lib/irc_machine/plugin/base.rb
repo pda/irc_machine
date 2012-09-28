@@ -58,7 +58,7 @@ module IrcMachine
       end
 
       def load_config
-        JSON.load(open(File.expand_path(CONFIG_FILE)))
+        JSON.load(open(File.expand_path(self.class.const_get(:CONFIG_FILE))))
       end
 
     end
