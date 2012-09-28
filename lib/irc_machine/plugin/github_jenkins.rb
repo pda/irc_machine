@@ -111,18 +111,21 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       endpoint.on :started do |commit, build|#{{{ Started
         commit.start_time = Time.now.to_i
         # TODO
+        mark_build(commit, "pending")
         notify_privmsg(commit, build, "STARTED")
       end #}}}
 
       endpoint.on :completed, :success do |commit, build|#{{{ Success
         notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "SUCCEEDED")
+        mark_build(commit, "success")
         plugin_send(:JenkinsNotify, :build_success, commit, build, create_callback)
       end #}}}
 
       endpoint.on :completed, :failure do |commit, build| #{{{ Failure
         notify build_complete_message(commit, build)
         notify_privmsg(commit, build, "FAILED")
+        mark_build(commit, "failure")
         plugin_send(:JenkinsNotify, :build_fail, commit, build,  create_callback)
       end #}}}
 
@@ -134,6 +137,12 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
         notify build_unknown_message(build)
       end #}}}
     end
+  end
+
+  def mark_build(commit, status)
+    project = "#{commit.repository.owner["name"]}/#{commit.repo_name}"
+    sha     = commit.after
+    plugin_send(:GithubCommitStatus, :mark, project, sha, status)
   end
 
   def build_complete_message(commit, build)
