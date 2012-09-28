@@ -27,7 +27,6 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_jenkins.json"
 
-  attr_reader :settings
   def initialize(*args)
     super(*args)
     @projects = Hash.new
@@ -36,8 +35,6 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     settings["builds"].each do |k, v|
       @projects[k] = OpenStruct.new(v)
     end
-
-    @settings = OpenStruct.new(settings["settings"])
 
     # {}Seed the cache of usernames
     if settings.include? "usernames"
@@ -167,7 +164,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
   end
 
   def notify(msg)
-    session.msg settings.notify, msg
+    session.msg settings["settings"]["notify"], msg
   end
 
 private
