@@ -54,11 +54,11 @@ module IrcMachine
           define_method(:settings) do
             @settings ||= load_config
           end
-
-          define_method(:load_config) do
-            JSON.load(open(File.expand_path(CONFIG_FILE)))
-          end
         end
+      end
+
+      def load_config
+        JSON.load(open(File.expand_path(CONFIG_FILE)))
       end
 
     end
