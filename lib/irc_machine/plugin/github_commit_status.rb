@@ -27,7 +27,7 @@ private
     http.use_ssl = true if uri.scheme == "https"
 
     http.start do |h|
-      response = h.post(uri.request_uri, data.to_json)
+      response = h.post(uri.request_uri, data.to_json, request_headers)
     end
   end
 
