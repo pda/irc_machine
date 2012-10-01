@@ -1,8 +1,8 @@
 require File.join(File.dirname(__FILE__), "/../spec_helper")
 
 def jenkins_notify_config
-  { :Fixture => { :deploy_url => "http://jenkins.test/deploy",
-                   :auto_deploy => "FixtureBranch" }
+  { "Fixture" => { "deploy_url" => "http://jenkins.test/deploy",
+                   "auto_deploy" => "FixtureBranch" }
   }
 end
 
