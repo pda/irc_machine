@@ -88,12 +88,6 @@ class MutexApp
 
 end
 
-class SymbolicHash < Hash
-  def [](k)
-    super k.to_sym
-  end
-end
-
 class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "jenkins_notify.json"
@@ -113,11 +107,11 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
 
   def initialize(*args)
     super(*args)
-    @apps = SymbolicHash.new
+    @apps = Hash.new
     settings.each do |k, v|
       @apps[k] = MutexApp.new(k) do |app|
-        app.deploy_url = v[:deploy_url]
-        app.auto_deploy = v[:auto_deploy] || false
+        app.deploy_url = v["deploy_url"]
+        app.auto_deploy = v["auto_deploy"] || false
       end
 
       route(:get, %r{/deploy/(#{k})/success}, :rest_success)
@@ -136,7 +130,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       channel = $2.chomp
       repo = $3.chomp
 
-      app = apps[repo.to_sym]
+      app = apps[repo]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
       else
@@ -148,7 +142,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       channel = $2.chomp
       repo = $3.chomp
       reason = $4.chomp rescue nil
-      app = apps[repo.to_sym]
+      app = apps[repo]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
       else
@@ -159,7 +153,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       user = $1.chomp
       channel = $2.chomp
       repo = $3.chomp
-      app = apps[repo.to_sym]
+      app = apps[repo]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
       else
@@ -171,7 +165,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       channel = $2.chomp
       repo = $3.chomp
 
-      app = apps[repo.to_sym]
+      app = apps[repo]
       if app.nil?
         session.msg channel, "Unknown repo: #{repo}"
       else
