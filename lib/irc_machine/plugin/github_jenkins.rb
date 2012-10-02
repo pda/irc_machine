@@ -150,7 +150,10 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     # FAILURE - contests/master built in 432s :: PHP 2345 :: JS 6789 :: diff http://git.io/def456 :: Jenkins http://jenkins.99cluster.com/job/contests/6543/console :: PING bradfeehan
     "#{colorise(build.status)} - #{commit.repo_name.irc_bold}/#{commit.branch.irc_bold} built in #{commit.build_time.irc_bold}s :: #{commit.github_url}".tap do |msg|
       msg << " :: Jenkins #{build.full_url}" unless build.status =~ /^SUCC/
-      msg << " :: PING #{commit.users_to_notify.join(" ")}" unless commit.tag?
+      unless commit.tag?
+        users = commit.users_to_notify.map { |nick| "@#{nick}" }
+        msg << " :: PING #{users.join(" ")}"
+      end
     end
   end
 
