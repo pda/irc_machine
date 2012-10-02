@@ -231,7 +231,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
     return unless branch == (app.auto_deploy || "master")
 
     callback.call("#{"DEPLOY".irc_cyan.irc_bold} - Disabling deploys due to failed build of #{app.name}")
-    app.disable!
+    app.disable!(:reason => "commit #{commit.after} by #{commit.pusher}")
     callback.call("#{app.name} has been disabled")
   end
 
