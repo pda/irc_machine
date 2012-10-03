@@ -38,11 +38,16 @@ module IrcMachine
         data.compare
       end
 
+      def last_commit_message
+        data.commits.last["message"]
+      end
+
       def message
-        "%d commit%s by %s pushed to %s/%s: %s" % [
+        "%d commit%s by %s (%s) pushed to %s/%s: %s" % [
           commit_count,
           commit_count == 1 ? "" : "s",
           author_usernames.join(", "),
+          last_commit_message
           repo_name,
           branch,
           compare_url
