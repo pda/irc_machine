@@ -73,6 +73,10 @@ module IrcMachine
         ]
       end
 
+      def project
+        "#{owner.name}/#{repo_name}"
+      end
+
     end
 
   end
