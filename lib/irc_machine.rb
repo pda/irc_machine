@@ -17,6 +17,8 @@ end
   plugin
   plugin/base
 
+  models
+
   core
 
   udp_server

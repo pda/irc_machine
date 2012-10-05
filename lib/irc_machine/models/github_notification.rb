@@ -43,7 +43,7 @@ module IrcMachine
       end
 
       def owner
-        OpenStruct.new(data.owner)
+        OpenStruct.new(repository.owner)
       end
 
       def repository
@@ -71,6 +71,10 @@ module IrcMachine
           branch,
           compare_url
         ]
+      end
+
+      def project
+        "#{owner.name}/#{repo_name}"
       end
 
     end
