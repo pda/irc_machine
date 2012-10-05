@@ -43,7 +43,7 @@ module IrcMachine
       end
 
       def owner
-        OpenStruct.new(data.owner)
+        OpenStruct.new(repository.owner)
       end
 
       def repository
