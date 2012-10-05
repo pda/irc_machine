@@ -41,7 +41,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
     if project = get_project(commit.project)
-      start_build(project, commit, :environment => {"SHA1" => commit.after})
+      start_build(project, commit, :environment => {"SHA1" => commit.after, "ref" => commit.ref})
     end
   end
 
