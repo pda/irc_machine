@@ -16,8 +16,8 @@ class IrcMachine::Models::JuiciProject
 if [ ! -d .git ]; then
   git init .
   git remote add origin https://github.com/#{name}.git
-  git fetch origin
 fi
+git fetch origin
 
 git checkout $SHA1
 
