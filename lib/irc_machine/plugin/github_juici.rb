@@ -6,10 +6,19 @@ require 'net/http'
 #
 # The json file should look like:
 #
+# Projects, and indeed the entire projects stanza is optional. If none are
+# given, any projects you point to agent99 will inherit some sane(ish)
+# defaults.
+#
 # {
 #   "projects" : {
 #     "user/repo" : {
-#
+#       "build_script": "
+# exit 0
+# "
+#     },
+#   "juici_url" : "http://juici.herokuapp.com"
+# }
 
 class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
