@@ -5,7 +5,7 @@ module IrcMachine
 
       attr_reader :data
 
-      def initialize(body)
+      def initialize(body, opts={})
         @data = JSON.parse(body)
       end
 
@@ -18,7 +18,7 @@ module IrcMachine
       end
 
       def url
-        data["url"]
+        "#{opts[:juici_url]}#{data["url"]}"
       end
 
     end
