@@ -3,6 +3,7 @@ gemspec
 
 gem "meminator"
 gem "json"
+gem "uuid"
 
 group :development do
   gem "rspec"
