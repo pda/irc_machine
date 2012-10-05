@@ -51,12 +51,12 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
-    callback_url = new_callback_url
-    route(:post, callback_url,
+    callback = new_callback
+    route(:post, callback[:path],
       status_callback(:project => project, :commit => commit, :opts => opts))
 
     http.start do |h|
-      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback_url]))
+      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback[:url]]))
     end
   end
 
@@ -78,10 +78,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     end
   end
 
-  def new_callback_url
-    URI(settings["callback_base"]).tap do |uri|
-      uri.path = "/juici/status/#{@uuid.generate}"
-    end.to_s
+  def new_callback
+    callback = {}
+    callback[:url] = URI(settings["callback_base"]).tap do |uri|
+      callback[:path] = "/juici/status/#{@uuid.generate}"
+      uri.path = callback[:path]
+    end
+    callback
   end
 
   def status_callback(data={})
