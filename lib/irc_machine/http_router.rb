@@ -45,6 +45,12 @@ module IrcMachine
       response.finish
     end
 
+    def drop_route!(method, route)
+      @@routes[method].reject! do |existing_route|
+        existing_route == route
+      end
+    end
+
     def flush_routes!
       @@routes.each do |k, v|
         @@routes[k] = []
