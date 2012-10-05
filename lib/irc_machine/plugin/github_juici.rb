@@ -61,14 +61,14 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def get_project(p)
-    projects[p] ||= IrcMachine::Models::JuiciProject.new(p, projects[p])
+    projects[p] ||= IrcMachine::Models::JuiciProject.new(p, project_settings[p])
   end
 
   def juici_url
     settings["juici_url"]
   end
 
-  def projects
+  def project_settings
     settings["projects"] || {}
   end
 
