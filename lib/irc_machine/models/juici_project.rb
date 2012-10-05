@@ -32,7 +32,7 @@ EOS
       "environment" => (opts[:environment] || {}).to_json,
       "command" => build_script,
       "priority" => opts[:priority] || 1,
-      "callbacks" => opts[:callbacks] || []
+      "callbacks" => (opts[:callbacks] || []).to_json
     }) #}}}
   end
 
