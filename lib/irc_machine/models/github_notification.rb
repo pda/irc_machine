@@ -77,6 +77,10 @@ module IrcMachine
         "#{owner.name}/#{repo_name}"
       end
 
+      def ref
+        data.ref
+      end
+
     end
 
   end
