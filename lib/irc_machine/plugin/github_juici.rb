@@ -93,15 +93,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     commit = data[:commit]
     opts = data[:opts]
 
-    def time_elapsed
-      Time.now.to_i - started
-    end
+    time_elapsed = lambda { Time.now.to_i - started }
 
     lambda { |request, match|
       # TODO Include some logic for working out if we're done with this route
       # and calling #drop_route!
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read)
-      notify "#{payload.status} - #{project.name} built in #{time_elapsed}s :: JuiCI #{payload.url}"
+      notify "#{payload.status} - #{project.name} built in #{time_elapsed.call}s :: JuiCI #{payload.url}"
     }
   end
 end
