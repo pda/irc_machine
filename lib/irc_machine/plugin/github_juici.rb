@@ -20,7 +20,8 @@ require 'uuid'
 # "
 #     },
 #   "channel" : "#juici",
-#   "juici_url" : "http://juici.herokuapp.com"
+#   "juici_url" : "http://juici.herokuapp.com",
+#   "callback_base" : "http://agent99.example.com"
 # }
 
 class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
@@ -78,7 +79,9 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def new_callback_url
-    "/juici/status/#{@uuid.generate}"
+    URI(settings["callback_base"]).tap do |uri|
+      uri.path = "/juici/status/#{@uuid.generate}"
+    end.to_s
   end
 
   def status_callback(data={})
