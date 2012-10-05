@@ -3,10 +3,11 @@ module IrcMachine
 
     class JuiciNotification
 
-      attr_reader :data
+      attr_reader :data, :opts
 
       def initialize(body, opts={})
         @data = JSON.parse(body)
+        @opts = opts
       end
 
       def project
