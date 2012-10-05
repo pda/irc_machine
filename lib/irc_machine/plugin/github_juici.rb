@@ -32,13 +32,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     end
   end
 
-  def start_build(project, commit, environment={})
+  def start_build(project, commit, opts={})
     uri = URI(juici_url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
     http.start do |h|
-      response = h.post("/builds/new", project.build_payload(:environment => environment))
+      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment]))
     end
   end
 

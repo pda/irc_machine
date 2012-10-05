@@ -1,4 +1,5 @@
 require 'net/http'
+require 'json'
 class IrcMachine::Models::JuiciProject
 
   attr_reader :config, :name
@@ -26,12 +27,11 @@ EOS
   end
 
   def build_payload(opts={})
-    puts "building payload"
     URI.encode_www_form({ #{{{
       "project" => name,
-      "environment" => opts["environment"] || {},
+      "environment" => (opts[:environment] || {}).to_json,
       "command" => build_script,
-      "priority" => opts["priority"] || 1
+      "priority" => opts[:priority] || 1
     }) #}}}
   end
 
