@@ -19,7 +19,7 @@ if [ ! -d .git ]; then
 fi
 git fetch origin
 
-git checkout $SHA1
+git checkout -fq $SHA1
 
 ./script/cibuild
 EOS
