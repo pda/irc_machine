@@ -1,6 +1,10 @@
 class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
 
   MAGIC_8_BALL = ["Yes", "No!", "Absopositively", "Hard to say"]
+  PREDICATES = %w[
+    would should could
+    are do if is can will have
+  ]
   def receive_line(line)
     catch(:nomatch) do
       if line =~ decision_prelude
@@ -13,7 +17,7 @@ class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
     case line
     when /:[^:]*:#{session.state.nick}:? (.* or .*)\?$/
       choice($1.split(" or "))
-    when /:[^:]*:#{session.state.nick}:? (?:are|do|if|is|can|do|should|could|would).*\?$/
+    when /:[^:]*:#{session.state.nick}:? (?:#{PREDICATES.join "|"}).*\?$/
       choice(MAGIC_8_BALL)
     else
       throw(:nomatch)
