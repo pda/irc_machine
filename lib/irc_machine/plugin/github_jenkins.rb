@@ -42,7 +42,7 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
     end
 
     if settings.include? "username_prefix"
-      ::IrcMachine::Models::GithubUser.nicks = settings["username_prefix"]
+      ::IrcMachine::Models::GithubUser.prefix = settings["username_prefix"]
     end
 
     route(:post, %r{^/github/jenkins$}, :build_branch)
