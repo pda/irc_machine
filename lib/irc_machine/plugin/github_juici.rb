@@ -101,6 +101,14 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
       notify "#{payload.status} - #{project.name} :: #{commit.branch} :: built in #{time_elapsed.call}s :: JuiCI #{payload.url} :: PING #{commit.author_usernames.join(" ")}"
       mark_build(commit, payload.status)
+
+      notify_callback = lambda { |str| notify str }
+      case status
+      when "failed"
+        plugin_send(:JenkinsNotify, :build_fail, commit, nil,  notify_callback)
+      when "success"
+        plugin_send(:JenkinsNotify, :build_success, commit, nil, create_callback)
+      end
     }
   end
 
