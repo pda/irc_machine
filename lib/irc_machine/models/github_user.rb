@@ -17,12 +17,9 @@ module IrcMachine
       # Wrapper class that does a lookup based on usernames at init time
 
       def nick
-        @@nicks[username] || username
+        "#{@@prefix}#{@@nicks[username] || username}"
       end
 
-      def to_s
-        "#{@@prefix}#{nick}"
-      end
     end
 
   end
