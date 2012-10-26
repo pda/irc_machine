@@ -41,6 +41,10 @@ class IrcMachine::Plugin::GithubJenkins < IrcMachine::Plugin::Base
       ::IrcMachine::Models::GithubUser.nicks = settings["usernames"]
     end
 
+    if settings.include? "username_prefix"
+      ::IrcMachine::Models::GithubUser.nicks = settings["username_prefix"]
+    end
+
     route(:post, %r{^/github/jenkins$}, :build_branch)
     route(:post, %r{^/github/jenkins_status$}, :jenkins_status)
     route(:post, %r{^/github/notice$}, :rest_notice)
