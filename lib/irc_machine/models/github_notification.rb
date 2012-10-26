@@ -58,6 +58,10 @@ module IrcMachine
         authors.map{ |a| a.username }.uniq
       end
 
+      def author_nicks
+        authors.map{ |a| a.nick }.uniq
+      end
+
       def compare_url
         data.compare
       end
