@@ -3,9 +3,14 @@ module IrcMachine
 
     class GithubUser < OpenStruct
       @@nicks = Hash.new
+      @@prefix = ""
       class << self
         def nicks=(mapping)
           @@nicks = mapping
+        end
+
+        def prefix=(prefix)
+          @@prefix = prefix
         end
       end
 
@@ -16,7 +21,7 @@ module IrcMachine
       end
 
       def to_s
-        nick
+        "#{@@prefix}#{nick}"
       end
     end
 
