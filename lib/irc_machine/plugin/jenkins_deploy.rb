@@ -21,7 +21,7 @@ class MutexApp
       if @last_state == :disabled
         return "#{"DEPLOY".irc_cyan.irc_bold} - #{name} is currently disabled because #{reason}"
       else
-        return "#{"DEPLOY".irc_cyan.irc_bold} - #{name} in progress by @#{last_user}" if @deploying
+        return "#{"DEPLOY".irc_cyan.irc_bold} - #{name} in progress by #{last_user}" if @deploying
       end
     end
 
@@ -181,7 +181,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_success(request, match)
     if app = apps[match[1]]
       if app.succeed
-        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} succeeded \\o/ | PING @#{app.last_user}")
+        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} succeeded \\o/ | PING #{app.last_user}")
         plugin_send(:Notifier, :notify, "deploy_success")
       end
     else
@@ -192,7 +192,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_fail(request, match)
     if app = apps[match[1]]
       if app.fail
-         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} FAILED | PING @#{app.last_user}")
+         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} FAILED | PING #{app.last_user}")
          plugin_send(:Notifier, :notify, "deploy_failure")
       end
     else
