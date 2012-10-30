@@ -37,4 +37,8 @@ EOS
     }) #}}}
   end
 
+  def priorities
+    config["priorities"] || {}
+  end
+
 end
