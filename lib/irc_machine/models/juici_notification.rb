@@ -22,6 +22,10 @@ module IrcMachine
         "#{opts[:juici_url]}#{data["url"]}"
       end
 
+      def time
+        data["time"]
+      end
+
     end
 
   end
