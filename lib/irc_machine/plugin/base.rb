@@ -47,6 +47,9 @@ module IrcMachine
         end
       end
 
+      def deinitialize
+      end
+
     protected
 
       def initialize_config

@@ -102,7 +102,7 @@ module IrcMachine
         EM.stop
       end
       puts "\nQuitting IRC, interrupt again to stop EventMachine"
-      dispatch :terminate
+      dispatch :deinitialize
     end
 
   end
