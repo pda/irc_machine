@@ -10,7 +10,6 @@ module IrcMachine
       @options = OpenStruct.new(options)
       @state = State.new
       @router = HttpRouter.new(self)
-      load_plugins!
     end
 
     def load_plugins!
@@ -59,6 +58,7 @@ module IrcMachine
         EM.open_datagram_socket "0.0.0.0", options.udp_port, UdpServer do |c|
           c.session = self
         end
+        load_plugins!
 
         dispatch :connected
       end
