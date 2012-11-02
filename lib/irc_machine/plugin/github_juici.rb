@@ -49,6 +49,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def start_build(project, commit, opts={})
     priority = project.priorities[commit.branch]
+    title = "#{commit.branch} :: #{commit.after[0..6]}"
     uri = URI(juici_url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
@@ -58,7 +59,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       status_callback(:project => project, :commit => commit, :opts => opts))
 
     http.start do |h|
-      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback[:url]], :title => commit.branch, :priority => priority))
+      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback[:url]], :title => title, :priority => priority))
     end
   end
 
