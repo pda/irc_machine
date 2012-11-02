@@ -59,7 +59,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       status_callback(:project => project, :commit => commit, :opts => opts))
 
     http.start do |h|
-      response = h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback[:url]], :title => title, :priority => priority))
+      h.post("/builds/new", project.build_payload(:environment => opts[:environment], :callbacks => [callback[:url]], :title => title, :priority => priority))
     end
   end
 
