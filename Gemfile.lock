@@ -20,6 +20,7 @@ GEM
     eventmachine (1.0.0)
     eventmachine_httpserver (0.2.1)
     json (1.7.3)
+    juici-interface (0.0.0)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
     meminator (0.0.8)
@@ -47,6 +48,7 @@ DEPENDENCIES
   bundler
   irc_machine!
   json
+  juici-interface
   meminator
   mocha
   rake

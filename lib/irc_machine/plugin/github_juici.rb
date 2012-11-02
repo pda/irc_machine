@@ -1,6 +1,7 @@
 require 'json'
 require 'net/http'
 require 'uuid'
+require 'juici/interface'
 
 # TODO potentially merge this with the jenkins plugin?
 #
@@ -102,9 +103,9 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
       notify_callback = lambda { |str| notify str }
       case payload.status
-      when "failed"
+      when Juici::BuildStatus::FAIL
         plugin_send(:JenkinsNotify, :build_fail, commit, nil,  notify_callback)
-      when "success"
+      when Juici::BuildStatus::PASS
         plugin_send(:JenkinsNotify, :build_success, commit, nil, notify_callback)
       end
     }
@@ -114,7 +115,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     project = "#{commit.repository.owner["name"]}/#{commit.repo_name}"
     sha     = commit.after
     status = case status
-             when "failed"
+             when Juici::BuildStatus::FAIL
                "failure"
              else
                status

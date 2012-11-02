@@ -2,6 +2,7 @@ source :rubygems
 gemspec
 
 gem "meminator"
+gem "juici-interface"
 gem "json"
 gem "uuid"
 
