@@ -4,6 +4,7 @@ gemspec
 gem "meminator"
 gem "json"
 gem "uuid"
+gem 'rest-client'
 
 group :development do
   gem "rspec"

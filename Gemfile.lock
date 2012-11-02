@@ -33,10 +33,13 @@ GEM
       systemu (~> 2.5.0)
     meminator (0.0.8)
     metaclass (0.0.1)
+    mime-types (1.19)
     mocha (0.12.7)
       metaclass (~> 0.0.1)
     rack (1.4.1)
     rake (0.9.2.2)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (2.11.0)
       rspec-core (~> 2.11.0)
       rspec-expectations (~> 2.11.0)
@@ -61,5 +64,6 @@ DEPENDENCIES
   meminator
   mocha
   rake
+  rest-client
   rspec
   uuid
