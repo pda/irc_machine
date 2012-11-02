@@ -8,13 +8,7 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
 
     @pool = []
     route(:get, "/console", :serve_console_html)
-  end
-
-  def em_ready
-    opts = {:host => '0.0.0.0', :port => 9001}
-    EventMachine::start_server(opts[:host], opts[:port], EventMachine::WebSocket::Connection, opts) do |c|
-      console_server.call(c)
-    end
+    bind(:websocket, 9001, console_server)
   end
 
   def receive_line(line)
