@@ -7,26 +7,13 @@ describe "Agent99::Plugin::Notifier" do
       @plugin = IrcMachine::Plugin::Notifier.new({})
     end
 
-    it "Should run a single shell command" do
+    it "Should push the event to all connected clients" do
       def @plugin.settings
         { "some_command" => "echo test" }
       end
 
-      Kernel.expects(:system).with("echo test &")
       @plugin.notify("some_command")
-    end
-
-    it "Should run all shell commands in an array" do
-      def @plugin.settings
-        { "some_other_command" => [
-            "echo rawr",
-            "echo beep"
-        ]}
-      end
-
-      Kernel.expects(:system).with("echo rawr &")
-      Kernel.expects(:system).with("echo beep &")
-      @plugin.notify("some_other_command")
+      pending("Mock out a pool and check that they receive the msg")
     end
   end
 end
