@@ -10,7 +10,8 @@ class IrcMachine::Plugin::Notifier < IrcMachine::Plugin::Base
   CONFIG_FILE = "notifier.json"
 
   attr_reader :pool
-  def initializer(*args)
+  def initialize(*args)
+    super(*args)
 
     @pool = []
     bind(:websocket, 9002, notifier_backend)
