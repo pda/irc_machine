@@ -2,7 +2,7 @@
 
 class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
 
-  attr_reader :ws, :pool
+  attr_reader :pool
   def initialize(*args)
     super(*args)
 
