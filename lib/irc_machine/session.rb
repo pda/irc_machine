@@ -40,6 +40,8 @@ module IrcMachine
 
         signal_traps
 
+        dispatch :em_ready
+
         log "Connecting to #{options.server}:#{options.port}"
         EM.connect(
           options.server,
@@ -102,7 +104,7 @@ module IrcMachine
         EM.stop
       end
       puts "\nQuitting IRC, interrupt again to stop EventMachine"
-      dispatch :terminate
+      dispatch :deinitialize
     end
 
   end

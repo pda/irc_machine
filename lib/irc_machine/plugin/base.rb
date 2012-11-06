@@ -1,14 +1,18 @@
 module IrcMachine
   module Plugin
     class Base
+
       def initialize(session)
         if self.class.const_defined?(:CONFIG_FILE)
           initialize_config
         end
 
         @session = session
+        @events = {
+          :em_ready => []
+        }
       end
-      attr_reader :session
+      attr_reader :session, :events
 
       # Inherited from the old HttpController
       def ok(content, opts={})
@@ -41,10 +45,32 @@ module IrcMachine
         IrcMachine::HttpRouter.send(:connect, method, path, destination)
       end
 
+      def bind(type, port, callback)
+        case type
+        when :websocket
+          events[:em_ready] << Proc.new {
+            opts = { :host => '0.0.0.0', :port => port }
+            EventMachine::start_server(opts[:host], opts[:port], EventMachine::WebSocket::Connection, opts) do |c|
+              callback.call(c)
+            end
+          }
+        end
+      end
+
       def plugin_send(plugin, sym, *args)
         if (p = session.get_plugin plugin)
           p.send(sym, *args)
         end
+      end
+
+      def em_ready
+        events[:em_ready].each do |event|
+          event.call
+        end
+      end
+
+
+      def deinitialize
       end
 
     protected

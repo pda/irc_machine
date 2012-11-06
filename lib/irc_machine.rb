@@ -3,6 +3,7 @@
   eventmachine
   evma_httpserver
   evma_httpserver/response
+  em-websocket
   rack
 }.each do |name|
   require name
