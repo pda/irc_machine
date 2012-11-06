@@ -40,11 +40,14 @@ We also ship a collection of totally unuseful plugins, for generating memes, usi
 Contributors
 ------------
 
+* [Richo Healey](https://github.com/richo)
+* [Michael Mifsud](https://github.com/xzyfer)
+
+### irc_machine originally by:
+
 * [Paul Annesley](https://github.com/pda)
 * [Eric Anderson](https://github.com/ericanderson)
 * [Anton Lindström](https://github.com/antonlindstrom)
-* [Richo Healey](https://github.com/richo)
-* [Michael Mifsud](https://github.com/xzyfer)
 
 Meh.
 ----
