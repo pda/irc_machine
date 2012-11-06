@@ -100,7 +100,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       # and calling #drop_route!
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
       notify "#{payload.status} - #{project.name} :: #{commit.branch} :: built in #{payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
-      mark_build(commit, payload.status)
+      mark_build(commit, payload.status, payload.url)
 
       notify_callback = lambda { |str| notify str }
       case payload.status
@@ -112,7 +112,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     }
   end
 
-  def mark_build(commit, status)
+  def mark_build(commit, status, url=nil)
     project = "#{commit.repository.owner["name"]}/#{commit.repo_name}"
     sha     = commit.after
     status = case status
@@ -121,6 +121,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
              else
                status
              end
-    plugin_send(:GithubCommitStatus, :mark, project, sha, status)
+    plugin_send(:GithubCommitStatus, :mark, project, sha, status, target_url: url)
   end
 end
