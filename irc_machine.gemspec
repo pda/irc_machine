@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "eventmachine"
   s.add_dependency "eventmachine_httpserver"
+  s.add_dependency "em-websocket"
   s.add_dependency "rack"
   s.add_dependency "daemons"
 
