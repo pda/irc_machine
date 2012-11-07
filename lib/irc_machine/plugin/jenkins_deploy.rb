@@ -183,7 +183,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       if app.succeed
         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} succeeded \\o/ | PING #{app.last_user}")
         plugin_send(:Notifier, :notify, "deploy_success")
-        plugin_send(:DeployPerformance, :deploy_success, app.name)
+        plugin_send(:NewRelicDeployPerformance, :deploy_success, app.name)
       end
     else
       not_found
@@ -220,7 +220,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
       if status =~ /started for/
         callback.call(SQUIRRELS.sample)
         plugin_send(:Notifier, :notify, "pre_deploy")
-        plugin_send(:DeployPerformance, :pre_deploy, app.name)
+        plugin_send(:NewRelicDeployPerformance, :pre_deploy, app.name)
       end
     end)
   end
