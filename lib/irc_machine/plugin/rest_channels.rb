@@ -17,7 +17,6 @@ class IrcMachine::Plugin::RestChannels < IrcMachine::Plugin::Base
     super(*args)
   end
 
-
   def list(request, match)
     ok session.state.channels.to_json << "\n",
       content_type: "application/json"
