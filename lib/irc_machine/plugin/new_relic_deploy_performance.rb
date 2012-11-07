@@ -1,7 +1,26 @@
 require 'rest_client'
 require 'time'
 
-class IrcMachine::Plugin::DeployPerformance < IrcMachine::Plugin::Base
+
+# Configuration:
+#
+# The json file should look like:
+#
+# Projects, and indeed the entire projects stanza is optional. If none are
+# given, any projects you point to agent99 will inherit some sane(ish)
+# defaults.
+#
+# {
+#   "applications": {
+#     "NAME_OF_APP": 1234, <- NewRelic App Id
+#     "NAME_OF_OTHER_APP": 5678 <- NewRelic App Id
+#   },
+#   "api_key": "Sekrit",
+#   "account_id": 555555, <- NewRelic Account Id
+#   "channel": "#performance",
+# }
+
+class IrcMachine::Plugin::NewRelicDeployPerformance < IrcMachine::Plugin::Base
   CONFIG_FILE = "newrelic.json"
 
   def receive_line(line)

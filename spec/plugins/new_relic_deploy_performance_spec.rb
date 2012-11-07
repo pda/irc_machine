@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe "Agent99::Plugin::DeployPerformance" do
+describe "Agent99::Plugin::NewRelicDeployPerformance" do
   describe "report_timing" do
 
     before(:each) do
-      @plugin = IrcMachine::Plugin::DeployPerformance.new({})
+      @plugin = IrcMachine::Plugin::NewRelicDeployPerformance.new({})
       def @plugin.settings
         { "api_key" => "key", "account_id" => "acct", "applications" => {"foo" => 1} }
       end
