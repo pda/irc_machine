@@ -24,7 +24,7 @@ class IrcMachine::Plugin::NewRelicDeployPerformance < IrcMachine::Plugin::Base
   CONFIG_FILE = "newrelic.json"
 
   def receive_line(line)
-    if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? how is ([^ ]+) performing\?$/
+    if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? how is ([^ ]+) performing\??$/
       session.msg $1, report_timing_message($3)
     end
   end
