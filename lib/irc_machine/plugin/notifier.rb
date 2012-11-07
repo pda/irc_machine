@@ -9,19 +9,37 @@
 class IrcMachine::Plugin::Notifier < IrcMachine::Plugin::Base
   CONFIG_FILE = "notifier.json"
 
-  def notify(event)
-    case value = settings[event]
-    when Array
-      value.each do |n|
-        execute(n)
+  attr_reader :pool
+  def initialize(*args)
+    super(*args)
+
+    @pool = []
+    bind(:websocket, 9002, notifier_backend)
+  end
+
+  def notifier_backend
+    @server ||= Proc.new do |sock|
+      sock.onopen do
+        pool << sock
       end
-    when String
-      execute(value)
+
+      sock.onclose do
+        pool.delete sock
+      end
+
+      sock.onerror do
+        pool.delete sock
+      end
+
+      sock.onmessage do |msg|
+        # Noop
+      end
     end
   end
 
-  def execute(command)
-    Kernel.system "#{command} &"
+  def notify(event)
+    pool.each do |sock|
+      sock.send(event)
+    end
   end
-
 end
