@@ -6,10 +6,6 @@ require 'time'
 #
 # The json file should look like:
 #
-# Projects, and indeed the entire projects stanza is optional. If none are
-# given, any projects you point to agent99 will inherit some sane(ish)
-# defaults.
-#
 # {
 #   "applications": {
 #     "NAME_OF_APP": 1234, <- NewRelic App Id
