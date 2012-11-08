@@ -3,3 +3,4 @@
 pkg/*
 /log/
 /irc_machine.json
+.DS_Store
