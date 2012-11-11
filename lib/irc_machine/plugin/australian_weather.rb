@@ -5,7 +5,7 @@ require 'nokogiri'
 #
 # The json file should look like:
 #
-# { "url" => "http://www.bom.gov.au/vic/forecasts/melbourne.shtml" }
+# { "url": "http://www.bom.gov.au/vic/forecasts/melbourne.shtml" }
 #
 
 class IrcMachine::Plugin::AustralianWeather < IrcMachine::Plugin::Base

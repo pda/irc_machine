@@ -5,11 +5,11 @@ require 'nokogiri'
 #
 # The json file should look like:
 #
-# { "stops" => {
-#     "Outbound" => "2716",
-#     "Citybound" => "1716"
+# { "stops": {
+#     "Outbound": "2716",
+#     "Citybound": "1716"
 #   },
-#   "url_pattern" => "http://tramtracker.com.au/?id=STOP_ID"
+#   "url_pattern": "http://tramtracker.com.au/?id=STOP_ID"
 # }
 #
 
