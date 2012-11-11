@@ -6,6 +6,7 @@ gem "juici-interface"
 gem "json"
 gem "uuid"
 gem 'rest-client'
+gem 'nokogiri'
 
 group :development do
   gem "rspec"
