@@ -18,7 +18,7 @@ class IrcMachine::Plugin::AustralianWeather < IrcMachine::Plugin::Base
   end
 
   def weather_report
-    bom_page = Nokogiri::HTML(RestClient.get(settings["url"]))
+    bom_page = Nokogiri::HTML(RestClient.get(settings["url"]), settings["url"], 'ISO-8859-1')
     forecasts = bom_page.css('.forecast')
     today = forecasts[0]
     tomorrow = forecasts[1]
