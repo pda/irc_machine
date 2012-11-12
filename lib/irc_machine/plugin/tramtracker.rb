@@ -1,3 +1,4 @@
+require 'irc_machine'
 require 'rest_client'
 require 'nokogiri'
 
@@ -27,11 +28,12 @@ class IrcMachine::Plugin::TramTracker < IrcMachine::Plugin::Base
     settings["stops"].each do |description, id|
       url = settings["url_pattern"].gsub(/STOP_ID/, id)
       # This is basically the worst HTML ever, so the scraping is a little primitive.
-      tracker_page = Nokogiri::HTML(RestClient.get(url)).text.lines.to_a
+      tracker_page = Nokogiri::HTML(RestClient.get(url)).text.lines.to_a.map &:strip
 
-      id_line = "ID: #{id}\n"
+      id_line = "ID: #{id}"
       if not tracker_page.index(id_line)
-        id << "Error parsing tramtracker page for #{description}"
+        info << "Error parsing tramtracker page for #{description}"
+        info << "Could not find #{id_line.inspect} in:\n #{tracker_page.join("\n")}"
       else
         start = tracker_page.index(id_line) + 1
         finish = start + 5
