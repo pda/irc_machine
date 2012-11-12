@@ -22,10 +22,11 @@ class IrcMachine::Plugin::AustralianWeather < IrcMachine::Plugin::Base
     forecasts = bom_page.css('.forecast')
     today = forecasts[0]
     tomorrow = forecasts[1]
-    max_today = today.at_css('.max').text
-    max_tomorrow = tomorrow.at_css('.max').text
-    summary_today = today.at_css('.summary').text
-    summary_tomorrow = tomorrow.at_css('.summary').text
+
+    max_today = today.at_css('.max').text rescue "No temp. specified"
+    max_tomorrow = tomorrow.at_css('.max').text rescue "No summary"
+    summary_today = today.at_css('.summary').text rescue "No temp. specified"
+    summary_tomorrow = tomorrow.at_css('.summary').text rescue "No summary"
     <<-FORECAST
 Today: #{max_today}, #{summary_today}
 Tomorrow: #{max_tomorrow}, #{summary_tomorrow}
