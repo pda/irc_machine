@@ -1,3 +1,4 @@
+require 'irc_machine'
 require 'rest_client'
 require 'nokogiri'
 
