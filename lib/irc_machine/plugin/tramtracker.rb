@@ -14,7 +14,7 @@ require 'nokogiri'
 #
 
 class IrcMachine::Plugin::TramTracker < IrcMachine::Plugin::Base
-  CONFIG_FILE = "tramtracker.json"
+  CONFIG_FILE = "trams.json"
 
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? when is the next tram\??$/
