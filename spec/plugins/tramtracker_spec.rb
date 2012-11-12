@@ -22,14 +22,14 @@ describe "Agent99::Plugin::TramTracker" do
       RestClient.expects(:get).with('http://tramtracker.com.au/?id=1716').returns(citybound)
       RestClient.expects(:get).with('http://tramtracker.com.au/?id=2716').returns(outbound)
 
-      @plugin.departure_times.should == <<-STRING.strip
-Outbound: 109 in 4 mins
-Outbound: 109 in 6 mins
-Outbound: 109 in 18 mins
-Citybound: 109 in 3 mins
-Citybound: 109 in 7 mins
-Citybound: 109 in 18 mins
-      STRING
+      @plugin.departure_times.should == [
+        'Outbound: 109 in 4 mins',
+        'Outbound: 109 in 6 mins',
+        'Outbound: 109 in 18 mins',
+        'Citybound: 109 in 3 mins',
+        'Citybound: 109 in 7 mins',
+        'Citybound: 109 in 18 mins'
+      ]
     end
   end
 end

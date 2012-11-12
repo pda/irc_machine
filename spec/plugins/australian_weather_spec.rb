@@ -14,10 +14,10 @@ describe "Agent99::Plugin::AustralianWeather" do
       response = File.read(File.join(File.dirname(__FILE__), '..', 'fixtures', 'sample_melbourne_forecast.html'))
       RestClient.stubs(:get).returns response
 
-      @plugin.weather_report.should == <<-STRING
-Today: 21, Shower or two.
-Tomorrow: 18, Shower or two.
-      STRING
+      @plugin.weather_report.should == [
+        'Today: 21, Shower or two.',
+        'Tomorrow: 18, Shower or two.'
+      ]
     end
   end
 end

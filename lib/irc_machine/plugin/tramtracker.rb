@@ -19,7 +19,7 @@ class IrcMachine::Plugin::TramTracker < IrcMachine::Plugin::Base
 
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? when is the next tram\??$/
-      session.msg $1, departure_times
+      departure_times.each { |message| session.msg $1, message }
     end
   end
 
@@ -44,7 +44,7 @@ class IrcMachine::Plugin::TramTracker < IrcMachine::Plugin::Base
         end
       end
     end
-    info.join("\n")
+    info
   end
 
 
