@@ -51,7 +51,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def start_build(project, commit, opts={})
     priority = project.priorities[commit.branch]
-    title = "#{commit.branch} :: #{commit.after[0..6]}"
+    title = "#{commit.branch} :: #{commit.after[0..6]} :: #{commit.pusher}"
     uri = URI(juici_url)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
