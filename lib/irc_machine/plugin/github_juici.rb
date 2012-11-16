@@ -45,7 +45,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     if commit.after == "0"*40
       notify "Not building deleted branch #{commit.branch} of #{commit.project}"
     elsif project = get_project(commit.project)
-      start_build(project, commit, :environment => {"SHA1" => commit.after, "ref" => commit.ref})
+      start_build(project, commit, :environment => {"SHA1" => commit.after, "ref" => commit.ref, "PREV_SHA1" => commit.before})
     end
   end
 
