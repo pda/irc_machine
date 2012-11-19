@@ -13,11 +13,7 @@ class IrcMachine::Plugin::Meminate < IrcMachine::Plugin::Base
 
   def receive_line(line)
     if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate$/
-      list_memes.each do |meme|
-        session.msg $1, meme
-      end
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate help$/
-      session.msg $1, "Or get the full list at http://#{hostname}:#{session.options.http_port}/meminate/list"
+      session.msg $1, "http://#{hostname}:#{session.options.http_port}/meminate/list"
     elsif line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? meminate (\S+) (.*)$/
       session.msg $1, fetch_meme($2, $3)
     end
