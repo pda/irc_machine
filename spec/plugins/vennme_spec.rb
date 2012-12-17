@@ -17,7 +17,7 @@ describe "Agent99::Plugin::VennMe" do
   end
 
   it "Should create correct urls" do
-    correct_url = "http://vennme.herokuapp.com/up?a=200&b=200&ab=110&alabel=rawr&ablabel=butts&blabel=foo"
+    correct_url = "http://vennme.herokuapp.com/up?a=200&b=200&ab=110&alabel=rawr&ablabel=butts&blabel=foo&fake_param=.jpg"
     @plugin.venn_me("(rawr (butts)   foo)").should == correct_url
   end
 

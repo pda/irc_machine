@@ -19,7 +19,7 @@ class IrcMachine::Plugin::VennMe < IrcMachine::Plugin::Base
         'ablabel' => match[2].strip,
         'blabel' => match[3].strip
       })
-      uri.to_s
+      uri.to_s + "&fake_param=.jpg"
     else
       throw(:bad_bata)
     end
