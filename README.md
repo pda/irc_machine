@@ -15,7 +15,7 @@ Plugins may also implement the RESTful HTTP API by creating routes. The pattern 
 
 def initialize(*args)
   route(:get, "/endpoint", :endpoint)
-  super(*args)
+  super
 end
 
 def endpoint(request, match)
@@ -42,6 +42,7 @@ Contributors
 
 * [Richo Healey](https://github.com/richo)
 * [Michael Mifsud](https://github.com/xzyfer)
+* [Daniel Heath](https://github.com/danielheath)
 
 ### irc_machine originally by:
 

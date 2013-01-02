@@ -5,13 +5,15 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
   attr_reader :pool
   def initialize(*args)
     super(*args)
-
+    @messages = []
     @pool = []
     route(:get, "/console", :serve_console_html)
     bind(:websocket, 9001, console_server)
   end
 
   def receive_line(line)
+    @messages << line
+    messages.unshift while @messages.length > 100
     pool.each do |sock|
       sock.send(">> #{line}")
     end
@@ -21,6 +23,9 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
     @server ||= Proc.new do |sock|
       sock.onopen do
         pool << sock
+        @messages.each do |msg|
+          sock.send(">> #{msg}")
+        end
       end
 
       sock.onclose do
