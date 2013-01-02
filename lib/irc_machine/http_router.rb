@@ -19,6 +19,16 @@ module IrcMachine
     end
     attr_reader :session
 
+    def describe_patterns
+      description = {}
+      @@routes.each do |k, v|
+        routes = v.map { |route_tuple| route_tuple.first }
+        description[k] ||= []
+        description[k] << routes
+      end
+      description
+    end
+
     def route(env)
       request = Rack::Request.new(env)
 

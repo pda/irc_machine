@@ -4,6 +4,7 @@ module IrcMachine
 
     attr_reader :options
     attr_reader :state
+    attr_reader :router
     attr_accessor :irc_connection
 
     def initialize(options)
