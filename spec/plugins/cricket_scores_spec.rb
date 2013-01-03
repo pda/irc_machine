@@ -7,7 +7,7 @@ describe "Agent99::Plugin::CricketScores" do
   end
 
   it "outputs cricket scores" do
-    @plugin.cricket_scores.should == "AUS vs SL - Day 1: Post Lunch Session\nSL 133/2"
+    @plugin.cricket_scores.should == "AUS vs SL - Day 1: Post Lunch Session - SL 133/2"
   end
 
 end
