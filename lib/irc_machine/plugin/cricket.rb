@@ -30,7 +30,7 @@ class IrcMachine::Plugin::CricketScores < IrcMachine::Plugin::Base
         cricket_match.xpath('//mscr/btTm/Inngs').first['r'],
         cricket_match.xpath('//mscr/btTm/Inngs').first['wkts'],
       )
-    ].join("\n");
+    ].join(" - ");
 
     return cricket_str
   end
