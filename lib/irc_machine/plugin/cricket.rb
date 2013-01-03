@@ -3,11 +3,7 @@ require 'open-uri'
 require 'nokogiri'
 
 class IrcMachine::Plugin::CricketScores < IrcMachine::Plugin::Base
-  attr_accessor :cricket_feed_url
-
-  def initialize
-    @cricket_feed_url = "http://synd.cricbuzz.com/j2me/1.0/livematches.xml"
-  end
+  attr_writer :cricket_feed_url
 
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:?.*cricket score/
@@ -15,8 +11,12 @@ class IrcMachine::Plugin::CricketScores < IrcMachine::Plugin::Base
     end
   end
 
+  def cricket_feed_url
+    @cricket_feed_url ||= "http://synd.cricbuzz.com/j2me/1.0/livematches.xml"
+  end
+
   def cricket_scores
-    cricket_xml = Nokogiri::XML(open(@cricket_feed_url))
+    cricket_xml = Nokogiri::XML(open(cricket_feed_url))
 
     cricket_match = cricket_xml.xpath("//match").first
 

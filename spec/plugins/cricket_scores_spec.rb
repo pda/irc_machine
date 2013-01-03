@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Agent99::Plugin::CricketScores" do
   before(:each) do
-    @plugin = IrcMachine::Plugin::CricketScores.new
+    @plugin = IrcMachine::Plugin::CricketScores.new({})
     @plugin.cricket_feed_url = File.join(File.dirname(__FILE__), '..', 'fixtures', 'sample_cricket_scores.xml')
   end
 
