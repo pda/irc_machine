@@ -7,7 +7,7 @@ class IrcMachine::Plugin::CricketScores < IrcMachine::Plugin::Base
 
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:?.*cricket score/
-      cricket_scores
+      session.msg $1, cricket_scores
     end
   end
 
