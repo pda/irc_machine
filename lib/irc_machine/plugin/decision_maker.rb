@@ -3,7 +3,7 @@ class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
   MAGIC_8_BALL = ["Yes", "No!", "Absopositively", "Hard to say"]
   PREDICATES = %w[
     would should could
-    are do if is can will have did
+    are do if is can will have did has
   ]
   def receive_line(line)
     catch(:nomatch) do
