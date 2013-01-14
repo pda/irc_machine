@@ -4,6 +4,7 @@ module IrcMachine
 
     attr_reader :options
     attr_reader :state
+    attr_reader :router
     attr_accessor :irc_connection
 
     def initialize(options)
@@ -27,10 +28,20 @@ module IrcMachine
       end
     end
 
+    def get_plugin(p)
+      @plugins.select do |v|
+        v.class.name.to_sym == :"IrcMachine::Plugin::#{p}"
+      end.tap do |ary|
+        return nil if ary.empty?
+      end.first
+    end
+
     def start
       EM.run do
 
         signal_traps
+
+        dispatch :em_ready
 
         log "Connecting to #{options.server}:#{options.port}"
         EM.connect(
@@ -57,16 +68,13 @@ module IrcMachine
     end
 
     def disconnected
+      EM.stop
       if @shutdown
         log "Stopping EventMachine"
-        EM.stop
       else
         log "Waiting to reconnect"
         EM.add_timer(2) do
-          log "Reconnecting to #{options.server}:#{options.port}"
-          irc_connection.reconnect options.server, options.port
-          @state.reset
-          dispatch :connected
+          start
         end
       end
     end
@@ -97,7 +105,7 @@ module IrcMachine
         EM.stop
       end
       puts "\nQuitting IRC, interrupt again to stop EventMachine"
-      dispatch :terminate
+      dispatch :deinitialize
     end
 
   end

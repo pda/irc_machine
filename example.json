@@ -1,16 +1,18 @@
 {
   "server": "localhost",
-	"port": 6667,
-	"nick": "im",
-	"user": "irc_machine",
-	"realname": "IRC Machine",
-	"channels": [ "#irc_machine", "#secret the_key" ],
-	"verbose": true,
-	"udp_port": 8421,
-	"http_port": 8421,
-	"bind_address": "127.0.0.1",
-	"ssl": false,
-    "identify_command": "PRIVMSG nickserv :identify somepassword",
-  "plugins":
-    [ "Hello", "RestChannels", "GithubNotification" ]
+    "port": 6667,
+    "nick": "im",
+    "user": "irc_machine",
+    "realname": "IRC Machine",
+    "channels": [ "#irc_machine", "#secret the_key" ],
+    "verbose": true,
+    "udp_port": 8421,
+    "http_port": 8421,
+    "bind_address": "127.0.0.1",
+    "ssl": false,
+    "prelude": [
+      "PRIVMSG nickserv :identify somepassword"
+    ],
+    "plugins":
+      [ "Hello", "RestChannels", "GithubNotification" ]
 }

@@ -3,6 +3,7 @@
   eventmachine
   evma_httpserver
   evma_httpserver/response
+  em-websocket
   rack
 }.each do |name|
   require name
@@ -13,8 +14,11 @@ end
   irc_connection
   session
   state
+  routers
   plugin
   plugin/base
+
+  models
 
   core
 
@@ -27,4 +31,5 @@ end
 end
 
 Dir[File.dirname(__FILE__) + '/irc_machine/models/*.rb'].each {|file| require file }
-Dir[File.dirname(__FILE__) + '/irc_machine/plugin/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/irc_machine/routers/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/irc_machine/plugin/**/*.rb'].each {|file| require file }
