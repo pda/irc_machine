@@ -16,7 +16,8 @@ class IrcMachine::Models::JuiciProject
 if [ ! -d .git ]; then
   git init .
 
-  if ssh git@github.com < /dev/null; then
+  ssh git@github.com < /dev/null
+  if [ "$?" -ne 255 ]; then
     git remote add origin git@github.com:#{name}.git
   else
     git remote add origin https://github.com/#{name}.git
