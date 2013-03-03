@@ -13,7 +13,7 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
 
   def receive_line(line)
     @messages << line
-    @messages.unshift while @messages.length > 100
+    @messages.shift while @messages.length > 100
     pool.each do |sock|
       sock.send(">> #{line}")
     end
