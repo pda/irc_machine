@@ -50,7 +50,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def start_build(project, commit, opts={})
-    priority = project.priorities[commit.branch]
+    priority = project.priorities[commit.branch] || 10
     title = "#{commit.branch} :: #{commit.after[0..6]}"
     uri = URI(juici_url)
     http = Net::HTTP.new(uri.host, uri.port)
