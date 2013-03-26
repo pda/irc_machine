@@ -29,6 +29,12 @@ describe "Agent99::Plugin::DecisionMaker" do
       )
     end
 
+    it "should give smartass answers to questions about when" do
+      IrcMachine::Plugin::DecisionMaker::DATE_REPLIES.should include(
+        @plugin.generate_reply(":rawr:#{stub_nick}: when should we do R&D wrap up?")
+      )
+    end
+
     it "should return one of the choices given" do
       ["beer", "wine", "spirits"].should include(
         @plugin.generate_reply(":rawr:#{stub_nick}: beer or wine or spirits?")

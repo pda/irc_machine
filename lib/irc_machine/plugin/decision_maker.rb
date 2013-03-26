@@ -5,6 +5,15 @@ class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
     would should could
     are do if is can will have did has
   ]
+  DATE_PREFIXES = [
+    "when"
+  ]
+  DATE_REPLIES = [
+    "Never!",
+    "The next winter solstice",
+    "Precisely 37 minutes from now",
+    "About 3 quarters of an hour ago.. Got your TARDIS?"
+  ]
   def receive_line(line)
     catch(:nomatch) do
       if line =~ decision_prelude
@@ -19,6 +28,8 @@ class IrcMachine::Plugin::DecisionMaker < IrcMachine::Plugin::Base
       choice($1.split(" or "))
     when /:[^:]*:#{session.state.nick}:? (?:#{PREDICATES.join "|"}).*\?$/i
       choice(MAGIC_8_BALL)
+    when /:[^:]*:#{session.state.nick}:? (?:#{DATE_PREFIXES.join "|"}).*\?$/i
+      choice(DATE_REPLIES)
     else
       throw(:nomatch)
     end
