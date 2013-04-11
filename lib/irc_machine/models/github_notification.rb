@@ -47,7 +47,7 @@ module IrcMachine
           commit_count,
           commit_count == 1 ? "" : "s",
           author_usernames.join(", "),
-          last_commit_message
+          last_commit_message,
           repo_name,
           branch,
           compare_url
