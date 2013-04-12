@@ -71,15 +71,7 @@ module IrcMachine
       end
 
       def message
-        "%d commit%s by %s (%s) pushed to %s/%s: %s" % [
-          commit_count,
-          commit_count == 1 ? "" : "s",
-          author_usernames.join(", "),
-          last_commit_message,
-          repo_name,
-          branch,
-          compare_url
-        ]
+        raw_message.gsub(/[\r\n\0]+/, " ")
       end
 
       def project
@@ -96,6 +88,20 @@ module IrcMachine
         return nil if push_commit.nil?
         push_user = ::IrcMachine::Models::GithubUser.new push_commit["author"]
         push_user.nick
+      end
+
+      private
+
+      def raw_message
+        "%d commit%s by %s (%s) pushed to %s/%s: %s" % [
+          commit_count,
+          commit_count == 1 ? "" : "s",
+          author_usernames.join(", "),
+          last_commit_message,
+          repo_name,
+          branch,
+          compare_url
+        ]
       end
 
     end
