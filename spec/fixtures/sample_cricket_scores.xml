@@ -1,0 +1,88 @@
+
+	<mchdata NMchs="7">
+		<links fUrlBase="http://synd.cricbuzz.com/j2me/1.0/flags/team_" />
+	
+	
+		<match id="2" type="TEST" srs="Sri Lanka in Australia 2012-13" mchDesc="AUS vs SL" mnum="3rd Test"  vcity="Sydney" vcountry="Australia" grnd="Sydney Cricket Ground" inngCnt="1" datapath="http://synd.cricbuzz.com/j2me/1.0/match/2012/AUS_SL_2012_13/AUS_SL_JAN03_JAN07/" >
+	 <state mchState="inprogress" status="Day 1: Post Lunch Session" TW="Aus" decisn="Fielding" addnStatus="Day 1: Post Lunch Session" splStatus="">
+	</state>
+	<Tm id="4" Name="Aus" sName="AUS"  flag='1'/>
+	<Tm id="5" Name="SL" sName="SL"  flag='1'/>
+	
+	
+	<Tme Dt="Jan 03 2013" stTme="23:30" enddt ="Jan 07 2013" ></Tme>		
+
+	<mscr>
+		<inngsdetail noofovers="48.2" rrr="0" crr="3.19" cprtshp="61(120)"/>
+	<btTm id="5" sName="SL">
+			<Inngs desc="1st Inns" r="133"  Decl="0" FollowOn="0" ovrs="41.4" wkts="2"/>
+	</btTm>
+	<blgTm id="4" sName="AUS">
+	</blgTm>
+
+	</mscr>
+	</match>
+	
+	
+	
+		<match id="3" type="TEST" srs="New Zealand tour of South Africa 2012-13" mchDesc="RSA vs NZ" mnum="1st Test"  vcity="Cape Town" vcountry="South Africa" grnd="Newlands" inngCnt="2" datapath="http://synd.cricbuzz.com/j2me/1.0/match/2012/2012_NZ_SA/RSA_NZ_JAN02_JAN06/" >
+	 <state mchState="stump" status="South Africa lead by 207 runs" TW="NZ" decisn="Batting" addnStatus="Day 1: Stumps" splStatus="">
+	</state>
+	<Tm id="11" Name="RSA" sName="RSA"  flag='1'/>
+	<Tm id="13" Name="NZ" sName="NZ"  flag='1'/>
+	
+	
+	<Tme Dt="Jan 02 2013" stTme="08:30" enddt ="Jan 06 2013" ></Tme>		
+
+	<mscr>
+		<inngsdetail noofovers="0" rrr="0" crr="3.94" cprtshp="40(75)"/>
+	<btTm id="11" sName="RSA">
+			<Inngs desc="1st Inns" r="252"  Decl="0" FollowOn="0" ovrs="64" wkts="3"/>
+	</btTm>
+	<blgTm id="13" sName="NZ">
+			<Inngs desc="1st Inns" r="45"  Decl="0" FollowOn="0" ovrs="19.2" wkts="10"/>
+	</blgTm>
+
+	</mscr>
+	</match>
+	
+	
+	
+		<match id="1" type="ODI" srs="Pakistan in India 2012-13" mchDesc="IND vs PAK" mnum="2nd ODI"  vcity="Kolkata" vcountry="India" grnd="Eden Gardens" inngCnt="0" datapath="http://synd.cricbuzz.com/j2me/1.0/match/2012/2012_PAK_IND/IND_PAK_JAN03/" >
+	 <state mchState="preview" status="Starts on Jan 03 at 06:30 GMT" TW="" decisn="" addnStatus="" splStatus="">
+	</state>
+	<Tm id="2" Name="Ind" sName="IND"  flag='1'/>
+	<Tm id="3" Name="Pak" sName="PAK"  flag='1'/>
+	
+	
+	<Tme Dt="Jan 03 2013" stTme="06:30" enddt ="Jan 03 2013" ></Tme>		
+
+	</match>
+	
+	
+	
+	<match id='11676' type="T20" srs="Big Bash League 2012-13" mchDesc="MLR vs ADS" mnum="23rd Match"  inngCnt="2" datapath="http://synd.cricbuzz.com/j2me/1.0/match/2012/2012_13_BIG_BASH/MLR_ADS_JAN02/" >
+	
+		<state mchState="Result" status="Melbourne Renegades won by 48 runs">	</state>
+			<manofthematch NoOfPlayers="1">
+				<mom Name="Muttiah Muralitharan"/>
+			</manofthematch>
+		<Tm id="195" Name="MLR" sName="MLR"  flag='0'/>
+		<Tm id="199" Name="ADS" sName="ADS"  flag='0'/>
+		
+		<Tme Dt="Jan 02 2013" stTme="08:00" enddt ="Jan 02 2013"></Tme>
+
+	</match>
+	
+	
+	<match id='11828' type="TEST" srs="Ranji Trophy 2012-13" mchDesc="ANDHRA vs KERALA" mnum="33rd match, Group C"  inngCnt="4" datapath="http://synd.cricbuzz.com/j2me/1.0/match/2012/2012_13_RANJI_TROPHY/ANDHRA_KERALA_DEC29_JAN01/" >
+	
+		<state mchState="Result" status="Match drawn">	</state>
+		<Tm id="241" Name="Andhra" sName="ANDHRA"  flag='0'/>
+		<Tm id="244" Name="Kerala" sName="KERALA"  flag='0'/>
+		
+		<Tme Dt="Dec 29 2012" stTme="04:00" enddt ="Jan 01 2013"></Tme>
+
+	</match>
+	</mchdata>
+

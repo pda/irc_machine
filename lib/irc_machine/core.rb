@@ -7,8 +7,16 @@ module IrcMachine
       session.nick options.nick
       session.state.nick = options.nick
       EM::add_timer(5) do
-        session.raw options.identify_command if options.identify_command
-        options.channels.each { |c| session.join *c.split } if options.channels
+        if options.prelude
+          options.prelude.each do |line|
+            session.raw line
+          end
+          EM::add_timer(10) do
+            join_channels
+          end
+        else
+          join_channels
+        end
       end
     end
 
@@ -51,5 +59,8 @@ module IrcMachine
       session.state.channels
     end
 
+    def join_channels
+      options.channels.each { |c| session.join *c.split } if options.channels
+    end
   end
 end
