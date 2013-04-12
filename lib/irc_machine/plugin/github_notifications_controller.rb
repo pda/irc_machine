@@ -5,7 +5,7 @@ class IrcMachine::Plugin::GithubNotification < IrcMachine::Plugin::Base
     super(*args)
   end
 
-  def notify
+  def notify(request, match)
     session.msg "##{match[1]}",
       ::IrcMachine::Models::GithubNotification.new(request.body.read).message
   end
