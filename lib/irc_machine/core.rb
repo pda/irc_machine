@@ -20,7 +20,7 @@ module IrcMachine
       end
     end
 
-    def terminate
+    def deinitialize
       session.quit "shutting down"
     end
 
