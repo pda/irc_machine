@@ -67,7 +67,7 @@ module IrcMachine
       end
 
       def last_commit_message
-        data.commits.last["message"]
+        data.commits.last["message"].split("\n").first
       end
 
       def message
