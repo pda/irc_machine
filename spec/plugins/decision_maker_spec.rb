@@ -1,21 +1,5 @@
 require File.join(File.dirname(__FILE__), "/../spec_helper")
 
-def stub_nick
-  "agent99"
-end
-
-def stub_state
-  mock.tap do |state|
-    state.stubs(:nick).returns(stub_nick)
-  end
-end
-
-def stub_session
-  mock.tap do |session|
-    session.stubs(:state).returns(stub_state)
-  end
-end
-
 describe "Agent99::Plugin::DecisionMaker" do
   describe "generate_reply" do
     before(:each) do
