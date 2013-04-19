@@ -7,6 +7,7 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
   HELPFUL_ADVICE = ['Try CMD-Q',
                     'Use node.js',
                     'Use Mongo',
+                    'Use babashka',
                     'Have you tried using threads?',
                     'https://github.com/garybernhardt/base',
                     'wat r u doin']
