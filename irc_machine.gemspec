@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["paul@annesley.cc"]
   s.homepage    = "https://github.com/pda/irc_machine"
   s.summary     = %q{irc machine}
-  s.description = %q{An IRC bot using EventMachine, and perhaps ØMQ one day.}
+  s.description = %q{An IRC bot using EventMachine, and perhaps ZeroMQ one day.}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
