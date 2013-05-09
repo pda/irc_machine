@@ -9,7 +9,7 @@ PATH
       rack
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     addressable (2.3.2)
     awesome_print (1.1.0)
