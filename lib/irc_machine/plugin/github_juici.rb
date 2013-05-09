@@ -42,6 +42,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
+    return if commit.tag?
     if commit.after == "0"*40
       notify "Not building deleted branch #{commit.branch} of #{commit.project}"
     elsif project = get_project(commit.project)
