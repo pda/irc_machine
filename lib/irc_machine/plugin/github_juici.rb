@@ -36,8 +36,19 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
     @projects = {}
     @uuid = UUID.new
+    @disabled_projects = {}
 
     route(:post, %r{^/github/juici$}, :build_branch)
+  end
+
+  def receive_line(line)
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? don't ship (\S+)$/
+      @disabled_projects[$3] = true
+      notify "Ok #{$1}, disabling #{$3}"
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? you can ship (\S+)$/
+      @disabled_projects[$3] = false
+      notify "Ok #{$1}, reenabling #{$3}"
+    end
   end
 
   def build_branch(request, match)
@@ -46,7 +57,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     if commit.after == "0"*40
       notify "Not building deleted branch #{commit.branch} of #{commit.project}"
     elsif project = get_project(commit.project)
-      start_build(project, commit, :environment => {"SHA1" => commit.after, "ref" => commit.ref, "PREV_SHA1" => commit.before})
+      start_build(project, commit, :environment => env_for(project, commit))
+    end
+  end
+
+  def env_for(project, commit)
+    {"SHA1" => commit.after, "ref" => commit.ref, "PREV_SHA1" => commit.before}.tap do |env|
+      env["DISABLED"] = "true" if @disabled_projects[project]
     end
   end
 
