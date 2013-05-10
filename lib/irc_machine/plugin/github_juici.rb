@@ -45,9 +45,11 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? don't ship (\S+)$/
       @disabled_projects[$3] = true
       notify "Ok #{$1}, disabling #{$3}"
+      update_topic
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? you can ship (\S+)$/
       @disabled_projects[$3] = false
       notify "Ok #{$1}, reenabling #{$3}"
+      update_topic
     end
   end
 
@@ -83,6 +85,14 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     end
   end
 
+  def update_topic
+    new_topic = "JuiCI | Deploy Status || "
+    new_topic << @disabled_projects.map do |project, status|
+      "#{project}: #{status ? "disabled" : "shipping"}"
+    end.join(" || ")
+    session.topic new_topic
+  end
+
   def get_project(p)
     projects[p] ||= IrcMachine::Models::JuiciProject.new(p, project_settings[p])
   end
@@ -98,6 +108,12 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   def notify(data)
     if channel = settings["channel"]
       session.msg channel, data
+    end
+  end
+
+  def set_title(data)
+    if channel = settings["channel"]
+      session.topic channel, data
     end
   end
 
