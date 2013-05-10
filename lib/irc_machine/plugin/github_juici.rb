@@ -86,11 +86,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def update_topic
-    new_topic = "JuiCI | Deploy Status || "
-    new_topic << @disabled_projects.map do |project, status|
-      "#{project}: #{status ? "disabled" : "shipping"}"
-    end.join(" || ")
-    session.topic new_topic
+    if channel = settings["channel"]
+      new_topic = "JuiCI | Deploy Status || "
+      new_topic << @disabled_projects.map do |project, status|
+        "#{project}: #{status ? "disabled" : "shipping"}"
+      end.join(" || ")
+      session.topic channel, new_topic
+    end
   end
 
   def get_project(p)
