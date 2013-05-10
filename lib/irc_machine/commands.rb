@@ -34,5 +34,9 @@ module IrcMachine
       raw "PRIVMSG #{to} :#{text}"
     end
 
+    def topic(to, text)
+      raw "TOPIC #{to} :#{text}"
+    end
+
   end
 end
