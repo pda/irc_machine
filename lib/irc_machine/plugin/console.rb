@@ -12,7 +12,9 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
   end
 
   def receive_line(line)
-    @messages << line
+    msg = Time.new.strftime("%D %H:%M:%S | ")
+    msg << line
+    @messages << msg
     @messages.shift while @messages.length > 100
     pool.each do |sock|
       sock.send(">> #{line}")
