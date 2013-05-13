@@ -10,7 +10,9 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
                     'Use babashka',
                     'Have you tried using threads?',
                     'https://github.com/garybernhardt/base',
-                    'wat r u doin']
+                    'wat r u doin',
+                    'sounds like a devops problem',
+                    'sounds like an issue with platform']
 
   def receive_line(line)
     if line =~ advice_pattern
