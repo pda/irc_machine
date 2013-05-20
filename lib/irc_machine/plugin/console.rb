@@ -45,11 +45,7 @@ class IrcMachine::Plugin::Console < IrcMachine::Plugin::Base
   end
 
   def serve_console_html(request, match)
-    ok DATA.read, content_type: "text/html"
-  end
-end
-
-__END__
+    ok <<-HTML, {:content_type => "text/html"}
 <html>
 <head>
 <script type="text/javascript">
@@ -83,3 +79,6 @@ __END__
 </div>
 </body>
 </html>
+HTML
+  end
+end
