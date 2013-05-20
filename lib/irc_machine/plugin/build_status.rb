@@ -1,8 +1,10 @@
 require 'json'
 class IrcMachine::Plugin::BuildStatus < IrcMachine::Plugin::Base
+  attr_reader :pool
   def initialize(*args)
     super(*args)
 
+    @pool = []
     bind(:websocket, 9008, notifier_backend)
   end
 
