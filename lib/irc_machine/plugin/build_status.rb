@@ -36,7 +36,7 @@ class IrcMachine::Plugin::BuildStatus < IrcMachine::Plugin::Base
   end
 
   def buttan(request, match)
-    session.msg "#dev", "Someone pressed the buttan"
+    session.msg "#dev", "http://i.imgur.com/lhfui.gif"
   end
 
 end
