@@ -6,6 +6,7 @@ class IrcMachine::Plugin::BuildStatus < IrcMachine::Plugin::Base
 
     @pool = []
     bind(:websocket, 9008, notifier_backend)
+    route(:post, "/buttan", :buttan)
   end
 
   def notifier_backend
@@ -32,6 +33,10 @@ class IrcMachine::Plugin::BuildStatus < IrcMachine::Plugin::Base
     pool.each do |sock|
       sock.send(event.to_json)
     end
+  end
+
+  def buttan(request, match)
+    session.msg "#dev", "Someone pressed the buttan"
   end
 
 end
