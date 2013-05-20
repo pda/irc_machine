@@ -70,7 +70,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def start_build(project, commit, opts={})
-    plugin_send(:BuildStatus, :notify, {:project => project, :event => "start"})
+    plugin_send(:BuildStatus, :notify, {:project => project.name, :event => Juici::BuildStatus::START})
     priority = project.priorities[commit.branch] || 10
     title = "#{commit.branch} :: #{commit.after[0..6]}"
     uri = URI(juici_url)
@@ -143,7 +143,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
       notify_callback = lambda { |str| notify str }
 
-      plugin_send(:BuildStatus, :notify, {:project => project, :status => payload.status})
+      plugin_send(:BuildStatus, :notify, {:project => project.name, :event => payload.status})
 
       case payload.status
       when Juici::BuildStatus::FAIL

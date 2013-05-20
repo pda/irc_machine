@@ -29,10 +29,8 @@ class IrcMachine::Plugin::BuildStatus < IrcMachine::Plugin::Base
   end
 
   def notify(event)
-    if event[:project] == "99designs/contests"
-      pool.each do |sock|
-        sock.send(event.to_json)
-      end
+    pool.each do |sock|
+      sock.send(event.to_json)
     end
   end
 
