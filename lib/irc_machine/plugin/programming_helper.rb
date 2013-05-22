@@ -12,7 +12,8 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
                     'https://github.com/garybernhardt/base',
                     'wat r u doin',
                     'sounds like a devops problem',
-                    'sounds like an issue with platform']
+                    'sounds like an issue with platform',
+                    'RTFM']
 
   def receive_line(line)
     if line =~ advice_pattern
