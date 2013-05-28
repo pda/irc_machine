@@ -95,12 +95,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     end
   end
 
-  def set_title(data)
-    if channel = settings["channel"]
-      session.topic channel, data
-    end
-  end
-
   def new_callback
     callback = {}
     callback[:url] = URI(settings["callback_base"]).tap do |uri|
