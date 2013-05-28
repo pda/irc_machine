@@ -64,7 +64,10 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def env_for(project, commit)
-    {"SHA1" => commit.after, "ref" => commit.ref, "PREV_SHA1" => commit.before}.tap do |env|
+    {"SHA1" => commit.after,
+     "ref" => commit.ref,
+     "PREV_SHA1" => commit.before,
+     "AGENT99URL" => settings["callback_base"] }.tap do |env|
       env["DISABLED"] = "true" if @disabled_projects[project.name]
     end
   end
