@@ -1,3 +1,8 @@
+require 'json'
+require 'net/http'
+require 'uuid'
+require 'juici/interface'
+
 class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_juici.json"
