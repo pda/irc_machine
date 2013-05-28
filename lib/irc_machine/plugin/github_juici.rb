@@ -119,13 +119,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       notify_callback = lambda { |str| notify str }
 
       plugin_send(:BuildStatus, :notify, {:project => project.name, :branch => commit.branch, :event => payload.status})
-
-      case payload.status
-      when Juici::BuildStatus::FAIL
-        plugin_send(:JenkinsNotify, :build_fail, commit, nil,  notify_callback)
-      when Juici::BuildStatus::PASS
-        plugin_send(:JenkinsNotify, :build_success, commit, nil, notify_callback)
-      end
     }
   end
 
