@@ -41,18 +41,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     route(:post, %r{^/github/juici$}, :build_branch)
   end
 
-  def receive_line(line)
-    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? don't ship (\S+)$/
-      @disabled_projects[$3] = true
-      notify "Ok #{$1}, disabling #{$3}"
-      update_topic
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? you can ship (\S+)$/
-      @disabled_projects[$3] = false
-      notify "Ok #{$1}, reenabling #{$3}"
-      update_topic
-    end
-  end
-
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
     return if commit.tag?
@@ -64,7 +52,10 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def env_for(project, commit)
-    {"SHA1" => commit.after, "ref" => commit.ref, "PREV_SHA1" => commit.before}.tap do |env|
+    {"SHA1" => commit.after,
+     "ref" => commit.ref,
+     "PREV_SHA1" => commit.before,
+     "AGENT99URL" => settings["callback_base"] }.tap do |env|
       env["DISABLED"] = "true" if @disabled_projects[project.name]
     end
   end
@@ -86,16 +77,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     end
   end
 
-  def update_topic
-    if channel = settings["channel"]
-      new_topic = "JuiCI | Deploy Status || "
-      new_topic << @disabled_projects.map do |project, status|
-        "#{project}: #{status ? "disabled" : "shipping"}"
-      end.join(" || ")
-      session.topic channel, new_topic
-    end
-  end
-
   def get_project(p)
     projects[p] ||= IrcMachine::Models::JuiciProject.new(p, project_settings[p])
   end
@@ -111,12 +92,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   def notify(data)
     if channel = settings["channel"]
       session.msg channel, data
-    end
-  end
-
-  def set_title(data)
-    if channel = settings["channel"]
-      session.topic channel, data
     end
   end
 
@@ -144,13 +119,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       notify_callback = lambda { |str| notify str }
 
       plugin_send(:BuildStatus, :notify, {:project => project.name, :branch => commit.branch, :event => payload.status})
-
-      case payload.status
-      when Juici::BuildStatus::FAIL
-        plugin_send(:JenkinsNotify, :build_fail, commit, nil,  notify_callback)
-      when Juici::BuildStatus::PASS
-        plugin_send(:JenkinsNotify, :build_success, commit, nil, notify_callback)
-      end
     }
   end
 
@@ -163,6 +131,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
              else
                status
              end
-    plugin_send(:GithubCommitStatus, :mark, project, sha, status, target_url: url)
+    plugin_send(:GithubCommitStatus, :mark, project, sha, status, :target_url => url)
   end
 end
