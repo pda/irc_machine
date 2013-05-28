@@ -51,8 +51,11 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       return
     end
 
-    notify "Shipping #{project}; reproduce with"
-    notify "ship #{project} #{sha1}"
+    if channel = settings["channel"]
+      plugin_send(:ShipItSquirrels, :send_squirrel, channel)
+      notify "Shipping #{project}; reproduce with"
+      notify "ship #{project} #{sha1}"
+    end
 
     uri = URI(settings["juici_url"])
     http = Net::HTTP.new(uri.host, uri.port)
