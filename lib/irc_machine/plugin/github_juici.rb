@@ -138,6 +138,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
              else
                status
              end
-    plugin_send(:GithubCommitStatus, :mark, project, sha, status, target_url: url)
+    plugin_send(:GithubCommitStatus, :mark, project, sha, status, :target_url => url)
   end
 end
