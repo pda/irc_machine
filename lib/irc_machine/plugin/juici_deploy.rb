@@ -60,7 +60,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
     callback = new_callback
     route(:post, callback[:path], lambda { |request, match|
-      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
+      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
         notify "D: deploy for #{project} failed"
