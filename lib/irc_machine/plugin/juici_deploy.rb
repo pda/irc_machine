@@ -51,6 +51,9 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       return
     end
 
+    notify "Shipping #{project}; reproduce with"
+    notify "ship #{project} #{sha1}"
+
     uri = URI(settings["juici_url"])
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
