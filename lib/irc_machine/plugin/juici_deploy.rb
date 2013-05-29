@@ -27,6 +27,13 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       @disabled_projects[$3] = false
       notify "Ok #{$1}, reenabling #{$3}"
       update_topic
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? (?:deploy|ship) (\S+) (\S+)$/
+      user = $1.chomp
+      channel = $2.chomp
+      project = $3.chomp
+      hash = $4.chomp
+
+      ship_project_with_sha(project, hash)
     end
   end
 
@@ -46,6 +53,10 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     project = data["project"] || (raise "No project")
     sha1    = data["sha1"]    || (raise "No sha1")
 
+    ship_project_with_sha(project, sha1)
+  end
+
+  def ship_project_with_sha(project, sha1)
     if (@disabled_projects[project] == true)
       notify "Not deploying disabled project: #{project}"
       return
