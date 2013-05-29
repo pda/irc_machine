@@ -86,10 +86,10 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
     payload = @project.build_payload({
       :environment => {
-        "REPO" => data["project"],
-        "SHA1" => data["sha1"]
+        "REPO" => project,
+        "SHA1" => sha1
       },
-      :title => "#{data["project"]} :: #{data["sha1"][0..8]}",
+      :title => "#{project} :: #{sha1[0..8]}",
       :callbacks => [callback[:url]],
       :priority => 0
     })
