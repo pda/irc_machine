@@ -39,6 +39,10 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     @disabled_projects = {}
 
     route(:post, %r{^/github/juici$}, :build_branch)
+
+    if settings.include? "username_prefix"
+      ::IrcMachine::Models::GithubUser.prefix = settings["username_prefix"]
+    end
   end
 
   def build_branch(request, match)
