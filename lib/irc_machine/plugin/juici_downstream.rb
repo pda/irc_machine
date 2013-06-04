@@ -1,0 +1,88 @@
+require 'json'
+require 'net/http'
+require 'uuid'
+require 'juici/interface'
+
+class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
+
+  CONFIG_FILE = "github_juici.json"
+
+  def initialize(*args)
+    super(*args)
+
+    @uuid = UUID.new
+    @disabled_projects = {}
+    route(:post, %r{^/juici/build_project$}, :build_project)
+  end
+  
+  def build_project(request, match)
+    data = JSON.load(request.body.read)
+
+    project = data["project"]  || (raise "No project")
+    sha1    = data["sha1"]     || "master"
+    script  = data["script"]   || "./script/cibuild"
+    from    = data["upstream"] || (raise "Upstream project required")
+
+    uri = URI(settings["juici_url"])
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true if uri.scheme == "https"
+
+    callback = new_callback
+    route(:post, callback[:path], lambda { |request, match|
+      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
+      case payload.status
+      when Juici::BuildStatus::FAIL
+        notify "[Fail] Build of #{project}/#{sha1} failed (triggered by #{from})"
+      when Juici::BuildStatus::PASS
+        notify "[Success] Build of #{project}/#{sha1} passed (triggered by #{from})"
+      end
+    })
+
+    @project = IrcMachine::Models::JuiciProject.new(project, {
+      "build_script" => build_script(script)
+    })
+    payload = @project.build_payload({
+      :environment => {
+        "SHA1" => data["sha1"]
+      },
+      :title => "#{data["project"]} :: #{data["sha1"][0..8]}",
+      :callbacks => [callback[:url]]
+    })
+
+    http.start do |h|
+      h.post("/builds/new", payload)
+    end
+  end
+
+  def new_callback
+    callback = {}
+    callback[:url] = URI(settings["callback_base"]).tap do |uri|
+      callback[:path] = "/juici/build_project/#{@uuid.generate}"
+      uri.path = callback[:path]
+    end
+    callback
+  end
+
+  def notify(data)
+    if channel = settings["channel"]
+      session.msg channel, data
+    end
+  end
+
+  def build_script(script)
+    <<-SCRIPT
+      #!/bin/sh
+
+      if [ ! -d .git ]; then
+        git init .
+        git remote add origin git@github.com:99designs/smoke_tests.git
+      fi
+
+      git fetch origin 
+      git checkout -fq $SHA1 
+      # Clobber anything from the last build
+      git clean -xdff
+      #{script}
+    SCRIPT
+  end
+end
