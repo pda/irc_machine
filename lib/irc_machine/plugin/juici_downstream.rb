@@ -74,7 +74,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
       if [ ! -d .git ]; then
         git init .
-        git remote add origin git@github.com:#{project}.git
+        git remote add origin git@github.com:#{repo}.git
       fi
 
       git fetch origin 
