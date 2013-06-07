@@ -1,6 +1,5 @@
 require 'json'
 require 'net/http'
-require 'uuid'
 require 'juici/interface'
 
 class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
@@ -13,7 +12,6 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
   def initialize(*args)
     super(*args)
 
-    @uuid = UUID.new
     route(:post, %r{^/juici/build_project$}, :build_project)
   end
   

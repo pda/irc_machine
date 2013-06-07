@@ -1,6 +1,5 @@
 require 'json'
 require 'net/http'
-require 'uuid'
 require 'juici/interface'
 
 class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
@@ -13,7 +12,6 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
   def initialize(*args)
     super(*args)
 
-    @uuid = UUID.new
     @disabled_projects = {}
     @project = IrcMachine::Models::JuiciProject.new("deploy", {
       "build_script" => BUILD_SCRIPT

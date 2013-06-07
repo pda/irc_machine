@@ -1,3 +1,4 @@
+require 'uuid'
 
 module Callbacks
 
@@ -8,7 +9,7 @@ module Callbacks
 
       callback = {}
       callback[:url] = URI(callback_base).tap do |uri|
-        callback[:path] = "#{path}/#{@uuid.generate}"
+        callback[:path] = "#{path}/#{UUID.new.generate}"
         uri.path = callback[:path]
       end
       route(:post, callback[:path], block)
