@@ -21,13 +21,11 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
   def receive_line(line)
     if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? don't ship (\S+)$/
-      @disabled_projects[$3] = true
       notify "Ok #{$1}, disabling #{$3}"
-      update_topic
+      set_project_enabled($3, true)
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? you can ship (\S+)$/
-      @disabled_projects[$3] = false
       notify "Ok #{$1}, reenabling #{$3}"
-      update_topic
+      set_project_enabled($3, false)
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? (?:deploy|ship) (\S+) (\S+)$/
       user = $1.chomp
       channel = $2.chomp
@@ -36,6 +34,11 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
       ship_project_with_sha(project, hash)
     end
+  end
+
+  def set_project_enabled(name, enabled)
+    @disabled_projects[name] = enabled
+    update_topic
   end
 
   def update_topic
