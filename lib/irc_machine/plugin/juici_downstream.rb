@@ -38,7 +38,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     })
 
     @project = IrcMachine::Models::JuiciProject.new(project, {
-      "build_script" => build_script(script)
+      "build_script" => build_script(project, script)
     })
     payload = @project.build_payload({
       :environment => {
@@ -68,13 +68,13 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     end
   end
 
-  def build_script(script)
+  def build_script(repo, script)
     <<-SCRIPT
       #!/bin/sh
 
       if [ ! -d .git ]; then
         git init .
-        git remote add origin git@github.com:99designs/smoke_tests.git
+        git remote add origin git@github.com:#{project}.git
       fi
 
       git fetch origin 
