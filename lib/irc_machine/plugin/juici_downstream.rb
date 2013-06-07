@@ -11,7 +11,6 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     super(*args)
 
     @uuid = UUID.new
-    @disabled_projects = {}
     route(:post, %r{^/juici/build_project$}, :build_project)
   end
   
