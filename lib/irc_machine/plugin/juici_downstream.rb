@@ -44,7 +44,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       :environment => {
         "SHA1" => data["sha1"]
       },
-      :title => "#{data["project"]} :: #{data["sha1"][0..8]}",
+      :title => "#{data["project"]} :: #{sha1[0..8]}",
       :callbacks => [callback[:url]]
     })
 
