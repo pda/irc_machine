@@ -7,6 +7,9 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_juici.json"
 
+  extend Callbacks
+  has_callbacks "/juici/deploy", :method_name => :new_callback
+
   def initialize(*args)
     super(*args)
 
@@ -72,8 +75,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
-    callback = new_callback
-    route(:post, callback[:path], lambda { |request, match|
+    callback = new_callback do |request, match|
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
@@ -81,8 +83,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       when Juici::BuildStatus::PASS
         notify "\\o/ deploy for #{project} succeeded"
       end
-
-    })
+    end
 
     payload = @project.build_payload({
       :environment => {
@@ -97,15 +98,6 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     http.start do |h|
       h.post("/builds/new", payload)
     end
-  end
-
-  def new_callback
-    callback = {}
-    callback[:url] = URI(settings["callback_base"]).tap do |uri|
-      callback[:path] = "/juici/deploy/#{@uuid.generate}"
-      uri.path = callback[:path]
-    end
-    callback
   end
 
   def notify(data)
