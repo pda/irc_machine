@@ -21,6 +21,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     project = data["project"]  || (raise "No project")
     sha1    = data["sha1"]     || "master"
     script  = data["script"]   || "./script/cibuild"
+    authors = data["notify"]
     from    = data["upstream"] || (raise "Upstream project required")
 
     uri = URI(settings["juici_url"])
@@ -31,9 +32,9 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
-        notify "(Failed) Build of #{project}/#{sha1} failed (triggered by #{from})"
+        notify "(Failed) Build of #{project}/#{sha1} failed (triggered by #{from}) :: PING #{authors}"
       when Juici::BuildStatus::PASS
-        notify "(Successful) Build of #{project}/#{sha1} passed (triggered by #{from})"
+        notify "(Successful) Build of #{project}/#{sha1} passed (triggered by #{from}) :: PING #{authors}"
       end
     end
 
