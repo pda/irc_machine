@@ -47,6 +47,10 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
+    if ! allowed?(commit)
+      notify "Not building unauthorized branch #{commit.branch} of #{commit.project}"
+      return
+    end
     return if commit.tag?
     if commit.after == "0"*40
       notify "Not building deleted branch #{commit.branch} of #{commit.project}"
@@ -136,5 +140,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
                status
              end
     plugin_send(:GithubCommitStatus, :mark, project, sha, status, :target_url => url)
+  end
+
+  def allowed?(commit)
+    if owner_whitelist = settings["owner_whitelist"]
+      return owner_whitelist.include? commit.repository.owner["name"]
+    else
+      return true
+    end
   end
 end
