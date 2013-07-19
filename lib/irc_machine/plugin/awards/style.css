@@ -1,0 +1,252 @@
+body{
+    background-color: #dedede;
+    background: url('cats.jpg') repeat;
+    font-family: "adobe-garamond-pro";
+    font-size: 20px;
+    line-height: 28px;
+    text-align:center;
+    padding: 50px 0px;
+}
+
+a {
+    text-decoration:none;
+    border-bottom: 1px dotted fuchsia;
+    padding-bottom: 2px;
+    color: black;
+    transition: all .5s ease;
+}
+
+a:hover{
+    color:fuchsia;
+}
+
+ul{
+    margin:0px;
+    padding:0px;
+    width:100%;
+    overflow:hidden;
+}
+
+li{
+    list-style:none;
+    width: 49%;
+    float:left;
+}
+
+ul li:first-child{
+    margin-right: 2%;
+}
+
+li label{
+    font-family: "cabazon",sans-serif;
+    font-size: 20px;
+    text-align:left;
+    display:block;
+}
+
+li input{
+    width: 96%;
+    outline: none;
+    border: none;
+    background-color: #a2dee9;
+    height: 50px;
+    margin-top: 10px;
+    font-family: "cabazon",sans-serif;
+    text-align:left;
+    font-size: 36px;
+    padding: 5px 2%;
+}
+
+li p.forExample{
+    text-align:left;
+    font-size: 14px;
+    line-height: 18px;
+    font-style:italic;
+    margin-top: 10px;
+}
+
+input#q_submit{
+    border:none;
+    background:none;
+    font-size: 40px;
+    font-family: "cabazon",sans-serif;
+}
+
+input#q_submit:hover{
+    color: #ff4c09;
+}
+
+#award-button{
+    width: 100%;
+    margin: 30px auto 0px;
+    overflow: hidden;
+        text-align: center;
+}
+
+.arrow{
+    position:relative;
+    top: 9px;
+    width: 60px;
+    margin: 9px;
+    float:left;
+}
+
+p{
+    margin:0px;
+}
+
+
+p.small{
+    font-size: 16px;
+    line-height: 25px;
+    text-align: justify;
+}
+
+h1, h2, h3{
+    font-family: "cabazon",sans-serif;
+    font-weight: normal;
+    display:block;
+}
+
+h1{
+    font-size: 65px;
+    margin-top: 240px;
+    margin-bottom: 25px;
+}
+
+#page h1{
+    font-size: 42px;
+    margin-top: 68px;
+    margin-bottom: 10px;
+}
+
+#page .subtitle{
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+#page p.text{
+    text-align:justify;
+    margin-bottom: 30px;
+    margin-top: 35px;
+}
+
+
+
+h2{
+    font-size: 37px;
+    margin: 0px;
+}
+
+h2.skill{
+    margin-top:10px;
+    margin-bottom: 15px;
+    color: #ff4c09;
+}
+
+
+
+#page{
+    background-color: white;
+    background: url('certificate-front.jpg') no-repeat;
+    width: 773px;
+    height: 548px;
+    padding: 60px 75px;
+    margin: 0px auto;
+    position:relative;
+}
+
+#certificate{
+    background-color: white;
+    background: url('certificate.jpg') no-repeat;
+    width: 774px;
+    height: 548px;
+    padding: 60px 75px;
+    margin: 0px auto;
+    position:relative;
+}
+
+#signature1{
+    position:absolute;
+    bottom: 45px;
+    left: 71px;
+}
+
+#signature2{
+    position: absolute;
+    bottom: 45px;
+    right: 77px;
+    text-align: right;
+}
+
+#signature1 p, #signature2 p{
+    font-size: 12px;
+}
+
+.name{
+
+    font-size: 50px;
+
+}
+
+.skill{
+
+}
+
+.subtitle{
+    font-style:italic;
+}
+
+.centered{
+    text-align:center;
+    display:block;
+}
+
+.hidden{
+    display:none;
+}
+
+#screenshot{
+        width: 100%;
+    margin: 10px auto;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+#screenshot p{
+    max-width: 600px;
+    margin: 0 auto;
+        font-size: 14px;
+        line-height: 22px;
+}
+
+.official{
+    position:absolute;
+    bottom: 62px;
+    left: 304px;
+    font-size: 12px;
+}
+
+.official-2{
+    margin-left: 77px;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+
+body{
+    background: url('cats-2x.jpg') repeat;
+    background-size: 400px;
+}
+
+
+#page{
+    background: url('certificate-front-2x.jpg') no-repeat;
+    background-size: 924px;
+    }
+
+#certificate{
+    background: url('certificate-2x.jpg') no-repeat;
+    background-size: 924px;
+}
+
+}

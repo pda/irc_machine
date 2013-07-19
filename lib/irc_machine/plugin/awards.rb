@@ -5,6 +5,7 @@ require "base64"
 
 class IrcMachine::Plugin::Awards < IrcMachine::Plugin::Base
   CONFIG_FILE = "awards.json"
+  CSS = File.expand_path("../awards/style.css", __FILE__)
 
   def receive_line(line)
     if line =~ /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? award (\S+) for (.*)$/
@@ -43,9 +44,11 @@ class IrcMachine::Plugin::Awards < IrcMachine::Plugin::Base
       dir = Dir.mktmpdir
       infile = File.join(dir, "in.html")
       outfile = File.join(dir, "out.png")
+      css = File.join(dir, "style.css")
       File.open(infile, 'w') do |f|
         f.write(html)
       end
+      FileUtils.cp(CSS, css)
       `wkhtmltoimage #{infile} #{outfile}`
       throw(:processfailed) unless $?.exitstatus == 0
       return File.read(outfile)
