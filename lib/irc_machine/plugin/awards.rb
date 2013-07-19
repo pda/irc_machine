@@ -58,12 +58,11 @@ class IrcMachine::Plugin::Awards < IrcMachine::Plugin::Base
     enc   = Base64.encode64(content)
     uri = URI("https://api.imgur.com/3/image")
 
-    req = Net::HTTP::Post.new(uri)
-    req.set_form_data("image" => enc)
-    req["Authorization"] = "Client-ID #{settings["client_id"]}"
+    form = URI.encode_www_form({"image" => enc})
+    headers = {"Authorization" => "Client-ID #{settings["client_id"]}"}
 
     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) do |http|
-      http.request(req)
+      http.post(uri.request_uri, form, headers)
     end
 
     return JSON.parse(res.body)
