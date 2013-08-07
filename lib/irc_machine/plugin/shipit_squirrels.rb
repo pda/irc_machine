@@ -38,6 +38,7 @@ class IrcMachine::Plugin::ShipItSquirrels < IrcMachine::Plugin::Base
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/xzyfer/rDlRbkf.jpg
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/xzyfer/u17NYPg.jpg
     http://99designs-shipit-squirrels.s3-website-us-east-1.amazonaws.com/xzyfer/uKI2cL3.jpg
+    https://s3.amazonaws.com/99designs-shipit-squirrels/shipit.jpg
   ]
 
   def send_squirrel(channel)
