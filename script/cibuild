@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Make rbenv work on weird environments
 export PATH="$HOME/.rbenv/bin:$PATH"
