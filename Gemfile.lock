@@ -31,6 +31,8 @@ GEM
     nokogiri (1.5.5)
     rack (1.4.1)
     rake (0.9.2.2)
+    reactionifier (0.0.1)
+      nokogiri
     rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.11.0)
@@ -57,6 +59,7 @@ DEPENDENCIES
   mocha
   nokogiri
   rake
+  reactionifier
   rest-client
   rspec
   uuid
