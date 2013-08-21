@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "meminator"
+gem "reactionifier"
 gem "juici-interface"
 gem "json"
 gem "uuid"
