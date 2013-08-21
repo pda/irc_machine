@@ -1,16 +1,17 @@
 require 'json'
 require 'net/http'
-require 'uuid'
 require 'juici/interface'
 
 class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_juici.json"
 
+  extend Callbacks
+  has_callbacks "/juici/build_project", :method_name => :new_callback
+
   def initialize(*args)
     super(*args)
 
-    @uuid = UUID.new
     route(:post, %r{^/juici/build_project$}, :build_project)
   end
   
@@ -26,8 +27,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
-    callback = new_callback
-    route(:post, callback[:path], lambda { |request, match|
+    callback = new_callback do |request, match|
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
@@ -35,7 +35,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       when Juici::BuildStatus::PASS
         notify "[Success] Build of #{project}/#{sha1} passed (triggered by #{from})"
       end
-    })
+    end
 
     @project = IrcMachine::Models::JuiciProject.new(project, {
       "build_script" => build_script(project, script)
@@ -51,15 +51,6 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     http.start do |h|
       h.post("/builds/new", payload)
     end
-  end
-
-  def new_callback
-    callback = {}
-    callback[:url] = URI(settings["callback_base"]).tap do |uri|
-      callback[:path] = "/juici/build_project/#{@uuid.generate}"
-      uri.path = callback[:path]
-    end
-    callback
   end
 
   def notify(data)
