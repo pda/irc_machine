@@ -3,8 +3,8 @@ class IrcMachine::Plugin::Pub < IrcMachine::Plugin::Base
   def receive_line(line)
     return unless (pubtime?(now_in_straya) or pubtime?(now_in_sf))
 
-    if line =~ /^:\S+ PRIVMSG (#+\S+) :.*pub\?/i
-      session.msg $1, "Pub."
+    if line =~ /^:\S+ PRIVMSG (#+\S+) :.*(pub)\?/i
+      session.msg $1, "#{$2}!"
     end
   end
 
