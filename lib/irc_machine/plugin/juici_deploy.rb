@@ -37,8 +37,17 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
   end
 
   def set_project_enabled(name, enabled)
-    @disabled_projects[name] = enabled
+    project = get_project(name)
+    @disabled_projects[project] = enabled
     update_topic
+  end
+
+  def get_project(name)
+    if name.include? "/"
+      name
+    else
+      "#{settings["default_user"]}/#{name}"
+    end
   end
 
   def update_topic
