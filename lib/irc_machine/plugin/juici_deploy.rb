@@ -20,10 +20,10 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
   end
 
   def receive_line(line)
-    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? don't ship (\S+)$/
+    if line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? disable (\S+)$/
       notify "Ok #{$1}, disabling #{$3}"
       set_project_enabled($3, true)
-    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? you can ship (\S+)$/
+    elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? enable (\S+)$/
       notify "Ok #{$1}, reenabling #{$3}"
       set_project_enabled($3, false)
     elsif line =~ /^:(\S+)!\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? (?:deploy|ship) (\S+) (\S+)$/
