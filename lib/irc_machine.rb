@@ -11,6 +11,7 @@ end
 
 %w{
   commands
+  callbacks
   irc_connection
   session
   state
