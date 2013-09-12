@@ -11,7 +11,9 @@ describe "Agent99::Plugin::JuiciDownstream" do
     end
 
     it "generates callbacks" do
-      cb = @plugin.new_callback
+      cb = @plugin.new_callback do |request, match|
+        # do stuff
+      end
       cb[:url].to_s.should start_with "http://agent99.99cluster.example.com/juici/build_project/"
     end
 
