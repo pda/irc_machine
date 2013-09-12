@@ -8,7 +8,7 @@ describe "Agent99::Plugin::Pub" do
     end
 
     it "should reply pub when it's pubtime" do
-      @session.expects(:msg).with("#hacks", "Pub.")
+      @session.expects(:msg).with("#hacks", "pub.")
       @plugin.stubs(:now_in_straya).returns Time.new(2013, 4, 19, 12, 35, 00, "+10:00")
       @plugin.receive_line(":richo PRIVMSG #hacks :is it time for pub?")
     end
