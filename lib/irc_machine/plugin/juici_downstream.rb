@@ -14,7 +14,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
     route(:post, %r{^/juici/build_project$}, :build_project)
   end
-  
+
   def build_project(request, match)
     data = JSON.load(request.body.read)
 
@@ -68,8 +68,8 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
         git remote add origin git@github.com:#{repo}.git
       fi
 
-      git fetch origin 
-      git checkout -fq $SHA1 
+      git fetch origin
+      git checkout -fq $SHA1
       # Clobber anything from the last build
       git clean -xdff
       #{script}
