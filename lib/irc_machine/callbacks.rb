@@ -16,6 +16,6 @@ module Callbacks
       route(:post, callback[:path], blk)
       callback
     end
- 	end
+  end
 
 end
