@@ -1,6 +1,6 @@
 require 'uuid'
 
-module Callbacks
+module IrcMachine::Plugin::Callbacks
 
   def has_callbacks(path, opts={}, &block)
     name = opts[:method_name] || raise("Method name must be specified.")

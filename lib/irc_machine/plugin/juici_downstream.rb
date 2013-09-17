@@ -1,12 +1,13 @@
 require 'json'
 require 'net/http'
 require 'juici/interface'
+require 'irc_machine/plugin/callbacks'
 
 class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
   CONFIG_FILE = "github_juici.json"
 
-  extend Callbacks
+  extend IrcMachine::Plugin::Callbacks
   has_callbacks "/juici/build_project", :method_name => :new_callback
 
   def initialize(*args)
