@@ -32,7 +32,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       project = $3.chomp
       hash = $4.chomp
 
-      ship_project_with_sha(project, hash)
+      ship_project_with_sha(project, hash, user)
     end
   end
 
@@ -67,7 +67,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     sha1    = data["sha1"]    || (raise "No sha1")
     authors = data["notify"]
 
-    ship_project_with_sha(project, sha1)
+    ship_project_with_sha(project, sha1, authors)
   end
 
   def ship_project_with_sha(project, sha1, authors)
