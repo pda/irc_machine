@@ -67,7 +67,7 @@ Contributors
 * [Paul Annesley](https://github.com/pda)
 * [Eric Anderson](https://github.com/ericanderson)
 * [Anton Lindström](https://github.com/antonlindstrom)
-* [Richo Healey](https://github.com/richoH)
+* [Richo Healey](https://github.com/richo)
 
 
 Meh.
