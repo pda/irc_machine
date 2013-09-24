@@ -127,8 +127,9 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
         when Juici::BuildStatus::START then '(Continue) started -'
         when Juici::BuildStatus::WAIT  then '(Continue) waiting -'
       end
+      branch = (commit.branch == 'master') ? '' : "(branch) "
 
-      notify "#{status} #{project.name} :: #{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
+      notify "#{status} #{project.name} :: #{branch}#{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
       mark_build(commit, payload.status, payload.url)
 
       notify_callback = lambda { |str| notify str }
