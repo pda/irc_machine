@@ -136,8 +136,6 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       notify "#{status} #{project.name} :: #{branch}#{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url}#{ping}"
       mark_build(commit, payload.status, payload.url)
 
-      notify_callback = lambda { |str| notify str }
-
       plugin_send(:BuildStatus, :notify, {:project => project.name, :branch => commit.branch, :event => payload.status})
     }
   end
