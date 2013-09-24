@@ -31,9 +31,9 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
-        notify "[Fail] Build of #{project}/#{sha1} failed (triggered by #{from})"
+        notify "(Failed) Build of #{project}/#{sha1} failed (triggered by #{from})"
       when Juici::BuildStatus::PASS
-        notify "[Success] Build of #{project}/#{sha1} passed (triggered by #{from})"
+        notify "(Successful) Build of #{project}/#{sha1} passed (triggered by #{from})"
       end
     end
 

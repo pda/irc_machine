@@ -48,12 +48,12 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   def build_branch(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
     if ! allowed?(commit)
-      notify "Not building unauthorized branch #{commit.branch} of #{commit.project}"
+      notify "(Unknown) Not building unauthorized branch #{commit.branch} of #{commit.project}"
       return
     end
     return if commit.tag?
     if commit.after == "0"*40
-      notify "Not building deleted branch #{commit.branch} of #{commit.project}"
+      notify "(Unknown) Not building deleted branch #{commit.branch} of #{commit.project}"
     elsif project = get_project(commit.project)
       start_build(project, commit, :environment => env_for(project, commit))
     end
@@ -121,7 +121,14 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       # TODO Include some logic for working out if we're done with this route
       # and calling #drop_route!
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
-      notify "#{payload.status} - #{project.name} :: #{commit.branch} :: built in #{payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
+      status = case payload.status
+        when Juici::BuildStatus::PASS  then '(Successful)'
+        when Juici::BuildStatus::FAIL  then '(Failed)'
+        else "(Continue) #{payload.status} -"
+      end
+      branch = (commit.branch == 'master') ? '' : "(branch) "
+
+      notify "#{status} #{project.name} :: #{branch}#{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
       mark_build(commit, payload.status, payload.url)
 
       notify_callback = lambda { |str| notify str }
