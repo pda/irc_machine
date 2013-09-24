@@ -20,6 +20,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
     project = data["project"]  || (raise "No project")
     sha1    = data["sha1"]     || "master"
+    title   = data["title"]    || "#{project} :: #{sha1[0..8]}"
     script  = data["script"]   || "./script/cibuild"
     authors = data["notify"]
     from    = data["upstream"] || (raise "Upstream project required")
@@ -45,7 +46,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       :environment => {
         "SHA1" => data["sha1"]
       },
-      :title => "#{data["project"]} :: #{sha1[0..8]}",
+      :title => title,
       :callbacks => [callback[:url]]
     })
 
