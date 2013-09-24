@@ -124,8 +124,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       status = case payload.status
         when Juici::BuildStatus::PASS  then '(Successful)'
         when Juici::BuildStatus::FAIL  then '(Failed)'
-        when Juici::BuildStatus::START then '(Continue) started -'
-        when Juici::BuildStatus::WAIT  then '(Continue) waiting -'
+        else "(Continue) #{payload.status} -"
       end
       branch = (commit.branch == 'master') ? '' : "(branch) "
 
