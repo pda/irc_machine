@@ -32,7 +32,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       project = $3.chomp
       hash = $4.chomp
 
-      ship_project_with_sha(project, hash)
+      ship_project_with_sha(project, hash, user)
     end
   end
 
@@ -65,13 +65,14 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
 
     project = data["project"] || (raise "No project")
     sha1    = data["sha1"]    || (raise "No sha1")
+    authors = data["notify"]
 
-    ship_project_with_sha(project, sha1)
+    ship_project_with_sha(project, sha1, authors)
   end
 
-  def ship_project_with_sha(project, sha1)
+  def ship_project_with_sha(project, sha1, authors)
     if (@disabled_projects[project] == true)
-      notify "Not deploying disabled project: #{project}"
+      notify "Not deploying disabled project: #{project} :: PING (#{authors})"
       return
     end
 
@@ -89,9 +90,9 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
-        notify "D: deploy for #{project} failed"
+        notify "D: deploy for #{project} failed :: PING (#{authors})"
       when Juici::BuildStatus::PASS
-        notify "\\o/ deploy for #{project} succeeded"
+        notify "\\o/ deploy for #{project} succeeded :: PING (#{authors})"
       end
     end
 

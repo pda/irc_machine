@@ -62,6 +62,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   def env_for(project, commit)
     {"SHA1" => commit.after,
      "ref" => commit.ref,
+     "AUTHOR_NICKS" => commit.author_nicks.join(" "),
      "PREV_SHA1" => commit.before,
      "AGENT99URL" => settings["callback_base"] }.tap do |env|
       env["DISABLED"] = "true" if @disabled_projects[project.name]
@@ -127,11 +128,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
         else "(Continue) #{payload.status} -"
       end
       branch = (commit.branch == 'master') ? '' : "(branch) "
+      ping = ""
+      if commit.author_nicks.any?
+        ping = " :: PING " + commit.author_nicks.join(" ")
+      end
 
-      notify "#{status} #{project.name} :: #{branch}#{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url} :: PING #{commit.author_nicks.join(" ")}"
+      notify "#{status} #{project.name} :: #{branch}#{commit.branch} :: built in #{'%.2f' % payload.time}s :: JuiCI #{payload.url}#{ping}"
       mark_build(commit, payload.status, payload.url)
-
-      notify_callback = lambda { |str| notify str }
 
       plugin_send(:BuildStatus, :notify, {:project => project.name, :branch => commit.branch, :event => payload.status})
     }
