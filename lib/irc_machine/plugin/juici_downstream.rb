@@ -45,7 +45,8 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     })
     payload = @project.build_payload({
       :environment => {
-        "SHA1" => data["sha1"]
+        "SHA1" => data["sha1"],
+        "AUTHOR_NICKS" => authors
       },
       :title => title,
       :callbacks => [callback[:url]]

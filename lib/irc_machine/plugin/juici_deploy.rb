@@ -99,7 +99,8 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     payload = @project.build_payload({
       :environment => {
         "REPO" => project,
-        "SHA1" => sha1
+        "SHA1" => sha1,
+        "AUTHOR_NICKS" => authors
       },
       :title => "#{project} :: #{sha1[0..8]}",
       :callbacks => [callback[:url]],
