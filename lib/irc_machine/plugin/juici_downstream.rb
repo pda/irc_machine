@@ -19,7 +19,7 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     data = JSON.load(request.body.read)
 
     project = data["project"]  || (raise "No project")
-    sha1    = data["sha1"]     || "master"
+    sha1    = data["sha1"]     || "origin/master"
     title   = data["title"]    || "#{project}/#{sha1[0..8]}"
     script  = data["script"]   || "./script/cibuild"
     authors = data["notify"]
