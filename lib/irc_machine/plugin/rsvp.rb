@@ -7,7 +7,7 @@ class IrcMachine::Plugin::Rsvp < IrcMachine::Plugin::Base
       old_channel = $2.chomp
       new_channel = $3.chomp
       join(old_channel, new_channel, inviter)
-    when /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? pls2leave$/
+    when /^:\S+ PRIVMSG (#+\S+) :#{session.state.nick}:? gtfo$/
       channel = $1.chomp
       leave(channel)
     end

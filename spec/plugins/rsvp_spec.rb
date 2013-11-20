@@ -17,7 +17,7 @@ describe 'IrcMachine::Plugin::Rsvp' do
     it 'should leave channels when asked' do
       @session.expects(:msg).with('#exciting', ':-(')
       @session.expects(:part).with('#exciting')
-      @plugin.receive_line ':joebloggs PRIVMSG #exciting :agent99 pls2leave'
+      @plugin.receive_line ':joebloggs PRIVMSG #exciting :agent99 gtfo'
     end
   end
 end
