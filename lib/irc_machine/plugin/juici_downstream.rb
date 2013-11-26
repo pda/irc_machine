@@ -75,7 +75,11 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       fi
 
       git fetch origin
-      git checkout -fq $SHA1
+      if [ -n "$SHA1" ]; then
+        git checkout -fq $SHA1
+      else
+        git checkout -fq origin/master
+      fi
       # Clobber anything from the last build
       git clean -xdff
       #{script}
