@@ -90,8 +90,10 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
       when Juici::BuildStatus::FAIL
+        plugin_send(:Notifier, :notify, "deploy_failure")
         notify "D: deploy for #{project} failed :: PING (#{authors})"
       when Juici::BuildStatus::PASS
+        plugin_send(:Notifier, :notify, "deploy_success")
         notify "\\o/ deploy for #{project} succeeded :: PING (#{authors})"
       end
     end
