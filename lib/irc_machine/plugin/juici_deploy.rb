@@ -86,6 +86,8 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
+    plugin_send(:Notifier, :notify, "pre_deploy")
+
     callback = new_callback do |request, match|
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
       case payload.status
