@@ -19,6 +19,6 @@ class IrcMachine::Plugin::Pub < IrcMachine::Plugin::Base
 
   def now_in_sf
     # Pretend DST isn't a thing.
-    Time.now.getutc - (60 * 60 * 7)
+    Time.now.getutc - (60 * 60 * 8)
   end
 end
