@@ -39,7 +39,7 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     @disabled_projects = {}
 
     route(:post, %r{^/github/juici$}, :recv_hook)
-    route(:post, %r{^/github/v2/juici$}, :recv_hook_for_worker)
+    route(:post, %r{^/github/juici/worker$}, :recv_hook_for_worker)
 
     if settings.include? "username_prefix"
       ::IrcMachine::Models::GithubUser.prefix = settings["username_prefix"]
