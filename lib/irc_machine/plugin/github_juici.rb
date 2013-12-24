@@ -99,6 +99,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       return
     end
 
+    opts[:juici_url] = uri
+
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
@@ -150,7 +152,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     lambda { |request, match|
       # TODO Include some logic for working out if we're done with this route
       # and calling #drop_route!
-      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
+      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read,
+                                                            :juici_url => opts[:juici_url])
       status = case payload.status
         when Juici::BuildStatus::PASS  then '(Successful)'
         when Juici::BuildStatus::FAIL  then '(Failed)'
