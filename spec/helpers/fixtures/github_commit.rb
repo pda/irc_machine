@@ -1,5 +1,6 @@
 module Fixtures
 
+
   class GithubCommit; class << self
 
     def new
@@ -52,7 +53,7 @@ module Fixtures
           name: "Fixture"
         }),
         branch: "FixtureBranch",
-        commits: [{ author: "richo" }]
+        commits: [{ author: "richo" }],
       })
     end
   end; end
