@@ -72,11 +72,13 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
   end
 
   def env_for(project, commit)
-    {"SHA1" => commit.after,
-     "ref" => commit.ref,
-     "AUTHOR_NICKS" => commit.author_nicks.join(" "),
-     "PREV_SHA1" => commit.before,
-     "AGENT99URL" => settings["callback_base"] }.tap do |env|
+    {
+      "SHA1" => commit.after,
+      "ref" => commit.ref,
+      "AUTHOR_NICKS" => commit.author_nicks.join(" "),
+      "PREV_SHA1" => commit.before,
+      "AGENT99URL" => settings["callback_base"]
+    }.tap do |env|
       env["DISABLED"] = "true" if @disabled_projects[project.name]
     end
   end
@@ -96,6 +98,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       notify "(Unknown) No worker specified for #{commit.branch} of #{commit.project}"
       return
     end
+
+    opts[:juici_url] = uri
 
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
@@ -148,7 +152,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     lambda { |request, match|
       # TODO Include some logic for working out if we're done with this route
       # and calling #drop_route!
-      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => juici_url)
+      payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read,
+                                                            :juici_url => opts[:juici_url])
       status = case payload.status
         when Juici::BuildStatus::PASS  then '(Successful)'
         when Juici::BuildStatus::FAIL  then '(Failed)'
