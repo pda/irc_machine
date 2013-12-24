@@ -38,15 +38,25 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     @uuid = UUID.new
     @disabled_projects = {}
 
-    route(:post, %r{^/github/juici$}, :build_branch)
+    route(:post, %r{^/github/juici$}, :recv_hook)
+    route(:post, %r{^/github/juici/worker$}, :recv_hook_for_worker)
 
     if settings.include? "username_prefix"
       ::IrcMachine::Models::GithubUser.prefix = settings["username_prefix"]
     end
   end
 
-  def build_branch(request, match)
+  def recv_hook(request, match)
     commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
+    build_branch(commit, :default)
+  end
+
+  def recv_hook_for_worker(request, match)
+    commit = ::IrcMachine::Models::GithubNotification.new(request.body.read)
+    build_branch(commit, worker_for_commit(commit))
+  end
+
+  def build_branch(commit, worker)
     if ! allowed?(commit)
       notify "(Unknown) Not building unauthorized branch #{commit.branch} of #{commit.project}"
       return
@@ -55,7 +65,9 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     if commit.after == "0"*40
       notify "(Unknown) Not building deleted branch #{commit.branch} of #{commit.project}"
     elsif project = get_project(commit.project)
-      start_build(project, commit, :environment => env_for(project, commit))
+      start_build(project, commit,
+                  :environment => env_for(project, commit),
+                  :worker => worker)
     end
   end
 
@@ -74,6 +86,17 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
     priority = project.priorities[commit.branch] || 10
     title = "#{commit.branch} :: #{commit.after[0..6]}"
     uri = URI(juici_url)
+
+    case opts[:worker]
+    when :default
+      nil
+    when String
+      uri.host = "#{opts[:worker]}.#{uri.host}"
+    else
+      notify "(Unknown) No worker specified for #{commit.branch} of #{commit.project}"
+      return
+    end
+
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
 
@@ -92,6 +115,10 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def juici_url
     settings["juici_url"]
+  end
+
+  def worker_for_commit(commit)
+    commit.repo_name
   end
 
   def project_settings
