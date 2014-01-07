@@ -18,6 +18,8 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
   def receive_line(line)
     if line =~ advice_pattern
       session.msg $1, generate_reply
+    elsif line =~ /:[^:]*:#{session.state.nick}:? help ([^ ]+)$/
+      session.msg $1, generate_reply($2)
     end
   end
 
@@ -25,7 +27,10 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
     /^:\S+ PRIVMSG (#+\S+) :.*\b(?:#{QUESTION_PATTERNS.join('|')})\b.*/i
   end
 
-  def generate_reply
-    HELPFUL_ADVICE.sample
+  def generate_reply(to=nil)
+    resp = ""
+    resp << "#{to}: " if to
+    resp << HELPFUL_ADVICE.sample
+    return resp
   end
 end
