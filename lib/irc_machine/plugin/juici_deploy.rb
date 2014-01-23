@@ -140,6 +140,7 @@ if ! git remote -v | grep "${REPO}"; then
 fi
 
 set -x
+set -e
 
 git fetch -q "${REPO}"
 
