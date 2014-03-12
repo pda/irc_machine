@@ -155,8 +155,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read,
                                                             :juici_url => opts[:juici_url])
       status = case payload.status
-        when Juici::BuildStatus::PASS  then '(Successful)'
-        when Juici::BuildStatus::FAIL  then '(Failed)'
+        when Juici::BuildStatus::PASS  then ':white_check_mark:'
+        when Juici::BuildStatus::FAIL  then ':x:'
         else "(Continue) #{payload.status} -"
       end
       branch = (commit.branch == 'master') ? '' : "(branch) "

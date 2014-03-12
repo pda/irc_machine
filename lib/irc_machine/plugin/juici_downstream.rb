@@ -36,9 +36,9 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
       ping = " :: PING #{authors}" if authors.strip != ""
       case payload.status
       when Juici::BuildStatus::FAIL
-        notify "(Failed) Build of #{title} failed (triggered by #{from}) :: #{payload.url}#{ping}"
+        notify ":x: Build of #{title} failed (triggered by #{from}) :: #{payload.url}#{ping}"
       when Juici::BuildStatus::PASS
-        notify "(Successful) Build of #{title} passed (triggered by #{from}) :: #{payload.url}#{ping}"
+        notify ":white_check_mark: Build of #{title} passed (triggered by #{from}) :: #{payload.url}#{ping}"
       end
     end
 

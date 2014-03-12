@@ -209,7 +209,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_success(request, match)
     if app = apps[match[1]]
       if app.succeed
-        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} succeeded \\o/ | PING #{app.last_user}")
+        app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} SUCCEEDED :beers: | PING #{app.last_user}")
         plugin_send(:Notifier, :notify, "deploy_success")
         plugin_send(:NewRelicDeployPerformance, :deploy_success, app.name)
       end
@@ -221,7 +221,7 @@ class IrcMachine::Plugin::JenkinsNotify < IrcMachine::Plugin::Base
   def rest_fail(request, match)
     if app = apps[match[1]]
       if app.fail
-         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} FAILED | PING #{app.last_user}")
+         app.notify(session, "#{"DEPLOY".irc_cyan.irc_bold} - #{app.name.to_s.irc_bold} FAILED :warning: | PING #{app.last_user}")
          plugin_send(:Notifier, :notify, "deploy_failure")
       end
     else
