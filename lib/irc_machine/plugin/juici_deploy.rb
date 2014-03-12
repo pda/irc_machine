@@ -93,10 +93,10 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       case payload.status
       when Juici::BuildStatus::FAIL
         plugin_send(:Notifier, :notify, "deploy_failure")
-        notify "D: deploy for #{project} failed :: PING (#{authors})"
+        notify ":warning: deploy for #{project} failed :: PING (#{authors})"
       when Juici::BuildStatus::PASS
         plugin_send(:Notifier, :notify, "deploy_success")
-        notify "\\o/ deploy for #{project} succeeded :: PING (#{authors})"
+        notify ":beers: deploy for #{project} succeeded :: PING (#{authors})"
       end
     end
 
