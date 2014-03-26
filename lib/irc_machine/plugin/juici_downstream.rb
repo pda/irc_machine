@@ -47,6 +47,8 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
     })
     payload = @project.build_payload({
       :environment => {
+        "AWS_ACCESS_KEY_ID" => settings["aws"]["key"],
+        "AWS_SECRET_ACCESS_KEY" => settings["aws"]["secret"],
         "SHA1" => data["sha1"],
         "AUTHOR_NICKS" => authors
       },
