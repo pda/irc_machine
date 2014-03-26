@@ -12,7 +12,7 @@
     "ssl": false,
     "aws": {
         "key": null,
-        "secret": null,
+        "secret": null
     },
     "prelude": [
       "PRIVMSG nickserv :identify somepassword"
