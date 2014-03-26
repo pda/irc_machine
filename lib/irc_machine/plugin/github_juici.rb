@@ -73,8 +73,8 @@ class IrcMachine::Plugin::GithubJuici < IrcMachine::Plugin::Base
 
   def env_for(project, commit)
     {
-      "AWS_ACCESS_KEY_ID" => @settings.aws.key,
-      "AWS_SECRET_ACCESS_KEY" => @settings.aws.secret,
+      "AWS_ACCESS_KEY_ID" => settings["aws"]["key"],
+      "AWS_SECRET_ACCESS_KEY" => settings["aws"]["secret"],
       "SHA1" => commit.after,
       "ref" => commit.ref,
       "AUTHOR_NICKS" => commit.author_nicks.join(" "),
