@@ -16,7 +16,7 @@ describe 'IrcMachine::Plugin::ProgrammingHelper' do
 
   describe 'advice_pattern' do
     it 'should match relevant questions' do
-      ":butts PRIVMSG #derp :hello, how can I PHP?".should match @plugin.advice_pattern
+      ":butts PRIVMSG #derp :agent99 how can I PHP?".should match @plugin.advice_pattern
     end
 
     it 'should not match irrelevant input' do

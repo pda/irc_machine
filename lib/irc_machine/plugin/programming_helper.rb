@@ -24,7 +24,7 @@ class IrcMachine::Plugin::ProgrammingHelper < IrcMachine::Plugin::Base
   end
 
   def advice_pattern
-    /^:\S+ PRIVMSG (#+\S+) :.*\b(?:#{QUESTION_PATTERNS.join('|')})\b.*/i
+    /^:[^:]+:#{session.state.nick}.*\b(?:#{QUESTION_PATTERNS.join('|')})\b.*/i
   end
 
   def generate_reply(to=nil)
