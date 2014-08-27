@@ -142,7 +142,7 @@ fi
 set -x
 set -e
 
-git fetch -q "${REPO}"
+git fetch -p -q "${REPO}"
 
 git checkout -fq $SHA1
 # Clobber anything from the last project
