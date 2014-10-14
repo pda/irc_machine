@@ -32,7 +32,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       project = $3.chomp
       hash = $4.chomp
 
-      ship_project_with_sha(project, hash, user)
+      ship_project_with_sha(project, hash, user, "Manual deployment")
     end
   end
 
@@ -70,7 +70,7 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
     ship_project_with_sha(project, sha1, authors)
   end
 
-  def ship_project_with_sha(project, sha1, authors)
+  def ship_project_with_sha(project, sha1, authors, message="Automated deployment")
     if (@disabled_projects[project] == true)
       notify "Not deploying disabled project: #{project} :: PING (#{authors})"
       return
@@ -82,11 +82,26 @@ class IrcMachine::Plugin::JuiciDeploy < IrcMachine::Plugin::Base
       notify "ship #{project} #{sha1}"
     end
 
+    plugin_send(:Notifier, :notify, "pre_deploy")
+
+    # Special case for contests, now built on Buildbox
+    if project == '99designs/contests'
+      system(
+        'curl',
+        "https://api.buildbox.io/v1/accounts/99designs/projects/contests-deploy/builds?api_key=#{settings["buildbox_api_key"]}",
+        '-X', 'POST',
+        '-F', "commit=#{sha1}",
+        '-F', 'branch=master',
+        '-F', "author[name]=Agent 99",
+        '-F', "author[email]=accounts+agent99@99designs.com",
+        '-F', "message=#{message} by #{authors}"
+      )
+      return
+    end
+
     uri = URI(settings["juici_url"])
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true if uri.scheme == "https"
-
-    plugin_send(:Notifier, :notify, "pre_deploy")
 
     callback = new_callback do |request, match|
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
