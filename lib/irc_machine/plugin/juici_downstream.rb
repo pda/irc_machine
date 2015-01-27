@@ -31,12 +31,11 @@ class IrcMachine::Plugin::JuiciDownstream < IrcMachine::Plugin::Base
 
     callback = new_callback do |request, match|
       payload = ::IrcMachine::Models::JuiciNotification.new(request.body.read, :juici_url => settings["juici_url"])
-      status = payload.status
       ping = ""
-      ping = " :: PING #{authors}" if authors.strip != ""
+      ping = " :: PING #{authors}" if authors.strip != "" && authors != "@channel"
       case payload.status
       when Juici::BuildStatus::FAIL
-        notify ":x: Build of #{title} failed (triggered by #{from}) :: #{payload.url}#{ping}"
+        notify ":x: Build of #{title} failed (triggered by #{from}) :: #{payload.url}#{ping} <!channel>"
       when Juici::BuildStatus::PASS
         notify ":white_check_mark: Build of #{title} passed (triggered by #{from}) :: #{payload.url}#{ping}"
       end
